@@ -23,8 +23,8 @@ pub struct HybridTransaction {
     /// The transaction amount in milliunits format
     #[serde(rename = "amount")]
     pub amount: i64,
-    #[serde(rename = "memo")]
-    pub memo: String,
+    #[serde(rename = "memo", skip_serializing_if = "Option::is_none")]
+    pub memo: Option<String>,
     /// The cleared status of the transaction
     #[serde(rename = "cleared")]
     pub cleared: String,
@@ -32,26 +32,26 @@ pub struct HybridTransaction {
     #[serde(rename = "approved")]
     pub approved: bool,
     /// The transaction flag
-    #[serde(rename = "flag_color")]
-    pub flag_color: String,
+    #[serde(rename = "flag_color", skip_serializing_if = "Option::is_none")]
+    pub flag_color: Option<String>,
     #[serde(rename = "account_id")]
     pub account_id: String,
-    #[serde(rename = "payee_id")]
-    pub payee_id: String,
-    #[serde(rename = "category_id")]
-    pub category_id: String,
+    #[serde(rename = "payee_id", skip_serializing_if = "Option::is_none")]
+    pub payee_id: Option<String>,
+    #[serde(rename = "category_id", skip_serializing_if = "Option::is_none")]
+    pub category_id: Option<String>,
     /// If a transfer transaction, the account to which it transfers
-    #[serde(rename = "transfer_account_id")]
-    pub transfer_account_id: String,
+    #[serde(rename = "transfer_account_id", skip_serializing_if = "Option::is_none")]
+    pub transfer_account_id: Option<String>,
     /// If a transfer transaction, the id of transaction on the other side of the transfer
-    #[serde(rename = "transfer_transaction_id")]
-    pub transfer_transaction_id: String,
+    #[serde(rename = "transfer_transaction_id", skip_serializing_if = "Option::is_none")]
+    pub transfer_transaction_id: Option<String>,
     /// If transaction is matched, the id of the matched transaction
-    #[serde(rename = "matched_transaction_id")]
-    pub matched_transaction_id: String,
+    #[serde(rename = "matched_transaction_id", skip_serializing_if = "Option::is_none")]
+    pub matched_transaction_id: Option<String>,
     /// If the Transaction was imported, this field is a unique (by account) import identifier.  If this transaction was imported through File Based Import or Direct Import and not through the API, the import_id will have the format: 'YNAB:[milliunit_amount]:[iso_date]:[occurrence]'.  For example, a transaction dated 2015-12-30 in the amount of -$294.23 USD would have an import_id of 'YNAB:-294230:2015-12-30:1'.  If a second transaction on the same account was imported and had the same date and same amount, its import_id would be 'YNAB:-294230:2015-12-30:2'.
-    #[serde(rename = "import_id")]
-    pub import_id: String,
+    #[serde(rename = "import_id", skip_serializing_if = "Option::is_none")]
+    pub import_id: Option<String>,
     /// Whether or not the transaction has been deleted.  Deleted transactions will only be included in delta requests.
     #[serde(rename = "deleted")]
     pub deleted: bool,
@@ -70,22 +70,22 @@ pub struct HybridTransaction {
 }
 
 impl HybridTransaction {
-    pub fn new(id: String, date: String, amount: i64, memo: String, cleared: String, approved: bool, flag_color: String, account_id: String, payee_id: String, category_id: String, transfer_account_id: String, transfer_transaction_id: String, matched_transaction_id: String, import_id: String, deleted: bool, _type: String, parent_transaction_id: String, account_name: String, payee_name: String, category_name: String) -> HybridTransaction {
+    pub fn new(id: String, date: String, amount: i64, cleared: String, approved: bool, account_id: String, deleted: bool, _type: String, parent_transaction_id: String, account_name: String, payee_name: String, category_name: String) -> HybridTransaction {
         HybridTransaction {
             id: id,
             date: date,
             amount: amount,
-            memo: memo,
+            memo: None,
             cleared: cleared,
             approved: approved,
-            flag_color: flag_color,
+            flag_color: None,
             account_id: account_id,
-            payee_id: payee_id,
-            category_id: category_id,
-            transfer_account_id: transfer_account_id,
-            transfer_transaction_id: transfer_transaction_id,
-            matched_transaction_id: matched_transaction_id,
-            import_id: import_id,
+            payee_id: None,
+            category_id: None,
+            transfer_account_id: None,
+            transfer_transaction_id: None,
+            matched_transaction_id: None,
+            import_id: None,
             deleted: deleted,
             _type: _type,
             parent_transaction_id: parent_transaction_id,

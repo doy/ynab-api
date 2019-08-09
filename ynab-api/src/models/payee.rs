@@ -20,19 +20,19 @@ pub struct Payee {
     #[serde(rename = "name")]
     pub name: String,
     /// If a transfer payee, the account_id to which this payee transfers to
-    #[serde(rename = "transfer_account_id")]
-    pub transfer_account_id: String,
+    #[serde(rename = "transfer_account_id", skip_serializing_if = "Option::is_none")]
+    pub transfer_account_id: Option<String>,
     /// Whether or not the payee has been deleted.  Deleted payees will only be included in delta requests.
     #[serde(rename = "deleted")]
     pub deleted: bool,
 }
 
 impl Payee {
-    pub fn new(id: String, name: String, transfer_account_id: String, deleted: bool) -> Payee {
+    pub fn new(id: String, name: String, deleted: bool) -> Payee {
         Payee {
             id: id,
             name: name,
-            transfer_account_id: transfer_account_id,
+            transfer_account_id: None,
             deleted: deleted,
         }
     }

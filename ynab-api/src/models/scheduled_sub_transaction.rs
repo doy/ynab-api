@@ -22,30 +22,30 @@ pub struct ScheduledSubTransaction {
     /// The scheduled subtransaction amount in milliunits format
     #[serde(rename = "amount")]
     pub amount: i64,
-    #[serde(rename = "memo")]
-    pub memo: String,
-    #[serde(rename = "payee_id")]
-    pub payee_id: String,
+    #[serde(rename = "memo", skip_serializing_if = "Option::is_none")]
+    pub memo: Option<String>,
+    #[serde(rename = "payee_id", skip_serializing_if = "Option::is_none")]
+    pub payee_id: Option<String>,
     #[serde(rename = "category_id")]
     pub category_id: String,
     /// If a transfer, the account_id which the scheduled subtransaction transfers to
-    #[serde(rename = "transfer_account_id")]
-    pub transfer_account_id: String,
+    #[serde(rename = "transfer_account_id", skip_serializing_if = "Option::is_none")]
+    pub transfer_account_id: Option<String>,
     /// Whether or not the scheduled subtransaction has been deleted.  Deleted scheduled subtransactions will only be included in delta requests.
     #[serde(rename = "deleted")]
     pub deleted: bool,
 }
 
 impl ScheduledSubTransaction {
-    pub fn new(id: String, scheduled_transaction_id: String, amount: i64, memo: String, payee_id: String, category_id: String, transfer_account_id: String, deleted: bool) -> ScheduledSubTransaction {
+    pub fn new(id: String, scheduled_transaction_id: String, amount: i64, category_id: String, deleted: bool) -> ScheduledSubTransaction {
         ScheduledSubTransaction {
             id: id,
             scheduled_transaction_id: scheduled_transaction_id,
             amount: amount,
-            memo: memo,
-            payee_id: payee_id,
+            memo: None,
+            payee_id: None,
             category_id: category_id,
-            transfer_account_id: transfer_account_id,
+            transfer_account_id: None,
             deleted: deleted,
         }
     }

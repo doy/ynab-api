@@ -28,39 +28,39 @@ pub struct ScheduledTransactionSummary {
     /// The scheduled transaction amount in milliunits format
     #[serde(rename = "amount")]
     pub amount: i64,
-    #[serde(rename = "memo")]
-    pub memo: String,
+    #[serde(rename = "memo", skip_serializing_if = "Option::is_none")]
+    pub memo: Option<String>,
     /// The scheduled transaction flag
     #[serde(rename = "flag_color")]
     pub flag_color: String,
     #[serde(rename = "account_id")]
     pub account_id: String,
-    #[serde(rename = "payee_id")]
-    pub payee_id: String,
+    #[serde(rename = "payee_id", skip_serializing_if = "Option::is_none")]
+    pub payee_id: Option<String>,
     #[serde(rename = "category_id")]
     pub category_id: String,
     /// If a transfer, the account_id which the scheduled transaction transfers to
-    #[serde(rename = "transfer_account_id")]
-    pub transfer_account_id: String,
+    #[serde(rename = "transfer_account_id", skip_serializing_if = "Option::is_none")]
+    pub transfer_account_id: Option<String>,
     /// Whether or not the scheduled transaction has been deleted.  Deleted scheduled transactions will only be included in delta requests.
     #[serde(rename = "deleted")]
     pub deleted: bool,
 }
 
 impl ScheduledTransactionSummary {
-    pub fn new(id: String, date_first: String, date_next: String, frequency: String, amount: i64, memo: String, flag_color: String, account_id: String, payee_id: String, category_id: String, transfer_account_id: String, deleted: bool) -> ScheduledTransactionSummary {
+    pub fn new(id: String, date_first: String, date_next: String, frequency: String, amount: i64, flag_color: String, account_id: String, category_id: String, deleted: bool) -> ScheduledTransactionSummary {
         ScheduledTransactionSummary {
             id: id,
             date_first: date_first,
             date_next: date_next,
             frequency: frequency,
             amount: amount,
-            memo: memo,
+            memo: None,
             flag_color: flag_color,
             account_id: account_id,
-            payee_id: payee_id,
+            payee_id: None,
             category_id: category_id,
-            transfer_account_id: transfer_account_id,
+            transfer_account_id: None,
             deleted: deleted,
         }
     }

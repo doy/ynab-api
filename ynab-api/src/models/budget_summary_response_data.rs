@@ -17,15 +17,15 @@ use serde_json::Value;
 pub struct BudgetSummaryResponseData {
     #[serde(rename = "budgets")]
     pub budgets: Vec<::models::BudgetSummary>,
-    #[serde(rename = "default_budget")]
-    pub default_budget: ::models::BudgetSummary,
+    #[serde(rename = "default_budget", skip_serializing_if = "Option::is_none")]
+    pub default_budget: Option<::models::BudgetSummary>,
 }
 
 impl BudgetSummaryResponseData {
-    pub fn new(budgets: Vec<::models::BudgetSummary>, default_budget: ::models::BudgetSummary) -> BudgetSummaryResponseData {
+    pub fn new(budgets: Vec<::models::BudgetSummary>) -> BudgetSummaryResponseData {
         BudgetSummaryResponseData {
             budgets: budgets,
-            default_budget: default_budget,
+            default_budget: None,
         }
     }
 }

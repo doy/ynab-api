@@ -28,8 +28,8 @@ pub struct Account {
     /// Whether this account is closed or not
     #[serde(rename = "closed")]
     pub closed: bool,
-    #[serde(rename = "note")]
-    pub note: String,
+    #[serde(rename = "note", skip_serializing_if = "Option::is_none")]
+    pub note: Option<String>,
     /// The current balance of the account in milliunits format
     #[serde(rename = "balance")]
     pub balance: i64,
@@ -48,14 +48,14 @@ pub struct Account {
 }
 
 impl Account {
-    pub fn new(id: String, name: String, _type: String, on_budget: bool, closed: bool, note: String, balance: i64, cleared_balance: i64, uncleared_balance: i64, transfer_payee_id: String, deleted: bool) -> Account {
+    pub fn new(id: String, name: String, _type: String, on_budget: bool, closed: bool, balance: i64, cleared_balance: i64, uncleared_balance: i64, transfer_payee_id: String, deleted: bool) -> Account {
         Account {
             id: id,
             name: name,
             _type: _type,
             on_budget: on_budget,
             closed: closed,
-            note: note,
+            note: None,
             balance: balance,
             cleared_balance: cleared_balance,
             uncleared_balance: uncleared_balance,

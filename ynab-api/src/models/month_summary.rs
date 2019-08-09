@@ -17,8 +17,8 @@ use serde_json::Value;
 pub struct MonthSummary {
     #[serde(rename = "month")]
     pub month: String,
-    #[serde(rename = "note")]
-    pub note: String,
+    #[serde(rename = "note", skip_serializing_if = "Option::is_none")]
+    pub note: Option<String>,
     /// The total amount in transactions categorized to 'Inflow: To be Budgeted' in the month
     #[serde(rename = "income")]
     pub income: i64,
@@ -32,23 +32,23 @@ pub struct MonthSummary {
     #[serde(rename = "to_be_budgeted")]
     pub to_be_budgeted: i64,
     /// The Age of Money as of the month
-    #[serde(rename = "age_of_money")]
-    pub age_of_money: i32,
+    #[serde(rename = "age_of_money", skip_serializing_if = "Option::is_none")]
+    pub age_of_money: Option<i32>,
     /// Whether or not the month has been deleted.  Deleted months will only be included in delta requests.
     #[serde(rename = "deleted")]
     pub deleted: bool,
 }
 
 impl MonthSummary {
-    pub fn new(month: String, note: String, income: i64, budgeted: i64, activity: i64, to_be_budgeted: i64, age_of_money: i32, deleted: bool) -> MonthSummary {
+    pub fn new(month: String, income: i64, budgeted: i64, activity: i64, to_be_budgeted: i64, deleted: bool) -> MonthSummary {
         MonthSummary {
             month: month,
-            note: note,
+            note: None,
             income: income,
             budgeted: budgeted,
             activity: activity,
             to_be_budgeted: to_be_budgeted,
-            age_of_money: age_of_money,
+            age_of_money: None,
             deleted: deleted,
         }
     }

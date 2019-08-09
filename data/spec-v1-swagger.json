@@ -1479,7 +1479,7 @@
       "properties": {
         "data": {
           "type": "object",
-          "required": ["budgets", "default_budget"],
+          "required": ["budgets"],
           "properties": {
             "budgets": {
               "type": "array",
@@ -1694,7 +1694,6 @@
         "type",
         "on_budget",
         "closed",
-        "note",
         "balance",
         "cleared_balance",
         "uncleared_balance",
@@ -1849,15 +1848,10 @@
         "category_group_id",
         "name",
         "hidden",
-        "note",
         "budgeted",
         "activity",
         "balance",
-        "goal_type",
-        "goal_creation_month",
         "goal_target",
-        "goal_target_month",
-        "goal_percentage_complete",
         "deleted"
       ],
       "properties": {
@@ -1990,7 +1984,7 @@
     },
     "Payee": {
       "type": "object",
-      "required": ["id", "name", "transfer_account_id", "deleted"],
+      "required": ["id", "name", "deleted"],
       "properties": {
         "id": {
           "type": "string",
@@ -2251,17 +2245,9 @@
         "id",
         "date",
         "amount",
-        "memo",
         "cleared",
         "approved",
-        "flag_color",
         "account_id",
-        "payee_id",
-        "category_id",
-        "transfer_account_id",
-        "transfer_transaction_id",
-        "matched_transaction_id",
-        "import_id",
         "deleted"
       ],
       "properties": {
@@ -2460,10 +2446,6 @@
         "id",
         "transaction_id",
         "amount",
-        "memo",
-        "payee_id",
-        "category_id",
-        "transfer_account_id",
         "deleted"
       ],
       "properties": {
@@ -2546,12 +2528,9 @@
         "date_next",
         "frequency",
         "amount",
-        "memo",
         "flag_color",
         "account_id",
-        "payee_id",
         "category_id",
-        "transfer_account_id",
         "deleted"
       ],
       "properties": {
@@ -2658,10 +2637,7 @@
         "id",
         "scheduled_transaction_id",
         "amount",
-        "memo",
-        "payee_id",
         "category_id",
-        "transfer_account_id",
         "deleted"
       ],
       "properties": {
@@ -2740,7 +2716,7 @@
     },
     "MonthSummary": {
       "type": "object",
-      "required": ["month", "note", "income", "budgeted", "activity", "to_be_budgeted", "age_of_money", "deleted"],
+      "required": ["month", "income", "budgeted", "activity", "to_be_budgeted", "deleted"],
       "properties": {
         "month": {
           "type": "string",

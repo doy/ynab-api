@@ -27,8 +27,8 @@ pub struct Category {
     /// If category is hidden this is the id of the category group it originally belonged to before it was hidden.
     #[serde(rename = "original_category_group_id", skip_serializing_if = "Option::is_none")]
     pub original_category_group_id: Option<String>,
-    #[serde(rename = "note")]
-    pub note: String,
+    #[serde(rename = "note", skip_serializing_if = "Option::is_none")]
+    pub note: Option<String>,
     /// Budgeted amount in milliunits format
     #[serde(rename = "budgeted")]
     pub budgeted: i64,
@@ -39,42 +39,42 @@ pub struct Category {
     #[serde(rename = "balance")]
     pub balance: i64,
     /// The type of goal, if the cagegory has a goal (TB=Target Category Balance, TBD=Target Category Balance by Date, MF=Monthly Funding)
-    #[serde(rename = "goal_type")]
-    pub goal_type: String,
+    #[serde(rename = "goal_type", skip_serializing_if = "Option::is_none")]
+    pub goal_type: Option<String>,
     /// The month a goal was created
-    #[serde(rename = "goal_creation_month")]
-    pub goal_creation_month: String,
+    #[serde(rename = "goal_creation_month", skip_serializing_if = "Option::is_none")]
+    pub goal_creation_month: Option<String>,
     /// The goal target amount in milliunits
     #[serde(rename = "goal_target")]
     pub goal_target: i64,
     /// If the goal type is 'TBD' (Target Category Balance by Date), this is the target month for the goal to be completed
-    #[serde(rename = "goal_target_month")]
-    pub goal_target_month: String,
+    #[serde(rename = "goal_target_month", skip_serializing_if = "Option::is_none")]
+    pub goal_target_month: Option<String>,
     /// The percentage completion of the goal
-    #[serde(rename = "goal_percentage_complete")]
-    pub goal_percentage_complete: i32,
+    #[serde(rename = "goal_percentage_complete", skip_serializing_if = "Option::is_none")]
+    pub goal_percentage_complete: Option<i32>,
     /// Whether or not the category has been deleted.  Deleted categories will only be included in delta requests.
     #[serde(rename = "deleted")]
     pub deleted: bool,
 }
 
 impl Category {
-    pub fn new(id: String, category_group_id: String, name: String, hidden: bool, note: String, budgeted: i64, activity: i64, balance: i64, goal_type: String, goal_creation_month: String, goal_target: i64, goal_target_month: String, goal_percentage_complete: i32, deleted: bool) -> Category {
+    pub fn new(id: String, category_group_id: String, name: String, hidden: bool, budgeted: i64, activity: i64, balance: i64, goal_target: i64, deleted: bool) -> Category {
         Category {
             id: id,
             category_group_id: category_group_id,
             name: name,
             hidden: hidden,
             original_category_group_id: None,
-            note: note,
+            note: None,
             budgeted: budgeted,
             activity: activity,
             balance: balance,
-            goal_type: goal_type,
-            goal_creation_month: goal_creation_month,
+            goal_type: None,
+            goal_creation_month: None,
             goal_target: goal_target,
-            goal_target_month: goal_target_month,
-            goal_percentage_complete: goal_percentage_complete,
+            goal_target_month: None,
+            goal_percentage_complete: None,
             deleted: deleted,
         }
     }
