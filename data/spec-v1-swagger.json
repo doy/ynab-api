@@ -2352,7 +2352,7 @@
         },
         {
           "type": "object",
-          "required": ["type", "parent_transaction_id", "account_name", "payee_name", "category_name"],
+          "required": ["type", "account_name", "category_name"],
           "properties": {
             "type": {
               "type": "string",
