@@ -1,0 +1,15 @@
+#!/bin/sh
+set -eu
+
+cd "$(dirname "$0")/.."
+
+rm -rf ynab-api
+mkdir ynab-api
+cd ynab-api
+
+openapi-generator-cli \
+    generate \
+    -g rust \
+    --library reqwest \
+    -i ../data/spec-v1-swagger.json
+sed -i 's/^name = "openapi"$/name = "ynab-api"/' Cargo.toml
