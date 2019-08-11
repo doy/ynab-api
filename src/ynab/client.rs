@@ -26,6 +26,6 @@ impl Client {
             .unwrap()
             .data
             .budget;
-        super::budget::Budget::new(&self.api, full_budget)
+        super::budget::Budget::new(full_budget)
     }
 }
