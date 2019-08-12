@@ -25,6 +25,17 @@ impl TableView {
     pub fn len(&self) -> usize {
         self.view.get_inner().with_view(|v| v.len()).unwrap()
     }
+
+    // XXX why does borrow_items require &mut self?
+    pub fn amount(&mut self) -> i64 {
+        self.view
+            .get_inner_mut()
+            .get_mut()
+            .borrow_items()
+            .iter()
+            .map(|t| t.amount)
+            .sum()
+    }
 }
 
 impl cursive_table_view::TableViewItem<TxnColumn>
@@ -138,7 +149,12 @@ fn txn_table(
 pub fn txn_tables(budget: &crate::ynab::Budget) -> impl cursive::view::View {
     let mut layout = cursive::views::LinearLayout::vertical();
 
-    let inflows_table = inflows_table(&budget);
+    let mut inflows_table = inflows_table(&budget);
+    layout.add_child(cursive::views::TextView::new(format!(
+        "\nInflows: {} ({} transactions)",
+        crate::ynab::format_amount(inflows_table.amount()),
+        inflows_table.len()
+    )));
     layout.add_child(crate::views::vi_view(
         cursive::views::CircularFocus::wrap_arrows(
             cursive::views::BoxView::with_min_height(
@@ -148,7 +164,12 @@ pub fn txn_tables(budget: &crate::ynab::Budget) -> impl cursive::view::View {
         ),
     ));
 
-    let outflows_table = outflows_table(&budget);
+    let mut outflows_table = outflows_table(&budget);
+    layout.add_child(cursive::views::TextView::new(format!(
+        "\nOutflows: {} ({} transactions)",
+        crate::ynab::format_amount(outflows_table.amount()),
+        outflows_table.len()
+    )));
     layout.add_child(crate::views::vi_view(
         cursive::views::CircularFocus::wrap_arrows(
             cursive::views::BoxView::with_full_screen(outflows_table),

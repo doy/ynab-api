@@ -11,14 +11,16 @@ fn main() {
     checks::run_checks(&budget);
 
     let mut app = cursive::Cursive::default();
+    let cursive::XY { x: term_width, .. } = app.screen_size();
     app.set_theme(display::theme());
     app.add_global_callback('q', |s| s.quit());
 
     let mut layout = cursive::views::LinearLayout::vertical();
     layout.add_child(cursive::views::TextView::new(format!(
-        "Budget: {} ({})",
+        "Budget: {} ({})\n{}",
         budget.name(),
-        budget.id()
+        budget.id(),
+        "=".repeat(term_width),
     )));
 
     layout.add_child(views::txn_tables(&budget));
