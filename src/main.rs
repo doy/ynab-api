@@ -1,6 +1,6 @@
 mod checks;
 mod display;
-mod table;
+mod views;
 mod ynab;
 
 fn main() {
@@ -21,17 +21,21 @@ fn main() {
         budget.id()
     )));
 
-    let inflows_table = table::inflows_table(&budget);
-    layout.add_child(cursive::views::CircularFocus::wrap_arrows(
-        cursive::views::BoxView::with_min_height(
-            std::cmp::min(std::cmp::max(inflows_table.len(), 1), 5) + 2,
-            cursive::views::BoxView::with_full_width(inflows_table),
+    let inflows_table = views::inflows_table(&budget);
+    layout.add_child(views::vi_view(
+        cursive::views::CircularFocus::wrap_arrows(
+            cursive::views::BoxView::with_min_height(
+                std::cmp::min(std::cmp::max(inflows_table.len(), 1), 5) + 2,
+                cursive::views::BoxView::with_full_width(inflows_table),
+            ),
         ),
     ));
 
-    let outflows_table = table::outflows_table(&budget);
-    layout.add_child(cursive::views::CircularFocus::wrap_arrows(
-        cursive::views::BoxView::with_full_screen(outflows_table),
+    let outflows_table = views::outflows_table(&budget);
+    layout.add_child(views::vi_view(
+        cursive::views::CircularFocus::wrap_arrows(
+            cursive::views::BoxView::with_full_screen(outflows_table),
+        ),
     ));
 
     app.add_fullscreen_layer(layout);

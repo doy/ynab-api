@@ -6,16 +6,16 @@ pub enum TxnColumn {
 }
 
 type TableView =
-    cursive_table_view::TableView<super::ynab::Transaction, TxnColumn>;
+    cursive_table_view::TableView<crate::ynab::Transaction, TxnColumn>;
 
 impl cursive_table_view::TableViewItem<TxnColumn>
-    for super::ynab::Transaction
+    for crate::ynab::Transaction
 {
     fn to_column(&self, column: TxnColumn) -> String {
         match column {
             TxnColumn::Date => self.date.clone(),
             TxnColumn::Payee => self.payee.clone(),
-            TxnColumn::Amount => super::ynab::format_amount(self.amount),
+            TxnColumn::Amount => crate::ynab::format_amount(self.amount),
         }
     }
 
@@ -31,7 +31,7 @@ impl cursive_table_view::TableViewItem<TxnColumn>
     }
 }
 
-pub fn inflows_table(budget: &super::ynab::Budget) -> TableView {
+pub fn inflows_table(budget: &crate::ynab::Budget) -> TableView {
     let inflows = budget
         .reimbursables()
         .iter()
@@ -41,7 +41,7 @@ pub fn inflows_table(budget: &super::ynab::Budget) -> TableView {
     txn_table(inflows)
 }
 
-pub fn outflows_table(budget: &super::ynab::Budget) -> TableView {
+pub fn outflows_table(budget: &crate::ynab::Budget) -> TableView {
     let outflows = budget
         .reimbursables()
         .iter()
@@ -51,7 +51,7 @@ pub fn outflows_table(budget: &super::ynab::Budget) -> TableView {
     txn_table(outflows)
 }
 
-fn txn_table(txns: Vec<super::ynab::Transaction>) -> TableView {
+fn txn_table(txns: Vec<crate::ynab::Transaction>) -> TableView {
     let mut table = cursive_table_view::TableView::new()
         .column(TxnColumn::Date, "Date", |c| c.width(10))
         .column(TxnColumn::Payee, "Payee", |c| c)
