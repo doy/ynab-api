@@ -5,4 +5,5 @@ pub struct Transaction {
     pub amount: i64,
     pub total_amount: i64,
     pub reimbursed: bool,
+    pub selected: bool,
 }

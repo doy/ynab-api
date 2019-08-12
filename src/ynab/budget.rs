@@ -76,6 +76,7 @@ impl Budget {
                         amount: t.amount,
                         total_amount: t.amount,
                         reimbursed,
+                        selected: false,
                     })
                 }
             }
@@ -118,6 +119,7 @@ impl Budget {
                         amount: st.amount,
                         total_amount: t.amount,
                         reimbursed,
+                        selected: false,
                     })
                 }
             }
