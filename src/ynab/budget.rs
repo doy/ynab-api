@@ -1,10 +1,15 @@
 pub struct Budget {
     budget: ynab_api::models::BudgetDetail,
+    reimbursables: Vec<super::transaction::Transaction>,
 }
 
 impl Budget {
     pub fn new(budget: ynab_api::models::BudgetDetail) -> Self {
-        Self { budget }
+        let reimbursables = Self::get_reimbursables(&budget);
+        Self {
+            budget,
+            reimbursables,
+        }
     }
 
     pub fn name(&self) -> String {
@@ -15,20 +20,25 @@ impl Budget {
         self.budget.id.clone()
     }
 
-    pub fn reimbursables(&self) -> Vec<super::transaction::Transaction> {
-        let reimbursables_id =
-            if let Some(categories) = &self.budget.categories {
-                categories
-                    .iter()
-                    .find(|c| c.name == "Reimbursables")
-                    .map(|c| c.id.clone())
-                    .unwrap()
-            } else {
-                panic!("no categories found")
-            };
+    pub fn reimbursables(&self) -> &[super::transaction::Transaction] {
+        &self.reimbursables
+    }
+
+    fn get_reimbursables(
+        budget: &ynab_api::models::BudgetDetail,
+    ) -> Vec<super::transaction::Transaction> {
+        let reimbursables_id = if let Some(categories) = &budget.categories {
+            categories
+                .iter()
+                .find(|c| c.name == "Reimbursables")
+                .map(|c| c.id.clone())
+                .unwrap()
+        } else {
+            panic!("no categories found")
+        };
 
         let mut reimbursables = vec![];
-        if let Some(payees) = &self.budget.payees {
+        if let Some(payees) = &budget.payees {
             let mut payee_map = std::collections::HashMap::new();
             for p in payees {
                 payee_map.insert(p.id.clone(), p.name.clone());
@@ -36,7 +46,7 @@ impl Budget {
             let payee_map = payee_map;
 
             let mut transaction_map = std::collections::HashMap::new();
-            if let Some(transactions) = &self.budget.transactions {
+            if let Some(transactions) = &budget.transactions {
                 for t in transactions {
                     transaction_map.insert(t.id.clone(), t);
 
@@ -71,7 +81,7 @@ impl Budget {
             }
             let transaction_map = transaction_map;
 
-            if let Some(subtransactions) = &self.budget.subtransactions {
+            if let Some(subtransactions) = &budget.subtransactions {
                 for st in subtransactions {
                     if let Some(category_id) = &st.category_id {
                         if category_id != &reimbursables_id {

@@ -5,4 +5,7 @@ authors = ["Jesse Luehrs <doy@tozt.net>"]
 edition = "2018"
 
 [dependencies]
+cursive = "0.12"
+# cursive = { version = "0.12", default-features = false, features = ["crossterm-backend"] }
+cursive_table_view = "0.10"
 ynab-api = { path = "ynab-api" }

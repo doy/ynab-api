@@ -1,49 +1,39 @@
+mod checks;
+mod display;
+mod table;
 mod ynab;
 
 fn main() {
     let key = std::env::args().nth(1).unwrap();
     let client = ynab::Client::new(&key);
     let budget = client.default_budget();
-    let reimbursables = budget.reimbursables();
-    println!("using budget {} ({})", budget.name(), budget.id());
 
-    let reconciled_amount: i64 = reimbursables
-        .iter()
-        .filter(|t| t.reimbursed)
-        .map(|t| t.amount)
-        .sum();
-    if reconciled_amount != 0 {
-        eprintln!(
-            "reconciled reimbursables don't sum to $0.00: ${}",
-            ynab::format_amount(reconciled_amount)
-        );
-        std::process::exit(1);
-    }
-    println!("reconciled reimbursables correctly sum to $0.00");
+    checks::run_checks(&budget);
 
-    println!("ready for reconciliation:");
-    for t in reimbursables
-        .iter()
-        .filter(|t| !t.reimbursed && t.amount > 0)
-    {
-        println!(
-            "{} | {} | {}",
-            t.date,
-            t.payee,
-            ynab::format_amount(t.amount)
-        )
-    }
+    let mut app = cursive::Cursive::default();
+    app.set_theme(display::theme());
+    app.add_global_callback('q', |s| s.quit());
 
-    println!("match against reconcilable:");
-    for t in reimbursables
-        .iter()
-        .filter(|t| !t.reimbursed && t.amount <= 0)
-    {
-        println!(
-            "{} | {} | {}",
-            t.date,
-            t.payee,
-            ynab::format_amount(t.amount)
-        )
-    }
+    let mut layout = cursive::views::LinearLayout::vertical();
+    layout.add_child(cursive::views::TextView::new(format!(
+        "Budget: {} ({})",
+        budget.name(),
+        budget.id()
+    )));
+
+    let inflows_table = table::inflows_table(&budget);
+    layout.add_child(cursive::views::CircularFocus::wrap_arrows(
+        cursive::views::BoxView::with_min_height(
+            std::cmp::min(std::cmp::max(inflows_table.len(), 1), 5) + 2,
+            cursive::views::BoxView::with_full_width(inflows_table),
+        ),
+    ));
+
+    let outflows_table = table::outflows_table(&budget);
+    layout.add_child(cursive::views::CircularFocus::wrap_arrows(
+        cursive::views::BoxView::with_full_screen(outflows_table),
+    ));
+
+    app.add_fullscreen_layer(layout);
+    app.run();
 }
