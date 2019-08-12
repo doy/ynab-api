@@ -21,22 +21,7 @@ fn main() {
         budget.id()
     )));
 
-    let inflows_table = views::inflows_table(&budget);
-    layout.add_child(views::vi_view(
-        cursive::views::CircularFocus::wrap_arrows(
-            cursive::views::BoxView::with_min_height(
-                std::cmp::min(std::cmp::max(inflows_table.len(), 1), 5) + 2,
-                cursive::views::BoxView::with_full_width(inflows_table),
-            ),
-        ),
-    ));
-
-    let outflows_table = views::outflows_table(&budget);
-    layout.add_child(views::vi_view(
-        cursive::views::CircularFocus::wrap_arrows(
-            cursive::views::BoxView::with_full_screen(outflows_table),
-        ),
-    ));
+    layout.add_child(views::txn_tables(&budget));
 
     app.add_fullscreen_layer(layout);
     app.run();

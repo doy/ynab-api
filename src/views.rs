@@ -1,5 +1,5 @@
 mod txn_table;
-pub use txn_table::{inflows_table, outflows_table};
+pub use txn_table::txn_tables;
 
 pub fn vi_view<V: cursive::view::View>(v: V) -> impl cursive::view::View {
     cursive::views::OnEventView::new(v)

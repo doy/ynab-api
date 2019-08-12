@@ -1,7 +1,7 @@
 use cursive::view::{Identifiable, ViewWrapper};
 
 #[derive(Clone, Copy, Eq, Hash, PartialEq)]
-pub enum TxnColumn {
+enum TxnColumn {
     Selected,
     Date,
     Payee,
@@ -10,7 +10,7 @@ pub enum TxnColumn {
 
 type TxnTableView =
     cursive_table_view::TableView<crate::ynab::Transaction, TxnColumn>;
-pub struct TableView {
+struct TableView {
     view: cursive::views::OnEventView<cursive::views::IdView<TxnTableView>>,
 }
 
@@ -58,7 +58,7 @@ impl cursive_table_view::TableViewItem<TxnColumn>
     }
 }
 
-pub fn inflows_table(budget: &crate::ynab::Budget) -> TableView {
+fn inflows_table(budget: &crate::ynab::Budget) -> TableView {
     let inflows = budget
         .reimbursables()
         .iter()
@@ -68,7 +68,7 @@ pub fn inflows_table(budget: &crate::ynab::Budget) -> TableView {
     txn_table(inflows, "inflows_table")
 }
 
-pub fn outflows_table(budget: &crate::ynab::Budget) -> TableView {
+fn outflows_table(budget: &crate::ynab::Budget) -> TableView {
     let outflows = budget
         .reimbursables()
         .iter()
@@ -90,19 +90,70 @@ fn txn_table(
             c.align(cursive::align::HAlign::Right).width(10)
         })
         .default_column(TxnColumn::Date)
+        .on_submit(move |s, _, _| {
+            let total_outflow = s
+                .call_on_id("outflows_table", |v: &mut TxnTableView| -> i64 {
+                    v.borrow_items()
+                        .iter()
+                        .filter(|t| t.selected)
+                        .map(|t| t.amount)
+                        .sum()
+                })
+                .unwrap();
+            let total_inflow = s
+                .call_on_id("inflows_table", |v: &mut TxnTableView| -> i64 {
+                    v.borrow_items()
+                        .iter()
+                        .filter(|t| t.selected)
+                        .map(|t| t.amount)
+                        .sum()
+                })
+                .unwrap();
+            let total_amount = total_outflow + total_inflow;
+            if total_amount == 0 {
+                s.add_layer(cursive::views::Dialog::info(
+                    "success, sum is zero!",
+                ))
+            } else {
+                s.add_layer(cursive::views::Dialog::info(format!(
+                    "failed, sum is {}",
+                    total_amount
+                )))
+            }
+        })
         .with_id(id);
     table.get_mut().set_items(txns);
     let view =
         cursive::views::OnEventView::new(table).on_event(' ', move |s| {
-            s.call_on(
-                &cursive::view::Selector::Id(id),
-                |v: &mut TxnTableView| {
-                    if let Some(idx) = v.item() {
-                        let txn = v.borrow_item_mut(idx).unwrap();
-                        txn.selected = !txn.selected;
-                    }
-                },
-            );
+            s.call_on_id(&id, |v: &mut TxnTableView| {
+                if let Some(idx) = v.item() {
+                    let txn = v.borrow_item_mut(idx).unwrap();
+                    txn.selected = !txn.selected;
+                }
+            });
         });
     TableView { view }
+}
+
+pub fn txn_tables(budget: &crate::ynab::Budget) -> impl cursive::view::View {
+    let mut layout = cursive::views::LinearLayout::vertical();
+
+    let inflows_table = inflows_table(&budget);
+    layout.add_child(crate::views::vi_view(
+        cursive::views::CircularFocus::wrap_arrows(
+            cursive::views::BoxView::with_min_height(
+                std::cmp::min(std::cmp::max(inflows_table.len(), 1), 5) + 2,
+                cursive::views::BoxView::with_full_width(inflows_table),
+            ),
+        ),
+    ));
+
+    let outflows_table = outflows_table(&budget);
+    layout.add_child(crate::views::vi_view(
+        cursive::views::CircularFocus::wrap_arrows(
+            cursive::views::BoxView::with_full_screen(outflows_table),
+        ),
+    ));
+
+    layout
 }
