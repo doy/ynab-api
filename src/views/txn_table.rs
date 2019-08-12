@@ -6,6 +6,7 @@ enum TxnColumn {
     Date,
     Payee,
     Amount,
+    TotalAmount,
 }
 
 type TxnTableView =
@@ -53,6 +54,13 @@ impl cursive_table_view::TableViewItem<TxnColumn>
             TxnColumn::Date => self.date.clone(),
             TxnColumn::Payee => self.payee.clone(),
             TxnColumn::Amount => crate::ynab::format_amount(self.amount),
+            TxnColumn::TotalAmount => {
+                if self.amount == self.total_amount {
+                    "".to_string()
+                } else {
+                    crate::ynab::format_amount(self.total_amount)
+                }
+            }
         }
     }
 
@@ -65,6 +73,7 @@ impl cursive_table_view::TableViewItem<TxnColumn>
             TxnColumn::Date => self.date.cmp(&other.date),
             TxnColumn::Payee => self.payee.cmp(&other.payee),
             TxnColumn::Amount => self.amount.cmp(&other.amount),
+            TxnColumn::TotalAmount => self.amount.cmp(&other.total_amount),
         }
     }
 }
@@ -98,6 +107,9 @@ fn txn_table(
         .column(TxnColumn::Date, "Date", |c| c.width(10))
         .column(TxnColumn::Payee, "Payee", |c| c)
         .column(TxnColumn::Amount, "Amount", |c| {
+            c.align(cursive::align::HAlign::Right).width(10)
+        })
+        .column(TxnColumn::TotalAmount, "", |c| {
             c.align(cursive::align::HAlign::Right).width(10)
         })
         .default_column(TxnColumn::Date)
