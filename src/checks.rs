@@ -1,9 +1,9 @@
-pub fn run_checks(budget: &super::ynab::Budget) {
+pub fn run_checks(budget: &crate::ynab::Budget) {
     check_reconciled(budget);
     check_has_inflows(budget);
 }
 
-fn check_reconciled(budget: &super::ynab::Budget) {
+fn check_reconciled(budget: &crate::ynab::Budget) {
     let reconciled_amount: i64 = budget
         .reimbursables()
         .iter()
@@ -13,13 +13,13 @@ fn check_reconciled(budget: &super::ynab::Budget) {
     if reconciled_amount != 0 {
         eprintln!(
             "reconciled reimbursables don't sum to $0.00: ${}",
-            super::ynab::format_amount(reconciled_amount)
+            crate::ynab::format_amount(reconciled_amount)
         );
         std::process::exit(1);
     }
 }
 
-fn check_has_inflows(budget: &super::ynab::Budget) {
+fn check_has_inflows(budget: &crate::ynab::Budget) {
     let txns = budget
         .reimbursables()
         .iter()
