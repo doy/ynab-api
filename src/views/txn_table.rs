@@ -154,6 +154,35 @@ fn txn_table(
                     txn.selected = !txn.selected;
                 }
             });
+
+            let outflow = s
+                .call_on_id("outflows_table", |v: &mut TxnTableView| -> i64 {
+                    v.borrow_items()
+                        .iter()
+                        .filter(|t| t.selected)
+                        .map(|t| t.amount)
+                        .sum()
+                })
+                .unwrap();
+            let inflow = s
+                .call_on_id("inflows_table", |v: &mut TxnTableView| -> i64 {
+                    v.borrow_items()
+                        .iter()
+                        .filter(|t| t.selected)
+                        .map(|t| t.amount)
+                        .sum()
+                })
+                .unwrap();
+            let amount = outflow + inflow;
+            s.call_on_id(
+                "selected_total",
+                |v: &mut cursive::views::TextView| {
+                    v.set_content(format!(
+                        "Selected: {}",
+                        crate::ynab::format_amount(amount)
+                    ));
+                },
+            );
         });
     TableView { view }
 }
@@ -161,9 +190,15 @@ fn txn_table(
 pub fn txn_tables(budget: &crate::ynab::Budget) -> impl cursive::view::View {
     let mut layout = cursive::views::LinearLayout::vertical();
 
+    layout.add_child(
+        cursive::views::TextView::new("Selected: $0.00")
+            .h_align(cursive::align::HAlign::Right)
+            .with_id("selected_total"),
+    );
+
     let mut inflows_table = inflows_table(&budget);
     layout.add_child(cursive::views::TextView::new(format!(
-        "\nInflows: {} ({} transactions)",
+        "Inflows: {} ({} transactions)",
         crate::ynab::format_amount(inflows_table.amount()),
         inflows_table.len()
     )));
@@ -176,9 +211,11 @@ pub fn txn_tables(budget: &crate::ynab::Budget) -> impl cursive::view::View {
         ),
     ));
 
+    layout.add_child(cursive::views::TextView::new(" "));
+
     let mut outflows_table = outflows_table(&budget);
     layout.add_child(cursive::views::TextView::new(format!(
-        "\nOutflows: {} ({} transactions)",
+        "Outflows: {} ({} transactions)",
         crate::ynab::format_amount(outflows_table.amount()),
         outflows_table.len()
     )));
