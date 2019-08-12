@@ -63,7 +63,7 @@ impl Budget {
                         .iter()
                         .flat_map(|payee_id| payee_map.get(payee_id).cloned())
                         .next()
-                        .unwrap_or_else(|| "(none)".to_string());
+                        .unwrap_or_else(|| "".to_string());
                     let reimbursed = if let Some(color) = &t.flag_color {
                         color == "green"
                     } else {
@@ -105,7 +105,7 @@ impl Budget {
                                     payee_map.get(payee_id).cloned()
                                 })
                                 .next()
-                                .unwrap_or_else(|| "(none)".to_string())
+                                .unwrap_or_else(|| "".to_string())
                         });
                     let reimbursed = if let Some(color) = &t.flag_color {
                         color == "green"
