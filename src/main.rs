@@ -1,11 +1,18 @@
 mod checks;
 mod display;
+mod paths;
 mod views;
 mod ynab;
 
+use std::io::Read;
+
 fn main() {
-    let key = std::env::args().nth(1).unwrap();
-    let client = ynab::Client::new(&key);
+    let mut key = String::new();
+    std::fs::File::open(paths::api_key())
+        .unwrap()
+        .read_to_string(&mut key)
+        .unwrap();
+    let client = ynab::Client::new(&key.trim());
     let budget = client.default_budget();
 
     checks::run_checks(&budget);

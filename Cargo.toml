@@ -8,4 +8,5 @@ edition = "2018"
 cursive = "0.12"
 # cursive = { version = "0.12", default-features = false, features = ["crossterm-backend"] }
 cursive_table_view = "0.10"
+directories = "2.0"
 ynab-api = { path = "ynab-api" }
