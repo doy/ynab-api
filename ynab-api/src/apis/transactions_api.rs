@@ -34,8 +34,8 @@ pub trait TransactionsApi {
     fn get_transactions_by_account(&self, budget_id: &str, account_id: &str, since_date: String, _type: &str, last_knowledge_of_server: i64) -> Result<::models::TransactionsResponse, Error>;
     fn get_transactions_by_category(&self, budget_id: &str, category_id: &str, since_date: String, _type: &str, last_knowledge_of_server: i64) -> Result<::models::HybridTransactionsResponse, Error>;
     fn get_transactions_by_payee(&self, budget_id: &str, payee_id: &str, since_date: String, _type: &str, last_knowledge_of_server: i64) -> Result<::models::HybridTransactionsResponse, Error>;
-    fn update_transaction(&self, budget_id: &str, transaction_id: &str, data: ::models::SaveTransactionWrapper) -> Result<::models::TransactionResponse, Error>;
-    fn update_transactions(&self, budget_id: &str, data: ::models::SaveTransactionsWrapper) -> Result<::models::SaveTransactionsResponse, Error>;
+    fn update_transaction(&self, budget_id: &str, transaction_id: &str, data: ::models::UpdateTransactionWrapper) -> Result<::models::TransactionResponse, Error>;
+    fn update_transactions(&self, budget_id: &str, data: ::models::UpdateTransactionsWrapper) -> Result<::models::UpdateTransactionsResponse, Error>;
 }
 
 impl TransactionsApi for TransactionsApiClient {
@@ -202,7 +202,7 @@ impl TransactionsApi for TransactionsApiClient {
         Ok(client.execute(req)?.error_for_status()?.json()?)
     }
 
-    fn update_transaction(&self, budget_id: &str, transaction_id: &str, data: ::models::SaveTransactionWrapper) -> Result<::models::TransactionResponse, Error> {
+    fn update_transaction(&self, budget_id: &str, transaction_id: &str, data: ::models::UpdateTransactionWrapper) -> Result<::models::TransactionResponse, Error> {
         let configuration: &configuration::Configuration = self.configuration.borrow();
         let client = &configuration.client;
 
@@ -228,7 +228,7 @@ impl TransactionsApi for TransactionsApiClient {
         Ok(client.execute(req)?.error_for_status()?.json()?)
     }
 
-    fn update_transactions(&self, budget_id: &str, data: ::models::SaveTransactionsWrapper) -> Result<::models::SaveTransactionsResponse, Error> {
+    fn update_transactions(&self, budget_id: &str, data: ::models::UpdateTransactionsWrapper) -> Result<::models::UpdateTransactionsResponse, Error> {
         let configuration: &configuration::Configuration = self.configuration.borrow();
         let client = &configuration.client;
 

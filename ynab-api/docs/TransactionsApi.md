@@ -272,7 +272,7 @@ Name | Type | Description  | Notes
  **ctx** | **context.Context** | context containing the authentication | nil if no authentication
   **budget_id** | **String**| The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | 
   **transaction_id** | **String**| The id of the transaction | 
-  **data** | [**SaveTransactionWrapper**](SaveTransactionWrapper.md)| The transaction to update | 
+  **data** | [**UpdateTransactionWrapper**](UpdateTransactionWrapper.md)| The transaction to update | 
 
 ### Return type
 
@@ -292,7 +292,7 @@ Name | Type | Description  | Notes
 
 ## update_transactions
 
-> ::models::SaveTransactionsResponse update_transactions(ctx, budget_id, data)
+> ::models::UpdateTransactionsResponse update_transactions(ctx, budget_id, data)
 Update multiple transactions
 
 Updates multiple transactions, by 'id' or 'import_id'.
@@ -304,11 +304,11 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **ctx** | **context.Context** | context containing the authentication | nil if no authentication
   **budget_id** | **String**| The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | 
-  **data** | [**SaveTransactionsWrapper**](SaveTransactionsWrapper.md)| The transactions to update.  Optionally, transaction 'id' value(s) can be specified as null and an 'import_id' value can be provided which will allow transaction(s) to updated by their import_id. | 
+  **data** | [**UpdateTransactionsWrapper**](UpdateTransactionsWrapper.md)| The transactions to update.  Optionally, transaction 'id' value(s) can be specified as null and an 'import_id' value can be provided which will allow transaction(s) to updated by their import_id. | 
 
 ### Return type
 
-[**::models::SaveTransactionsResponse**](SaveTransactionsResponse.md)
+[**::models::UpdateTransactionsResponse**](UpdateTransactionsResponse.md)
 
 ### Authorization
 

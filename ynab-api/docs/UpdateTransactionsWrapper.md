@@ -1,0 +1,12 @@
+# UpdateTransactionsWrapper
+
+## Properties
+
+Name | Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+**transaction** | [***::models::UpdateTransaction**](UpdateTransaction.md) |  | [optional] 
+**transactions** | [**Vec<::models::UpdateTransaction>**](UpdateTransaction.md) |  | [optional] 
+
+[[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
+
+
