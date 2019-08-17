@@ -60,78 +60,88 @@ impl Budget {
             panic!("no categories found")
         };
 
-        let mut reimbursables = vec![];
+        let mut payee_map = std::collections::HashMap::new();
         if let Some(payees) = &budget.payees {
-            let mut payee_map = std::collections::HashMap::new();
             for p in payees {
                 payee_map.insert(p.id.clone(), p.name.clone());
             }
-            let payee_map = payee_map;
-
-            let mut transaction_map = std::collections::HashMap::new();
-            if let Some(transactions) = &budget.transactions {
-                for t in transactions {
-                    transaction_map.insert(t.id.clone(), t);
-
-                    if let Some(category_id) = &t.category_id {
-                        if category_id != &reimbursables_id {
-                            continue;
-                        }
-                    } else {
-                        continue;
-                    }
-
-                    let payee = t
-                        .payee_id
-                        .iter()
-                        .map(|payee_id| payee_map.get(payee_id).cloned())
-                        .next()
-                        .unwrap_or(None);
-
-                    let mut txn =
-                        super::transaction::Transaction::from_transaction(t);
-                    txn.payee = payee;
-                    reimbursables.push(txn);
-                }
-            }
-            let transaction_map = transaction_map;
-
-            if let Some(subtransactions) = &budget.subtransactions {
-                for st in subtransactions {
-                    if let Some(category_id) = &st.category_id {
-                        if category_id != &reimbursables_id {
-                            continue;
-                        }
-                    } else {
-                        continue;
-                    }
-
-                    let t = transaction_map[&st.transaction_id];
-                    let payee = st
-                        .payee_id
-                        .iter()
-                        .map(|payee_id| payee_map.get(payee_id).cloned())
-                        .next()
-                        .unwrap_or_else(|| {
-                            t.payee_id
-                                .iter()
-                                .map(|payee_id| {
-                                    payee_map.get(payee_id).cloned()
-                                })
-                                .next()
-                                .unwrap_or(None)
-                        });
-
-                    let mut txn =
-                        super::transaction::Transaction::from_sub_transaction(
-                            t, st,
-                        );
-                    txn.payee = payee;
-                    reimbursables.push(txn);
-                }
-            }
         } else {
             panic!("no payees?");
+        }
+        let payee_map = payee_map;
+
+        let mut account_map = std::collections::HashMap::new();
+        if let Some(accounts) = &budget.accounts {
+            for a in accounts {
+                account_map.insert(a.id.clone(), a.name.clone());
+            }
+        }
+
+        let mut reimbursables = vec![];
+
+        let mut transaction_map = std::collections::HashMap::new();
+        if let Some(transactions) = &budget.transactions {
+            for t in transactions {
+                transaction_map.insert(t.id.clone(), t);
+
+                if let Some(category_id) = &t.category_id {
+                    if category_id != &reimbursables_id {
+                        continue;
+                    }
+                } else {
+                    continue;
+                }
+
+                let payee = t
+                    .payee_id
+                    .iter()
+                    .map(|payee_id| payee_map.get(payee_id).cloned())
+                    .next()
+                    .unwrap_or(None);
+                let account = account_map.get(&t.account_id).cloned();
+
+                let mut txn =
+                    super::transaction::Transaction::from_transaction(t);
+                txn.payee = payee;
+                txn.account = account;
+                reimbursables.push(txn);
+            }
+        }
+        let transaction_map = transaction_map;
+
+        if let Some(subtransactions) = &budget.subtransactions {
+            for st in subtransactions {
+                if let Some(category_id) = &st.category_id {
+                    if category_id != &reimbursables_id {
+                        continue;
+                    }
+                } else {
+                    continue;
+                }
+
+                let t = transaction_map[&st.transaction_id];
+                let payee = st
+                    .payee_id
+                    .iter()
+                    .map(|payee_id| payee_map.get(payee_id).cloned())
+                    .next()
+                    .unwrap_or_else(|| {
+                        t.payee_id
+                            .iter()
+                            .map(|payee_id| payee_map.get(payee_id).cloned())
+                            .next()
+                            .unwrap_or(None)
+                    });
+                let account = account_map.get(&t.account_id).cloned();
+
+                let mut txn =
+                    super::transaction::Transaction::from_sub_transaction(
+                        t, st,
+                    );
+                txn.payee = payee;
+                txn.account = account;
+                reimbursables.push(txn);
+            }
         }
 
         reimbursables.sort_by_cached_key(|t| t.date.clone());

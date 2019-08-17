@@ -4,6 +4,7 @@ use cursive::view::{Identifiable, ViewWrapper};
 enum TxnColumn {
     Selected,
     Date,
+    Account,
     Payee,
     Amount,
     TotalAmount,
@@ -52,6 +53,9 @@ impl cursive_table_view::TableViewItem<TxnColumn>
                 }
             }
             TxnColumn::Date => self.date.clone(),
+            TxnColumn::Account => {
+                self.account.clone().unwrap_or_else(|| "".to_string())
+            }
             TxnColumn::Payee => {
                 self.payee.clone().unwrap_or_else(|| "".to_string())
             }
@@ -73,6 +77,7 @@ impl cursive_table_view::TableViewItem<TxnColumn>
         match column {
             TxnColumn::Selected => std::cmp::Ordering::Equal,
             TxnColumn::Date => self.date.cmp(&other.date),
+            TxnColumn::Account => self.account.cmp(&other.account),
             TxnColumn::Payee => self.payee.cmp(&other.payee),
             TxnColumn::Amount => self.amount.cmp(&other.amount),
             TxnColumn::TotalAmount => self.amount.cmp(&other.total_amount),
@@ -107,6 +112,7 @@ fn txn_table(
     let mut table = cursive_table_view::TableView::new()
         .column(TxnColumn::Selected, "Sel", |c| c.width(3))
         .column(TxnColumn::Date, "Date", |c| c.width(10))
+        .column(TxnColumn::Account, "Account", |c| c.width(15))
         .column(TxnColumn::Payee, "Payee", |c| c)
         .column(TxnColumn::Amount, "Amount", |c| {
             c.align(cursive::align::HAlign::Right).width(10)

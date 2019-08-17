@@ -12,6 +12,7 @@ pub struct Transaction {
     pub category_id: Option<String>,
     pub import_id: Option<String>,
 
+    pub account: Option<String>,
     pub payee: Option<String>,
     pub total_amount: i64,
     pub reimbursed: bool,
@@ -40,6 +41,7 @@ impl Transaction {
             category_id: t.category_id.clone(),
             import_id: t.import_id.clone(),
 
+            account: None,
             payee: None,
             total_amount: t.amount,
             reimbursed,
@@ -69,6 +71,7 @@ impl Transaction {
             category_id: t.category_id.clone(),
             import_id: t.import_id.clone(),
 
+            account: None,
             payee: None,
             total_amount: t.amount,
             reimbursed,
