@@ -13,7 +13,7 @@ fn main() {
         .read_to_string(&mut key)
         .unwrap();
     let client = ynab::Client::new(&key.trim());
-    let budget = client.default_budget();
+    let budget = client.into_default_budget();
 
     checks::run_checks(&budget);
 
@@ -32,6 +32,7 @@ fn main() {
 
     layout.add_child(views::txn_tables(&budget));
 
+    app.set_user_data(budget);
     app.add_fullscreen_layer(layout);
     app.run();
 }

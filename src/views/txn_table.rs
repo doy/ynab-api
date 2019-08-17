@@ -52,7 +52,9 @@ impl cursive_table_view::TableViewItem<TxnColumn>
                 }
             }
             TxnColumn::Date => self.date.clone(),
-            TxnColumn::Payee => self.payee.clone(),
+            TxnColumn::Payee => {
+                self.payee.clone().unwrap_or_else(|| "".to_string())
+            }
             TxnColumn::Amount => crate::ynab::format_amount(self.amount),
             TxnColumn::TotalAmount => {
                 if self.amount == self.total_amount {
@@ -114,33 +116,47 @@ fn txn_table(
         })
         .default_column(TxnColumn::Date)
         .on_submit(move |s, _, _| {
-            let total_outflow = s
-                .call_on_id("outflows_table", |v: &mut TxnTableView| -> i64 {
+            let outflows: Vec<_> = s
+                .call_on_id("outflows_table", |v: &mut TxnTableView| {
                     v.borrow_items()
                         .iter()
                         .filter(|t| t.selected)
-                        .map(|t| t.amount)
-                        .sum()
+                        .cloned()
+                        .collect()
                 })
                 .unwrap();
-            let total_inflow = s
-                .call_on_id("inflows_table", |v: &mut TxnTableView| -> i64 {
+            let inflows: Vec<_> = s
+                .call_on_id("inflows_table", |v: &mut TxnTableView| {
                     v.borrow_items()
                         .iter()
                         .filter(|t| t.selected)
-                        .map(|t| t.amount)
-                        .sum()
+                        .cloned()
+                        .collect()
                 })
                 .unwrap();
+            let total_outflow: i64 = outflows.iter().map(|t| t.amount).sum();
+            let total_inflow: i64 = inflows.iter().map(|t| t.amount).sum();
             let total_amount = total_outflow + total_inflow;
             if total_amount == 0 {
-                s.add_layer(cursive::views::Dialog::info(
-                    "success, sum is zero!",
-                ))
+                let budget: &mut crate::ynab::Budget = s.user_data().unwrap();
+                let txns: Vec<_> =
+                    outflows.iter().chain(inflows.iter()).collect();
+                let err = budget.reconcile_transactions(&txns);
+                if let Some(err) = err {
+                    s.add_layer(cursive::views::Dialog::info(format!(
+                        "Error: {}",
+                        err
+                    )))
+                } else {
+                    s.add_layer(cursive::views::Dialog::info(format!(
+                        "Successfully updated {} transactions",
+                        txns.len()
+                    )))
+                }
             } else {
                 s.add_layer(cursive::views::Dialog::info(format!(
-                    "failed, sum is {}",
-                    total_amount
+                    "Selected amount is {}, must be 0",
+                    crate::ynab::format_amount(total_amount)
                 )))
             }
         })

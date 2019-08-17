@@ -15,7 +15,7 @@ impl Client {
         }
     }
 
-    pub fn default_budget(&self) -> super::budget::Budget {
+    pub fn into_default_budget(self) -> super::budget::Budget {
         let budgets =
             self.api.budgets_api().get_budgets().unwrap().data.budgets;
         let budget = budgets.iter().next().unwrap();
@@ -26,6 +26,22 @@ impl Client {
             .unwrap()
             .data
             .budget;
-        super::budget::Budget::new(full_budget)
+        super::budget::Budget::new(self, full_budget)
+    }
+
+    pub fn update_transactions(
+        &self,
+        budget_id: &str,
+        transactions: ynab_api::models::UpdateTransactionsWrapper,
+    ) -> Option<String> {
+        let res = self
+            .api
+            .transactions_api()
+            .update_transactions(budget_id, transactions);
+        if let Err(e) = res {
+            Some(format!("{:?}", e))
+        } else {
+            None
+        }
     }
 }

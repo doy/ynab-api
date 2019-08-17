@@ -1,12 +1,17 @@
 pub struct Budget {
+    client: super::client::Client,
     budget: ynab_api::models::BudgetDetail,
     reimbursables: Vec<super::transaction::Transaction>,
 }
 
 impl Budget {
-    pub fn new(budget: ynab_api::models::BudgetDetail) -> Self {
+    pub fn new(
+        client: super::client::Client,
+        budget: ynab_api::models::BudgetDetail,
+    ) -> Self {
         let reimbursables = Self::get_reimbursables(&budget);
         Self {
+            client,
             budget,
             reimbursables,
         }
@@ -22,6 +27,24 @@ impl Budget {
 
     pub fn reimbursables(&self) -> &[super::transaction::Transaction] {
         &self.reimbursables
+    }
+
+    pub fn reconcile_transactions(
+        &self,
+        txns: &[&super::transaction::Transaction],
+    ) -> Option<String> {
+        let mut to_update =
+            ynab_api::models::UpdateTransactionsWrapper::new();
+        to_update.transactions = Some(
+            txns.iter()
+                .map(|t| {
+                    let mut ut = t.to_update_transaction();
+                    ut.flag_color = Some("green".to_string());
+                    ut
+                })
+                .collect(),
+        );
+        self.client.update_transactions(&self.budget.id, to_update)
     }
 
     fn get_reimbursables(
@@ -61,23 +84,14 @@ impl Budget {
                     let payee = t
                         .payee_id
                         .iter()
-                        .flat_map(|payee_id| payee_map.get(payee_id).cloned())
+                        .map(|payee_id| payee_map.get(payee_id).cloned())
                         .next()
-                        .unwrap_or_else(|| "".to_string());
-                    let reimbursed = if let Some(color) = &t.flag_color {
-                        color == "green"
-                    } else {
-                        false
-                    };
+                        .unwrap_or(None);
 
-                    reimbursables.push(super::transaction::Transaction {
-                        date: t.date.clone(),
-                        payee,
-                        amount: t.amount,
-                        total_amount: t.amount,
-                        reimbursed,
-                        selected: false,
-                    })
+                    let mut txn =
+                        super::transaction::Transaction::from_transaction(t);
+                    txn.payee = payee;
+                    reimbursables.push(txn);
                 }
             }
             let transaction_map = transaction_map;
@@ -96,31 +110,24 @@ impl Budget {
                     let payee = st
                         .payee_id
                         .iter()
-                        .flat_map(|payee_id| payee_map.get(payee_id).cloned())
+                        .map(|payee_id| payee_map.get(payee_id).cloned())
                         .next()
                         .unwrap_or_else(|| {
                             t.payee_id
                                 .iter()
-                                .flat_map(|payee_id| {
+                                .map(|payee_id| {
                                     payee_map.get(payee_id).cloned()
                                 })
                                 .next()
-                                .unwrap_or_else(|| "".to_string())
+                                .unwrap_or(None)
                         });
-                    let reimbursed = if let Some(color) = &t.flag_color {
-                        color == "green"
-                    } else {
-                        false
-                    };
 
-                    reimbursables.push(super::transaction::Transaction {
-                        date: t.date.clone(),
-                        payee,
-                        amount: st.amount,
-                        total_amount: t.amount,
-                        reimbursed,
-                        selected: false,
-                    })
+                    let mut txn =
+                        super::transaction::Transaction::from_sub_transaction(
+                            t, st,
+                        );
+                    txn.payee = payee;
+                    reimbursables.push(txn);
                 }
             }
         } else {
