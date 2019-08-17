@@ -284,9 +284,10 @@ pub fn txn_tables(budget: &crate::ynab::Budget) -> impl cursive::view::View {
 
     let mut inflows_table = inflows_table(&budget);
     layout.add_child(cursive::views::TextView::new(format!(
-        "Inflows: {} ({} transactions)",
+        "Inflows: {} ({} transaction{}",
         crate::ynab::format_amount(inflows_table.amount()),
-        inflows_table.len()
+        inflows_table.len(),
+        if inflows_table.len() == 1 { ") " } else { "s)" }
     )));
     layout.add_child(cursive::views::CircularFocus::wrap_arrows(
         cursive::views::BoxView::with_min_height(
@@ -299,9 +300,14 @@ pub fn txn_tables(budget: &crate::ynab::Budget) -> impl cursive::view::View {
 
     let mut outflows_table = outflows_table(&budget);
     layout.add_child(cursive::views::TextView::new(format!(
-        "Outflows: {} ({} transactions)",
+        "Outflows: {} ({} transaction{}",
         crate::ynab::format_amount(outflows_table.amount()),
-        outflows_table.len()
+        outflows_table.len(),
+        if outflows_table.len() == 1 {
+            ") "
+        } else {
+            "s)"
+        }
     )));
     layout.add_child(cursive::views::CircularFocus::wrap_arrows(
         cursive::views::BoxView::with_full_screen(outflows_table),
