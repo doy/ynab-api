@@ -233,9 +233,27 @@ fn txn_table(
             s.call_on_id(
                 "selected_total",
                 |v: &mut cursive::views::TextView| {
-                    v.set_content(format!(
-                        "Selected: {} ({} transaction{}",
-                        crate::ynab::format_amount(amount),
+                    let mut sstr =
+                        cursive::utils::markup::StyledString::plain(
+                            "Selected: ",
+                        );
+                    let color = if amount == 0
+                        && outflows.len() + inflows.len() != 0
+                    {
+                        cursive::theme::Color::Dark(
+                            cursive::theme::BaseColor::Green,
+                        )
+                    } else {
+                        cursive::theme::Color::TerminalDefault
+                    };
+                    sstr.append(
+                        cursive::utils::markup::StyledString::styled(
+                            crate::ynab::format_amount(amount),
+                            color,
+                        ),
+                    );
+                    sstr.append(format!(
+                        " ({} transaction{}",
                         outflows.len() + inflows.len(),
                         if outflows.len() + inflows.len() == 1 {
                             ") "
@@ -243,6 +261,7 @@ fn txn_table(
                             "s)"
                         }
                     ));
+                    v.set_content(sstr);
                 },
             );
         })
