@@ -8,7 +8,7 @@ pub fn theme() -> cursive::theme::Theme {
         cursive::theme::Color::TerminalDefault;
     cursive::theme::Theme {
         shadow: false,
-        borders: cursive::theme::BorderStyle::None,
+        borders: cursive::theme::BorderStyle::Simple,
         palette,
     }
 }

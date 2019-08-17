@@ -149,12 +149,9 @@ fn txn_table(
                     outflows.iter().chain(inflows.iter()).collect();
                 let err = budget.reconcile_transactions(&txns);
                 if let Some(err) = err {
-                    s.add_layer(cursive::views::Dialog::info(format!(
-                        "Error: {}",
-                        err
-                    )))
+                    s.add_layer(dialog(&format!("Error: {}", err)))
                 } else {
-                    s.add_layer(cursive::views::Dialog::info(format!(
+                    s.add_layer(dialog(&format!(
                         "Successfully updated {} transactions",
                         txns.len()
                     )));
@@ -192,7 +189,7 @@ fn txn_table(
                     .unwrap();
                 }
             } else {
-                s.add_layer(cursive::views::Dialog::info(format!(
+                s.add_layer(dialog(&format!(
                     "Selected amount is {}, must be 0",
                     crate::ynab::format_amount(total_amount)
                 )))
@@ -392,4 +389,8 @@ fn render_selected_total(s: &mut cursive::Cursive) {
         ));
         v.set_content(sstr);
     });
+}
+
+fn dialog(s: &str) -> impl cursive::view::View {
+    cursive::views::Panel::new(cursive::views::Dialog::info(s))
 }
