@@ -194,8 +194,8 @@ fn txn_table(
         })
         .with_id(id);
     table.get_mut().set_items(txns);
-    let view =
-        cursive::views::OnEventView::new(table).on_event(' ', move |s| {
+    let view = cursive::views::OnEventView::new(table)
+        .on_event(' ', move |s| {
             s.call_on_id(&id, |v: &mut TxnTableView| {
                 if let Some(idx) = v.item() {
                     let txn = v.borrow_item_mut(idx).unwrap();
@@ -231,6 +231,30 @@ fn txn_table(
                     ));
                 },
             );
+        })
+        .on_event('h', |s| {
+            s.on_event(cursive::event::Event::Key(cursive::event::Key::Left))
+        })
+        .on_event('j', |s| {
+            s.on_event(cursive::event::Event::Key(cursive::event::Key::Down))
+        })
+        .on_event('k', |s| {
+            s.on_event(cursive::event::Event::Key(cursive::event::Key::Up))
+        })
+        .on_event('l', |s| {
+            s.on_event(cursive::event::Event::Key(cursive::event::Key::Right))
+        })
+        .on_event('g', move |s| {
+            s.call_on_id(&id, |v: &mut TxnTableView| {
+                v.set_selected_row(0);
+            })
+            .unwrap();
+        })
+        .on_event('G', move |s| {
+            s.call_on_id(&id, |v: &mut TxnTableView| {
+                v.set_selected_row(v.len() - 1);
+            })
+            .unwrap();
         });
     TableView { view }
 }
@@ -250,12 +274,10 @@ pub fn txn_tables(budget: &crate::ynab::Budget) -> impl cursive::view::View {
         crate::ynab::format_amount(inflows_table.amount()),
         inflows_table.len()
     )));
-    layout.add_child(crate::views::vi_view(
-        cursive::views::CircularFocus::wrap_arrows(
-            cursive::views::BoxView::with_min_height(
-                std::cmp::min(std::cmp::max(inflows_table.len(), 1), 5) + 2,
-                cursive::views::BoxView::with_full_width(inflows_table),
-            ),
+    layout.add_child(cursive::views::CircularFocus::wrap_arrows(
+        cursive::views::BoxView::with_min_height(
+            std::cmp::min(std::cmp::max(inflows_table.len(), 1), 5) + 2,
+            cursive::views::BoxView::with_full_width(inflows_table),
         ),
     ));
 
@@ -267,10 +289,8 @@ pub fn txn_tables(budget: &crate::ynab::Budget) -> impl cursive::view::View {
         crate::ynab::format_amount(outflows_table.amount()),
         outflows_table.len()
     )));
-    layout.add_child(crate::views::vi_view(
-        cursive::views::CircularFocus::wrap_arrows(
-            cursive::views::BoxView::with_full_screen(outflows_table),
-        ),
+    layout.add_child(cursive::views::CircularFocus::wrap_arrows(
+        cursive::views::BoxView::with_full_screen(outflows_table),
     ));
 
     layout
