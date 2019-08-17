@@ -17,21 +17,21 @@ use serde_json::Value;
 pub struct TransactionDetailAllOf {
     #[serde(rename = "account_name")]
     pub account_name: String,
-    #[serde(rename = "payee_name")]
-    pub payee_name: String,
-    #[serde(rename = "category_name")]
-    pub category_name: String,
+    #[serde(rename = "payee_name", skip_serializing_if = "Option::is_none")]
+    pub payee_name: Option<String>,
+    #[serde(rename = "category_name", skip_serializing_if = "Option::is_none")]
+    pub category_name: Option<String>,
     /// If a split transaction, the subtransactions.
     #[serde(rename = "subtransactions")]
     pub subtransactions: Vec<::models::SubTransaction>,
 }
 
 impl TransactionDetailAllOf {
-    pub fn new(account_name: String, payee_name: String, category_name: String, subtransactions: Vec<::models::SubTransaction>) -> TransactionDetailAllOf {
+    pub fn new(account_name: String, subtransactions: Vec<::models::SubTransaction>) -> TransactionDetailAllOf {
         TransactionDetailAllOf {
             account_name: account_name,
-            payee_name: payee_name,
-            category_name: category_name,
+            payee_name: None,
+            category_name: None,
             subtransactions: subtransactions,
         }
     }

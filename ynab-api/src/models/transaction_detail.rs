@@ -57,17 +57,17 @@ pub struct TransactionDetail {
     pub deleted: bool,
     #[serde(rename = "account_name")]
     pub account_name: String,
-    #[serde(rename = "payee_name")]
-    pub payee_name: String,
-    #[serde(rename = "category_name")]
-    pub category_name: String,
+    #[serde(rename = "payee_name", skip_serializing_if = "Option::is_none")]
+    pub payee_name: Option<String>,
+    #[serde(rename = "category_name", skip_serializing_if = "Option::is_none")]
+    pub category_name: Option<String>,
     /// If a split transaction, the subtransactions.
     #[serde(rename = "subtransactions")]
     pub subtransactions: Vec<::models::SubTransaction>,
 }
 
 impl TransactionDetail {
-    pub fn new(id: String, date: String, amount: i64, cleared: String, approved: bool, account_id: String, deleted: bool, account_name: String, payee_name: String, category_name: String, subtransactions: Vec<::models::SubTransaction>) -> TransactionDetail {
+    pub fn new(id: String, date: String, amount: i64, cleared: String, approved: bool, account_id: String, deleted: bool, account_name: String, subtransactions: Vec<::models::SubTransaction>) -> TransactionDetail {
         TransactionDetail {
             id: id,
             date: date,
@@ -85,8 +85,8 @@ impl TransactionDetail {
             import_id: None,
             deleted: deleted,
             account_name: account_name,
-            payee_name: payee_name,
-            category_name: category_name,
+            payee_name: None,
+            category_name: None,
             subtransactions: subtransactions,
         }
     }

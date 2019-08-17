@@ -20,8 +20,8 @@ Name | Type | Description | Notes
 **import_id** | **String** | If the Transaction was imported, this field is a unique (by account) import identifier.  If this transaction was imported through File Based Import or Direct Import and not through the API, the import_id will have the format: 'YNAB:[milliunit_amount]:[iso_date]:[occurrence]'.  For example, a transaction dated 2015-12-30 in the amount of -$294.23 USD would have an import_id of 'YNAB:-294230:2015-12-30:1'.  If a second transaction on the same account was imported and had the same date and same amount, its import_id would be 'YNAB:-294230:2015-12-30:2'. | [optional] 
 **deleted** | **bool** | Whether or not the transaction has been deleted.  Deleted transactions will only be included in delta requests. | 
 **account_name** | **String** |  | 
-**payee_name** | **String** |  | 
-**category_name** | **String** |  | 
+**payee_name** | **String** |  | [optional] 
+**category_name** | **String** |  | [optional] 
 **subtransactions** | [**Vec<::models::SubTransaction>**](SubTransaction.md) | If a split transaction, the subtransactions. | 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
