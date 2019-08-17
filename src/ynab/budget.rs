@@ -17,6 +17,11 @@ impl Budget {
         }
     }
 
+    pub fn refresh(&mut self) {
+        self.budget = self.client.default_budget();
+        self.reimbursables = Self::get_reimbursables(&self.budget)
+    }
+
     pub fn name(&self) -> String {
         self.budget.name.clone()
     }

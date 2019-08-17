@@ -208,62 +208,7 @@ fn txn_table(
                     txn.selected = !txn.selected;
                 }
             });
-
-            let outflows: Vec<_> = s
-                .call_on_id("outflows_table", |v: &mut TxnTableView| {
-                    v.borrow_items()
-                        .iter()
-                        .filter(|t| t.selected)
-                        .map(|t| t.amount)
-                        .collect()
-                })
-                .unwrap();
-            let inflows: Vec<_> = s
-                .call_on_id("inflows_table", |v: &mut TxnTableView| {
-                    v.borrow_items()
-                        .iter()
-                        .filter(|t| t.selected)
-                        .map(|t| t.amount)
-                        .collect()
-                })
-                .unwrap();
-            let outflow: i64 = outflows.iter().sum();
-            let inflow: i64 = inflows.iter().sum();
-            let amount = outflow + inflow;
-            s.call_on_id(
-                "selected_total",
-                |v: &mut cursive::views::TextView| {
-                    let mut sstr =
-                        cursive::utils::markup::StyledString::plain(
-                            "Selected: ",
-                        );
-                    let color = if amount == 0
-                        && outflows.len() + inflows.len() != 0
-                    {
-                        cursive::theme::Color::Dark(
-                            cursive::theme::BaseColor::Green,
-                        )
-                    } else {
-                        cursive::theme::Color::TerminalDefault
-                    };
-                    sstr.append(
-                        cursive::utils::markup::StyledString::styled(
-                            crate::ynab::format_amount(amount),
-                            color,
-                        ),
-                    );
-                    sstr.append(format!(
-                        " ({} transaction{}",
-                        outflows.len() + inflows.len(),
-                        if outflows.len() + inflows.len() == 1 {
-                            ") "
-                        } else {
-                            "s)"
-                        }
-                    ));
-                    v.set_content(sstr);
-                },
-            );
+            render_selected_total(s);
         })
         .on_event('h', |s| {
             s.on_event(cursive::event::Event::Key(cursive::event::Key::Left))
@@ -288,6 +233,73 @@ fn txn_table(
                 v.set_selected_row(v.len() - 1);
             })
             .unwrap();
+        })
+        .on_event('r', move |s| {
+            let budget: &mut crate::ynab::Budget = s.user_data().unwrap();
+            budget.refresh();
+
+            let mut inflows: Vec<_> = budget
+                .reimbursables()
+                .iter()
+                .filter(|t| !t.reimbursed && t.amount > 0)
+                .cloned()
+                .collect();
+            s.call_on_id("inflows_table", |v: &mut TxnTableView| {
+                let selected: std::collections::HashSet<_> = v
+                    .borrow_items()
+                    .iter()
+                    .filter(|t| t.selected)
+                    .map(|t| t.id.clone())
+                    .collect();
+                let row = v
+                    .item()
+                    .and_then(|idx| v.borrow_item(idx).map(|t| t.id.clone()));
+                for mut t in inflows.iter_mut() {
+                    if selected.contains(&t.id) {
+                        t.selected = true;
+                    }
+                }
+                let idx = row
+                    .and_then(|id| inflows.iter().position(|t| t.id == id));
+                v.set_items(inflows);
+                if let Some(idx) = idx {
+                    v.set_selected_item(idx);
+                }
+            })
+            .unwrap();
+
+            let budget: &mut crate::ynab::Budget = s.user_data().unwrap();
+            let mut outflows: Vec<_> = budget
+                .reimbursables()
+                .iter()
+                .filter(|t| !t.reimbursed && t.amount <= 0)
+                .cloned()
+                .collect();
+            s.call_on_id("outflows_table", |v: &mut TxnTableView| {
+                let selected: std::collections::HashSet<_> = v
+                    .borrow_items()
+                    .iter()
+                    .filter(|t| t.selected)
+                    .map(|t| t.id.clone())
+                    .collect();
+                let row = v
+                    .item()
+                    .and_then(|idx| v.borrow_item(idx).map(|t| t.id.clone()));
+                for mut t in outflows.iter_mut() {
+                    if selected.contains(&t.id) {
+                        t.selected = true;
+                    }
+                }
+                let idx = row
+                    .and_then(|id| outflows.iter().position(|t| t.id == id));
+                v.set_items(outflows);
+                if let Some(idx) = idx {
+                    v.set_selected_item(idx);
+                }
+            })
+            .unwrap();
+
+            render_selected_total(s);
         });
     TableView { view }
 }
@@ -333,4 +345,51 @@ pub fn txn_tables(budget: &crate::ynab::Budget) -> impl cursive::view::View {
     ));
 
     layout
+}
+
+fn render_selected_total(s: &mut cursive::Cursive) {
+    let outflows: Vec<_> = s
+        .call_on_id("outflows_table", |v: &mut TxnTableView| {
+            v.borrow_items()
+                .iter()
+                .filter(|t| t.selected)
+                .map(|t| t.amount)
+                .collect()
+        })
+        .unwrap();
+    let inflows: Vec<_> = s
+        .call_on_id("inflows_table", |v: &mut TxnTableView| {
+            v.borrow_items()
+                .iter()
+                .filter(|t| t.selected)
+                .map(|t| t.amount)
+                .collect()
+        })
+        .unwrap();
+    let outflow: i64 = outflows.iter().sum();
+    let inflow: i64 = inflows.iter().sum();
+    let amount = outflow + inflow;
+    s.call_on_id("selected_total", |v: &mut cursive::views::TextView| {
+        let mut sstr =
+            cursive::utils::markup::StyledString::plain("Selected: ");
+        let color = if amount == 0 && outflows.len() + inflows.len() != 0 {
+            cursive::theme::Color::Dark(cursive::theme::BaseColor::Green)
+        } else {
+            cursive::theme::Color::TerminalDefault
+        };
+        sstr.append(cursive::utils::markup::StyledString::styled(
+            crate::ynab::format_amount(amount),
+            color,
+        ));
+        sstr.append(format!(
+            " ({} transaction{}",
+            outflows.len() + inflows.len(),
+            if outflows.len() + inflows.len() == 1 {
+                ") "
+            } else {
+                "s)"
+            }
+        ));
+        v.set_content(sstr);
+    });
 }

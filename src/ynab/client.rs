@@ -15,17 +15,20 @@ impl Client {
         }
     }
 
-    pub fn into_default_budget(self) -> super::budget::Budget {
+    pub fn default_budget(&self) -> ynab_api::models::BudgetDetail {
         let budgets =
             self.api.budgets_api().get_budgets().unwrap().data.budgets;
         let budget = budgets.iter().next().unwrap();
-        let full_budget = self
-            .api
+        self.api
             .budgets_api()
             .get_budget_by_id(&budget.id, 0)
             .unwrap()
             .data
-            .budget;
+            .budget
+    }
+
+    pub fn into_default_budget(self) -> super::budget::Budget {
+        let full_budget = self.default_budget();
         super::budget::Budget::new(self, full_budget)
     }
 
