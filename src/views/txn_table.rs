@@ -209,31 +209,39 @@ fn txn_table(
                 }
             });
 
-            let outflow = s
-                .call_on_id("outflows_table", |v: &mut TxnTableView| -> i64 {
+            let outflows: Vec<_> = s
+                .call_on_id("outflows_table", |v: &mut TxnTableView| {
                     v.borrow_items()
                         .iter()
                         .filter(|t| t.selected)
                         .map(|t| t.amount)
-                        .sum()
+                        .collect()
                 })
                 .unwrap();
-            let inflow = s
-                .call_on_id("inflows_table", |v: &mut TxnTableView| -> i64 {
+            let inflows: Vec<_> = s
+                .call_on_id("inflows_table", |v: &mut TxnTableView| {
                     v.borrow_items()
                         .iter()
                         .filter(|t| t.selected)
                         .map(|t| t.amount)
-                        .sum()
+                        .collect()
                 })
                 .unwrap();
+            let outflow: i64 = outflows.iter().sum();
+            let inflow: i64 = inflows.iter().sum();
             let amount = outflow + inflow;
             s.call_on_id(
                 "selected_total",
                 |v: &mut cursive::views::TextView| {
                     v.set_content(format!(
-                        "Selected: {}",
-                        crate::ynab::format_amount(amount)
+                        "Selected: {} ({} transaction{}",
+                        crate::ynab::format_amount(amount),
+                        outflows.len() + inflows.len(),
+                        if outflows.len() + inflows.len() == 1 {
+                            ") "
+                        } else {
+                            "s)"
+                        }
                     ));
                 },
             );
@@ -269,7 +277,7 @@ pub fn txn_tables(budget: &crate::ynab::Budget) -> impl cursive::view::View {
     let mut layout = cursive::views::LinearLayout::vertical();
 
     layout.add_child(
-        cursive::views::TextView::new("Selected: $0.00")
+        cursive::views::TextView::new("Selected: $0.00 (0 transactions)")
             .h_align(cursive::align::HAlign::Right)
             .with_id("selected_total"),
     );
