@@ -151,7 +151,39 @@ fn txn_table(
                     s.add_layer(cursive::views::Dialog::info(format!(
                         "Successfully updated {} transactions",
                         txns.len()
-                    )))
+                    )));
+                    s.call_on_id("outflows_table", |v: &mut TxnTableView| {
+                        let all_txns = v.borrow_items_mut();
+                        for id in txns.iter().map(|t| t.id.clone()) {
+                            if let Some(idx) =
+                                all_txns.iter().position(|t| t.id == id)
+                            {
+                                all_txns.remove(idx);
+                            }
+                        }
+                        if let Some(row) = v.row() {
+                            if row >= v.len() {
+                                v.set_selected_row(v.len() - 1);
+                            }
+                        }
+                    })
+                    .unwrap();
+                    s.call_on_id("inflows_table", |v: &mut TxnTableView| {
+                        let all_txns = v.borrow_items_mut();
+                        for id in txns.iter().map(|t| t.id.clone()) {
+                            if let Some(idx) =
+                                all_txns.iter().position(|t| t.id == id)
+                            {
+                                all_txns.remove(idx);
+                            }
+                        }
+                        if let Some(row) = v.row() {
+                            if row >= v.len() {
+                                v.set_selected_row(v.len() - 1);
+                            }
+                        }
+                    })
+                    .unwrap();
                 }
             } else {
                 s.add_layer(cursive::views::Dialog::info(format!(
