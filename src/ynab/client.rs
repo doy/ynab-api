@@ -19,8 +19,7 @@ impl Client {
         let budgets =
             self.api.budgets_api().get_budgets().unwrap().data.budgets;
         let budget = budgets.iter().next().unwrap();
-        self
-            .api
+        self.api
             .budgets_api()
             .get_budget_by_id(&budget.id, 0)
             .unwrap()
