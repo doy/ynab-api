@@ -1,5 +1,9 @@
 use cursive::view::Identifiable;
 
+const SELECTED_TOTAL_ID: &str = "selected_total";
+const INFLOWS_TABLE_ID: &str = "inflows_table";
+const OUTFLOWS_TABLE_ID: &str = "outflows_table";
+
 pub struct TxnTables {
     view: super::util::FullView<cursive::views::LinearLayout>,
 }
@@ -17,10 +21,17 @@ impl TxnTables {
         layout.add_child(
             cursive::views::TextView::new("Selected: $0.00 (0 transactions)")
                 .h_align(cursive::align::HAlign::Right)
-                .with_id("selected_total"),
+                .with_id(SELECTED_TOTAL_ID),
         );
 
-        let mut inflows_table = inflows_table(&budget);
+        let inflows = budget
+            .reimbursables()
+            .iter()
+            .filter(|t| !t.reimbursed && t.amount > 0)
+            .cloned()
+            .collect();
+        let mut inflows_table =
+            super::txn_table::TxnTable::new(inflows, INFLOWS_TABLE_ID);
         layout.add_child(cursive::views::TextView::new(format!(
             "Inflows: {} ({} transaction{}",
             crate::ynab::format_amount(inflows_table.amount()),
@@ -36,7 +47,14 @@ impl TxnTables {
 
         layout.add_child(cursive::views::TextView::new(" "));
 
-        let mut outflows_table = outflows_table(&budget);
+        let outflows = budget
+            .reimbursables()
+            .iter()
+            .filter(|t| !t.reimbursed && t.amount <= 0)
+            .cloned()
+            .collect();
+        let mut outflows_table =
+            super::txn_table::TxnTable::new(outflows, OUTFLOWS_TABLE_ID);
         layout.add_child(cursive::views::TextView::new(format!(
             "Outflows: {} ({} transaction{}",
             crate::ynab::format_amount(outflows_table.amount()),
@@ -55,26 +73,4 @@ impl TxnTables {
             view: cursive::views::OnEventView::new(layout.with_id(id)),
         }
     }
-}
-
-fn inflows_table(budget: &crate::ynab::Budget) -> super::txn_table::TxnTable {
-    let inflows = budget
-        .reimbursables()
-        .iter()
-        .filter(|t| !t.reimbursed && t.amount > 0)
-        .cloned()
-        .collect();
-    super::txn_table::TxnTable::new(inflows, "inflows_table")
-}
-
-fn outflows_table(
-    budget: &crate::ynab::Budget,
-) -> super::txn_table::TxnTable {
-    let outflows = budget
-        .reimbursables()
-        .iter()
-        .filter(|t| !t.reimbursed && t.amount <= 0)
-        .cloned()
-        .collect();
-    super::txn_table::TxnTable::new(outflows, "outflows_table")
 }
