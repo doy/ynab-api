@@ -24,6 +24,223 @@ impl cursive::view::ViewWrapper for TableView {
 }
 
 impl TableView {
+    pub fn new(
+        txns: Vec<crate::ynab::Transaction>,
+        id: &'static str,
+    ) -> Self {
+        let mut table = cursive_table_view::TableView::new()
+            .column(TxnColumn::Selected, "Sel", |c| c.width(3))
+            .column(TxnColumn::Date, "Date", |c| c.width(10))
+            .column(TxnColumn::Account, "Account", |c| c.width(15))
+            .column(TxnColumn::Payee, "Payee", |c| c)
+            .column(TxnColumn::Amount, "Amount", |c| {
+                c.align(cursive::align::HAlign::Right).width(10)
+            })
+            .column(TxnColumn::TotalAmount, "", |c| {
+                c.align(cursive::align::HAlign::Right).width(10)
+            })
+            .default_column(TxnColumn::Date)
+            .on_submit(move |s, _, _| {
+                let outflows: Vec<_> = s
+                    .call_on_id("outflows_table", |v: &mut TxnTableView| {
+                        v.borrow_items()
+                            .iter()
+                            .filter(|t| t.selected)
+                            .cloned()
+                            .collect()
+                    })
+                    .unwrap();
+                let inflows: Vec<_> = s
+                    .call_on_id("inflows_table", |v: &mut TxnTableView| {
+                        v.borrow_items()
+                            .iter()
+                            .filter(|t| t.selected)
+                            .cloned()
+                            .collect()
+                    })
+                    .unwrap();
+                let total_outflow: i64 =
+                    outflows.iter().map(|t| t.amount).sum();
+                let total_inflow: i64 =
+                    inflows.iter().map(|t| t.amount).sum();
+                let total_amount = total_outflow + total_inflow;
+                if total_amount == 0 {
+                    let budget: &mut crate::ynab::Budget =
+                        s.user_data().unwrap();
+                    let txns: Vec<_> =
+                        outflows.iter().chain(inflows.iter()).collect();
+                    let err = budget.reconcile_transactions(&txns);
+                    if let Some(err) = err {
+                        s.add_layer(dialog(&format!("Error: {}", err)))
+                    } else {
+                        s.add_layer(dialog(&format!(
+                            "Successfully updated {} transactions",
+                            txns.len()
+                        )));
+                        s.call_on_id(
+                            "outflows_table",
+                            |v: &mut TxnTableView| {
+                                let all_txns = v.borrow_items_mut();
+                                for id in txns.iter().map(|t| t.id.clone()) {
+                                    if let Some(idx) = all_txns
+                                        .iter()
+                                        .position(|t| t.id == id)
+                                    {
+                                        all_txns.remove(idx);
+                                    }
+                                }
+                                if let Some(row) = v.row() {
+                                    if row >= v.len() {
+                                        v.set_selected_row(v.len() - 1);
+                                    }
+                                }
+                            },
+                        )
+                        .unwrap();
+                        s.call_on_id(
+                            "inflows_table",
+                            |v: &mut TxnTableView| {
+                                let all_txns = v.borrow_items_mut();
+                                for id in txns.iter().map(|t| t.id.clone()) {
+                                    if let Some(idx) = all_txns
+                                        .iter()
+                                        .position(|t| t.id == id)
+                                    {
+                                        all_txns.remove(idx);
+                                    }
+                                }
+                                if let Some(row) = v.row() {
+                                    if row >= v.len() {
+                                        v.set_selected_row(v.len() - 1);
+                                    }
+                                }
+                            },
+                        )
+                        .unwrap();
+                    }
+                } else {
+                    s.add_layer(dialog(&format!(
+                        "Selected amount is {}, must be 0",
+                        crate::ynab::format_amount(total_amount)
+                    )))
+                }
+            })
+            .with_id(id);
+        table.get_mut().set_items(txns);
+        let view = cursive::views::OnEventView::new(table)
+            .on_event(' ', move |s| {
+                s.call_on_id(&id, |v: &mut TxnTableView| {
+                    if let Some(idx) = v.item() {
+                        let txn = v.borrow_item_mut(idx).unwrap();
+                        txn.selected = !txn.selected;
+                    }
+                });
+                render_selected_total(s);
+            })
+            .on_event('h', |s| {
+                s.on_event(cursive::event::Event::Key(
+                    cursive::event::Key::Left,
+                ))
+            })
+            .on_event('j', |s| {
+                s.on_event(cursive::event::Event::Key(
+                    cursive::event::Key::Down,
+                ))
+            })
+            .on_event('k', |s| {
+                s.on_event(cursive::event::Event::Key(
+                    cursive::event::Key::Up,
+                ))
+            })
+            .on_event('l', |s| {
+                s.on_event(cursive::event::Event::Key(
+                    cursive::event::Key::Right,
+                ))
+            })
+            .on_event('g', move |s| {
+                s.call_on_id(&id, |v: &mut TxnTableView| {
+                    v.set_selected_row(0);
+                })
+                .unwrap();
+            })
+            .on_event('G', move |s| {
+                s.call_on_id(&id, |v: &mut TxnTableView| {
+                    v.set_selected_row(v.len() - 1);
+                })
+                .unwrap();
+            })
+            .on_event('r', move |s| {
+                let budget: &mut crate::ynab::Budget = s.user_data().unwrap();
+                budget.refresh();
+
+                let mut inflows: Vec<_> = budget
+                    .reimbursables()
+                    .iter()
+                    .filter(|t| !t.reimbursed && t.amount > 0)
+                    .cloned()
+                    .collect();
+                s.call_on_id("inflows_table", |v: &mut TxnTableView| {
+                    let selected: std::collections::HashSet<_> = v
+                        .borrow_items()
+                        .iter()
+                        .filter(|t| t.selected)
+                        .map(|t| t.id.clone())
+                        .collect();
+                    let row = v.item().and_then(|idx| {
+                        v.borrow_item(idx).map(|t| t.id.clone())
+                    });
+                    for mut t in inflows.iter_mut() {
+                        if selected.contains(&t.id) {
+                            t.selected = true;
+                        }
+                    }
+                    let idx = row.and_then(|id| {
+                        inflows.iter().position(|t| t.id == id)
+                    });
+                    v.set_items(inflows);
+                    if let Some(idx) = idx {
+                        v.set_selected_item(idx);
+                    }
+                })
+                .unwrap();
+
+                let budget: &mut crate::ynab::Budget = s.user_data().unwrap();
+                let mut outflows: Vec<_> = budget
+                    .reimbursables()
+                    .iter()
+                    .filter(|t| !t.reimbursed && t.amount <= 0)
+                    .cloned()
+                    .collect();
+                s.call_on_id("outflows_table", |v: &mut TxnTableView| {
+                    let selected: std::collections::HashSet<_> = v
+                        .borrow_items()
+                        .iter()
+                        .filter(|t| t.selected)
+                        .map(|t| t.id.clone())
+                        .collect();
+                    let row = v.item().and_then(|idx| {
+                        v.borrow_item(idx).map(|t| t.id.clone())
+                    });
+                    for mut t in outflows.iter_mut() {
+                        if selected.contains(&t.id) {
+                            t.selected = true;
+                        }
+                    }
+                    let idx = row.and_then(|id| {
+                        outflows.iter().position(|t| t.id == id)
+                    });
+                    v.set_items(outflows);
+                    if let Some(idx) = idx {
+                        v.set_selected_item(idx);
+                    }
+                })
+                .unwrap();
+
+                render_selected_total(s);
+            });
+        TableView { view }
+    }
+
     pub fn len(&self) -> usize {
         self.view.get_inner().with_view(|v| v.len()).unwrap()
     }
@@ -92,7 +309,7 @@ fn inflows_table(budget: &crate::ynab::Budget) -> TableView {
         .filter(|t| !t.reimbursed && t.amount > 0)
         .cloned()
         .collect();
-    txn_table(inflows, "inflows_table")
+    TableView::new(inflows, "inflows_table")
 }
 
 fn outflows_table(budget: &crate::ynab::Budget) -> TableView {
@@ -102,203 +319,7 @@ fn outflows_table(budget: &crate::ynab::Budget) -> TableView {
         .filter(|t| !t.reimbursed && t.amount <= 0)
         .cloned()
         .collect();
-    txn_table(outflows, "outflows_table")
-}
-
-fn txn_table(
-    txns: Vec<crate::ynab::Transaction>,
-    id: &'static str,
-) -> TableView {
-    let mut table = cursive_table_view::TableView::new()
-        .column(TxnColumn::Selected, "Sel", |c| c.width(3))
-        .column(TxnColumn::Date, "Date", |c| c.width(10))
-        .column(TxnColumn::Account, "Account", |c| c.width(15))
-        .column(TxnColumn::Payee, "Payee", |c| c)
-        .column(TxnColumn::Amount, "Amount", |c| {
-            c.align(cursive::align::HAlign::Right).width(10)
-        })
-        .column(TxnColumn::TotalAmount, "", |c| {
-            c.align(cursive::align::HAlign::Right).width(10)
-        })
-        .default_column(TxnColumn::Date)
-        .on_submit(move |s, _, _| {
-            let outflows: Vec<_> = s
-                .call_on_id("outflows_table", |v: &mut TxnTableView| {
-                    v.borrow_items()
-                        .iter()
-                        .filter(|t| t.selected)
-                        .cloned()
-                        .collect()
-                })
-                .unwrap();
-            let inflows: Vec<_> = s
-                .call_on_id("inflows_table", |v: &mut TxnTableView| {
-                    v.borrow_items()
-                        .iter()
-                        .filter(|t| t.selected)
-                        .cloned()
-                        .collect()
-                })
-                .unwrap();
-            let total_outflow: i64 = outflows.iter().map(|t| t.amount).sum();
-            let total_inflow: i64 = inflows.iter().map(|t| t.amount).sum();
-            let total_amount = total_outflow + total_inflow;
-            if total_amount == 0 {
-                let budget: &mut crate::ynab::Budget = s.user_data().unwrap();
-                let txns: Vec<_> =
-                    outflows.iter().chain(inflows.iter()).collect();
-                let err = budget.reconcile_transactions(&txns);
-                if let Some(err) = err {
-                    s.add_layer(dialog(&format!("Error: {}", err)))
-                } else {
-                    s.add_layer(dialog(&format!(
-                        "Successfully updated {} transactions",
-                        txns.len()
-                    )));
-                    s.call_on_id("outflows_table", |v: &mut TxnTableView| {
-                        let all_txns = v.borrow_items_mut();
-                        for id in txns.iter().map(|t| t.id.clone()) {
-                            if let Some(idx) =
-                                all_txns.iter().position(|t| t.id == id)
-                            {
-                                all_txns.remove(idx);
-                            }
-                        }
-                        if let Some(row) = v.row() {
-                            if row >= v.len() {
-                                v.set_selected_row(v.len() - 1);
-                            }
-                        }
-                    })
-                    .unwrap();
-                    s.call_on_id("inflows_table", |v: &mut TxnTableView| {
-                        let all_txns = v.borrow_items_mut();
-                        for id in txns.iter().map(|t| t.id.clone()) {
-                            if let Some(idx) =
-                                all_txns.iter().position(|t| t.id == id)
-                            {
-                                all_txns.remove(idx);
-                            }
-                        }
-                        if let Some(row) = v.row() {
-                            if row >= v.len() {
-                                v.set_selected_row(v.len() - 1);
-                            }
-                        }
-                    })
-                    .unwrap();
-                }
-            } else {
-                s.add_layer(dialog(&format!(
-                    "Selected amount is {}, must be 0",
-                    crate::ynab::format_amount(total_amount)
-                )))
-            }
-        })
-        .with_id(id);
-    table.get_mut().set_items(txns);
-    let view = cursive::views::OnEventView::new(table)
-        .on_event(' ', move |s| {
-            s.call_on_id(&id, |v: &mut TxnTableView| {
-                if let Some(idx) = v.item() {
-                    let txn = v.borrow_item_mut(idx).unwrap();
-                    txn.selected = !txn.selected;
-                }
-            });
-            render_selected_total(s);
-        })
-        .on_event('h', |s| {
-            s.on_event(cursive::event::Event::Key(cursive::event::Key::Left))
-        })
-        .on_event('j', |s| {
-            s.on_event(cursive::event::Event::Key(cursive::event::Key::Down))
-        })
-        .on_event('k', |s| {
-            s.on_event(cursive::event::Event::Key(cursive::event::Key::Up))
-        })
-        .on_event('l', |s| {
-            s.on_event(cursive::event::Event::Key(cursive::event::Key::Right))
-        })
-        .on_event('g', move |s| {
-            s.call_on_id(&id, |v: &mut TxnTableView| {
-                v.set_selected_row(0);
-            })
-            .unwrap();
-        })
-        .on_event('G', move |s| {
-            s.call_on_id(&id, |v: &mut TxnTableView| {
-                v.set_selected_row(v.len() - 1);
-            })
-            .unwrap();
-        })
-        .on_event('r', move |s| {
-            let budget: &mut crate::ynab::Budget = s.user_data().unwrap();
-            budget.refresh();
-
-            let mut inflows: Vec<_> = budget
-                .reimbursables()
-                .iter()
-                .filter(|t| !t.reimbursed && t.amount > 0)
-                .cloned()
-                .collect();
-            s.call_on_id("inflows_table", |v: &mut TxnTableView| {
-                let selected: std::collections::HashSet<_> = v
-                    .borrow_items()
-                    .iter()
-                    .filter(|t| t.selected)
-                    .map(|t| t.id.clone())
-                    .collect();
-                let row = v
-                    .item()
-                    .and_then(|idx| v.borrow_item(idx).map(|t| t.id.clone()));
-                for mut t in inflows.iter_mut() {
-                    if selected.contains(&t.id) {
-                        t.selected = true;
-                    }
-                }
-                let idx = row
-                    .and_then(|id| inflows.iter().position(|t| t.id == id));
-                v.set_items(inflows);
-                if let Some(idx) = idx {
-                    v.set_selected_item(idx);
-                }
-            })
-            .unwrap();
-
-            let budget: &mut crate::ynab::Budget = s.user_data().unwrap();
-            let mut outflows: Vec<_> = budget
-                .reimbursables()
-                .iter()
-                .filter(|t| !t.reimbursed && t.amount <= 0)
-                .cloned()
-                .collect();
-            s.call_on_id("outflows_table", |v: &mut TxnTableView| {
-                let selected: std::collections::HashSet<_> = v
-                    .borrow_items()
-                    .iter()
-                    .filter(|t| t.selected)
-                    .map(|t| t.id.clone())
-                    .collect();
-                let row = v
-                    .item()
-                    .and_then(|idx| v.borrow_item(idx).map(|t| t.id.clone()));
-                for mut t in outflows.iter_mut() {
-                    if selected.contains(&t.id) {
-                        t.selected = true;
-                    }
-                }
-                let idx = row
-                    .and_then(|id| outflows.iter().position(|t| t.id == id));
-                v.set_items(outflows);
-                if let Some(idx) = idx {
-                    v.set_selected_item(idx);
-                }
-            })
-            .unwrap();
-
-            render_selected_total(s);
-        });
-    TableView { view }
+    TableView::new(outflows, "outflows_table")
 }
 
 pub fn txn_tables(budget: &crate::ynab::Budget) -> impl cursive::view::View {
