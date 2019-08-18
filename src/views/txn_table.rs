@@ -1,4 +1,4 @@
-use cursive::view::{Identifiable, ViewWrapper};
+use cursive::view::{Identifiable, View, ViewWrapper};
 
 #[derive(Clone, Copy, Eq, Hash, PartialEq)]
 enum TxnColumn {
@@ -137,38 +137,58 @@ impl TableView {
                 });
                 render_selected_total(s);
             })
-            .on_event('h', |s| {
-                s.on_event(cursive::event::Event::Key(
-                    cursive::event::Key::Left,
-                ))
-            })
-            .on_event('j', |s| {
-                s.on_event(cursive::event::Event::Key(
-                    cursive::event::Key::Down,
-                ))
-            })
-            .on_event('k', |s| {
-                s.on_event(cursive::event::Event::Key(
-                    cursive::event::Key::Up,
-                ))
-            })
-            .on_event('l', |s| {
-                s.on_event(cursive::event::Event::Key(
-                    cursive::event::Key::Right,
-                ))
-            })
-            .on_event('g', move |s| {
-                s.call_on_id(&id, |v: &mut TxnTableView| {
-                    v.set_selected_row(0);
-                })
-                .unwrap();
-            })
-            .on_event('G', move |s| {
-                s.call_on_id(&id, |v: &mut TxnTableView| {
-                    v.set_selected_row(v.len() - 1);
-                })
-                .unwrap();
-            })
+            .on_event_inner(
+                'h',
+                |v: &mut cursive::views::IdView<TxnTableView>, _| {
+                    v.on_event(cursive::event::Event::Key(
+                        cursive::event::Key::Left,
+                    ));
+                    None
+                },
+            )
+            .on_event_inner(
+                'j',
+                |v: &mut cursive::views::IdView<TxnTableView>, _| {
+                    v.on_event(cursive::event::Event::Key(
+                        cursive::event::Key::Down,
+                    ));
+                    None
+                },
+            )
+            .on_event_inner(
+                'k',
+                |v: &mut cursive::views::IdView<TxnTableView>, _| {
+                    v.on_event(cursive::event::Event::Key(
+                        cursive::event::Key::Up,
+                    ));
+                    None
+                },
+            )
+            .on_event_inner(
+                'l',
+                |v: &mut cursive::views::IdView<TxnTableView>, _| {
+                    v.on_event(cursive::event::Event::Key(
+                        cursive::event::Key::Right,
+                    ));
+                    None
+                },
+            )
+            .on_event_inner(
+                'g',
+                |v: &mut cursive::views::IdView<TxnTableView>, _| {
+                    v.get_mut().set_selected_row(0);
+                    None
+                },
+            )
+            .on_event_inner(
+                'G',
+                |v: &mut cursive::views::IdView<TxnTableView>, _| {
+                    let mut v = v.get_mut();
+                    let last_row = v.len() - 1;
+                    v.set_selected_row(last_row);
+                    None
+                },
+            )
             .on_event('r', move |s| {
                 let budget: &mut crate::ynab::Budget = s.user_data().unwrap();
                 budget.refresh();
