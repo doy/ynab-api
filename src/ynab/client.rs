@@ -19,17 +19,13 @@ impl Client {
         let budgets =
             self.api.budgets_api().get_budgets().unwrap().data.budgets;
         let budget = budgets.iter().next().unwrap();
-        self.api
+        self
+            .api
             .budgets_api()
             .get_budget_by_id(&budget.id, 0)
             .unwrap()
             .data
             .budget
-    }
-
-    pub fn into_default_budget(self) -> super::budget::Budget {
-        let full_budget = self.default_budget();
-        super::budget::Budget::new(self, full_budget)
     }
 
     pub fn update_transactions(

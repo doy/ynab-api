@@ -1,4 +1,3 @@
-mod checks;
 mod display;
 mod paths;
 mod views;
@@ -12,10 +11,8 @@ fn main() {
         .unwrap()
         .read_to_string(&mut key)
         .unwrap();
-    let client = ynab::Client::new(&key.trim());
-    let budget = client.into_default_budget();
-
-    checks::run_checks(&budget);
+    let key = key.trim();
+    let budget = ynab::Budget::new(&key);
 
     let mut app = cursive::Cursive::default();
     let term_width = app.screen_size().x;

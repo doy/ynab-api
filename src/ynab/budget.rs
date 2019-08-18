@@ -1,33 +1,39 @@
 pub struct Budget {
     client: super::client::Client,
-    budget: ynab_api::models::BudgetDetail,
+    id: String,
+    name: String,
     reimbursables: Vec<super::transaction::Transaction>,
 }
 
 impl Budget {
-    pub fn new(
-        client: super::client::Client,
-        budget: ynab_api::models::BudgetDetail,
-    ) -> Self {
+    pub fn new(key: &str) -> Self {
+        let client = super::client::Client::new(key);
+        let budget = client.default_budget();
         let reimbursables = Self::get_reimbursables(&budget);
-        Self {
+        let budget = Self {
             client,
-            budget,
+            id: budget.id.clone(),
+            name: budget.name.clone(),
             reimbursables,
-        }
+        };
+        budget.check();
+        budget
     }
 
     pub fn refresh(&mut self) {
-        self.budget = self.client.default_budget();
-        self.reimbursables = Self::get_reimbursables(&self.budget)
+        let budget = self.client.default_budget();
+        self.id = budget.id.clone();
+        self.name = budget.name.clone();
+        self.reimbursables = Self::get_reimbursables(&budget);
+        self.check();
     }
 
     pub fn name(&self) -> String {
-        self.budget.name.clone()
+        self.name.clone()
     }
 
     pub fn id(&self) -> String {
-        self.budget.id.clone()
+        self.id.clone()
     }
 
     pub fn reimbursables(&self) -> &[super::transaction::Transaction] {
@@ -49,7 +55,7 @@ impl Budget {
                 })
                 .collect(),
         );
-        self.client.update_transactions(&self.budget.id, to_update)
+        self.client.update_transactions(&self.id, to_update)
     }
 
     fn get_reimbursables(
@@ -151,5 +157,38 @@ impl Budget {
 
         reimbursables.sort_by_cached_key(|t| t.date.clone());
         reimbursables
+    }
+
+    fn check(&self) {
+        self.check_reconciled();
+        self.check_has_inflows();
+    }
+
+    fn check_reconciled(&self) {
+        let reconciled_amount: i64 = self
+            .reimbursables()
+            .iter()
+            .filter(|t| t.reimbursed)
+            .map(|t| t.amount)
+            .sum();
+        if reconciled_amount != 0 {
+            eprintln!(
+                "reconciled reimbursables don't sum to $0.00: ${}",
+                crate::ynab::format_amount(reconciled_amount)
+            );
+            std::process::exit(1);
+        }
+    }
+
+    fn check_has_inflows(&self) {
+        let txns = self
+            .reimbursables()
+            .iter()
+            .filter(|t| !t.reimbursed && t.amount > 0)
+            .count();
+        if txns == 0 {
+            eprintln!("no transactions to reconcile");
+            std::process::exit(1);
+        }
     }
 }
