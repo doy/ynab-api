@@ -18,7 +18,7 @@ fn main() {
     checks::run_checks(&budget);
 
     let mut app = cursive::Cursive::default();
-    let cursive::XY { x: term_width, .. } = app.screen_size();
+    let term_width = app.screen_size().x;
     app.set_theme(display::theme());
     app.add_global_callback('q', |s| s.quit());
 
