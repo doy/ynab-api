@@ -106,7 +106,7 @@ impl TxnTables {
                 let total_outflow: i64 =
                     outflows.iter().map(|t| t.amount).sum();
                 let total_amount = total_inflow + total_outflow;
-                if total_amount == 0 {
+                if total_amount == 0 && (inflows.len() + outflows.len() > 0) {
                     let budget: &mut crate::ynab::Budget =
                         s.user_data().unwrap();
                     let txns: Vec<_> =
@@ -169,7 +169,7 @@ impl TxnTables {
                         )
                         .unwrap();
                     }
-                } else {
+                } else if total_amount != 0 {
                     s.add_layer(super::util::dialog(&format!(
                         "Selected amount is {}, must be 0",
                         crate::ynab::format_amount(total_amount)
