@@ -27,7 +27,7 @@ fn main() {
         "=".repeat(term_width),
     )));
 
-    layout.add_child(views::txn_tables(&budget));
+    layout.add_child(views::TxnTables::new("txn_tables", &budget));
 
     app.set_user_data(budget);
     app.add_fullscreen_layer(layout);

@@ -1,7 +1,7 @@
 use cursive::view::{Identifiable, View, ViewWrapper};
 
 #[derive(Clone, Copy, Eq, Hash, PartialEq)]
-enum TxnColumn {
+pub enum TxnColumn {
     Selected,
     Date,
     Account,
@@ -12,18 +12,15 @@ enum TxnColumn {
 
 type TxnTableView =
     cursive_table_view::TableView<crate::ynab::Transaction, TxnColumn>;
-struct TableView {
-    view: cursive::views::OnEventView<cursive::views::IdView<TxnTableView>>,
+pub struct TxnTable {
+    view: super::util::FullView<TxnTableView>,
 }
 
-impl cursive::view::ViewWrapper for TableView {
-    cursive::wrap_impl!(
-        self.view:
-            cursive::views::OnEventView<cursive::views::IdView<TxnTableView>>
-    );
+impl cursive::view::ViewWrapper for TxnTable {
+    cursive::wrap_impl!(self.view: super::util::FullView<TxnTableView>);
 }
 
-impl TableView {
+impl TxnTable {
     pub fn new(
         txns: Vec<crate::ynab::Transaction>,
         id: &'static str,
@@ -71,9 +68,12 @@ impl TableView {
                         outflows.iter().chain(inflows.iter()).collect();
                     let err = budget.reconcile_transactions(&txns);
                     if let Some(err) = err {
-                        s.add_layer(dialog(&format!("Error: {}", err)))
+                        s.add_layer(super::util::dialog(&format!(
+                            "Error: {}",
+                            err
+                        )))
                     } else {
-                        s.add_layer(dialog(&format!(
+                        s.add_layer(super::util::dialog(&format!(
                             "Successfully updated {} transactions",
                             txns.len()
                         )));
@@ -119,7 +119,7 @@ impl TableView {
                         .unwrap();
                     }
                 } else {
-                    s.add_layer(dialog(&format!(
+                    s.add_layer(super::util::dialog(&format!(
                         "Selected amount is {}, must be 0",
                         crate::ynab::format_amount(total_amount)
                     )))
@@ -258,7 +258,7 @@ impl TableView {
 
                 render_selected_total(s);
             });
-        TableView { view }
+        TxnTable { view }
     }
 
     pub fn len(&self) -> usize {
@@ -322,69 +322,6 @@ impl cursive_table_view::TableViewItem<TxnColumn>
     }
 }
 
-fn inflows_table(budget: &crate::ynab::Budget) -> TableView {
-    let inflows = budget
-        .reimbursables()
-        .iter()
-        .filter(|t| !t.reimbursed && t.amount > 0)
-        .cloned()
-        .collect();
-    TableView::new(inflows, "inflows_table")
-}
-
-fn outflows_table(budget: &crate::ynab::Budget) -> TableView {
-    let outflows = budget
-        .reimbursables()
-        .iter()
-        .filter(|t| !t.reimbursed && t.amount <= 0)
-        .cloned()
-        .collect();
-    TableView::new(outflows, "outflows_table")
-}
-
-pub fn txn_tables(budget: &crate::ynab::Budget) -> impl cursive::view::View {
-    let mut layout = cursive::views::LinearLayout::vertical();
-
-    layout.add_child(
-        cursive::views::TextView::new("Selected: $0.00 (0 transactions)")
-            .h_align(cursive::align::HAlign::Right)
-            .with_id("selected_total"),
-    );
-
-    let mut inflows_table = inflows_table(&budget);
-    layout.add_child(cursive::views::TextView::new(format!(
-        "Inflows: {} ({} transaction{}",
-        crate::ynab::format_amount(inflows_table.amount()),
-        inflows_table.len(),
-        if inflows_table.len() == 1 { ") " } else { "s)" }
-    )));
-    layout.add_child(cursive::views::CircularFocus::wrap_arrows(
-        cursive::views::BoxView::with_min_height(
-            std::cmp::min(std::cmp::max(inflows_table.len(), 1), 5) + 2,
-            cursive::views::BoxView::with_full_width(inflows_table),
-        ),
-    ));
-
-    layout.add_child(cursive::views::TextView::new(" "));
-
-    let mut outflows_table = outflows_table(&budget);
-    layout.add_child(cursive::views::TextView::new(format!(
-        "Outflows: {} ({} transaction{}",
-        crate::ynab::format_amount(outflows_table.amount()),
-        outflows_table.len(),
-        if outflows_table.len() == 1 {
-            ") "
-        } else {
-            "s)"
-        }
-    )));
-    layout.add_child(cursive::views::CircularFocus::wrap_arrows(
-        cursive::views::BoxView::with_full_screen(outflows_table),
-    ));
-
-    layout
-}
-
 fn render_selected_total(s: &mut cursive::Cursive) {
     let outflows: Vec<_> = s
         .call_on_id("outflows_table", |v: &mut TxnTableView| {
@@ -430,8 +367,4 @@ fn render_selected_total(s: &mut cursive::Cursive) {
         ));
         v.set_content(sstr);
     });
-}
-
-fn dialog(s: &str) -> impl cursive::view::View {
-    cursive::views::Panel::new(cursive::views::Dialog::info(s))
 }
