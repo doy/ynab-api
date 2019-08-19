@@ -1,13 +1,17 @@
 [package]
-name = "ynab-reimbursements"
-version = "0.1.0"
-authors = ["Jesse Luehrs <doy@tozt.net>"]
-edition = "2018"
+name = "ynab-api"
+version = "1.0.0"
+authors = ["Jesse Luehrs <doy@tozt.net>", "You Need A Budget, LLC"]
+description = "OpenAPI-generated API bindings for the YNAB API"
+repository = "https://git.tozt.net/ynab-api"
+license = "Apache-2.0"
+
 
 [dependencies]
-cursive = "0.12"
-# cursive = { version = "0.12", default-features = false, features = ["crossterm-backend"] }
-cursive_table_view = "0.10"
-directories = "2.0"
-snafu = "0.4"
-ynab-api = { path = "ynab-api" }
+serde = "^1.0"
+serde_derive = "^1.0"
+serde_json = "^1.0"
+url = "1.5"
+reqwest = "~0.9"
+
+[dev-dependencies]

@@ -1,15 +1,32 @@
 #!/bin/sh
 set -eu
 
+metadata=$(cat <<'EOF'
+authors = ["Jesse Luehrs <doy@tozt.net>", "You Need A Budget, LLC"]
+description = "OpenAPI-generated API bindings for the YNAB API"
+repository = "https://git.tozt.net/ynab-api"
+license = "Apache-2.0"
+EOF
+)
+
+extra_readme=$(cat <<'EOF'
+Jesse Luehrs <doy@tozt.net>
+
+Based on the OpenAPI spec found at https://github.com/ynab/ynab-sdk-js/blob/master/spec-v1-swagger.json by You Need A Budget, LLC
+EOF
+)
+
 cd "$(dirname "$0")/.."
 
-rm -rf ynab-api
-mkdir ynab-api
-cd ynab-api
+rm -rf src docs
 
 openapi-generator-cli \
     generate \
     -g rust \
     --library reqwest \
-    -i ../data/spec-v1-swagger.json
-sed -i 's/^name = "openapi"$/name = "ynab-api"/' Cargo.toml
+    -i data/spec-v1-swagger.json \
+    -c data/openapi.yaml \
+    --package-name ynab-api
+
+echo "$metadata" | perl -i -nlE'/^author/ ? print <STDIN> : print' Cargo.toml
+echo "$extra_readme" >> README.md
