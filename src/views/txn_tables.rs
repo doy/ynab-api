@@ -121,7 +121,7 @@ fn submit(s: &mut cursive::Cursive) {
         let budget: &mut crate::ynab::Budget = s.user_data().unwrap();
         let txns: Vec<_> = inflows.iter().chain(outflows.iter()).collect();
         let err = budget.reconcile_transactions(&txns);
-        if let Some(err) = err {
+        if let Err(err) = err {
             s.add_layer(super::util::dialog(&format!("Error: {}", err)))
         } else {
             s.add_layer(super::util::dialog(&format!(
@@ -183,7 +183,11 @@ fn submit(s: &mut cursive::Cursive) {
 
 fn refresh(s: &mut cursive::Cursive) {
     let budget: &mut crate::ynab::Budget = s.user_data().unwrap();
-    budget.refresh();
+    let err = budget.refresh();
+    if let Err(err) = err {
+        s.add_layer(super::util::dialog(&format!("Error: {}", err)));
+        return;
+    }
 
     let mut inflows: Vec<_> = budget
         .reimbursables()

@@ -1,35 +1,37 @@
-mod display;
+mod app;
 mod paths;
 mod views;
 mod ynab;
 
-use std::io::Read;
+use snafu::ResultExt;
+
+#[derive(Debug, snafu::Snafu)]
+pub enum Error {
+    #[snafu(display("failed to get api key: {}", source))]
+    GetApiKey { source: crate::paths::Error },
+
+    #[snafu(display("failed to load budget: {}", source))]
+    LoadBudget { source: crate::ynab::BudgetError },
+}
+
+pub type Result<T> = std::result::Result<T, Error>;
+
+fn run() -> Result<()> {
+    let key = paths::read_api_key().context(GetApiKey)?;
+    let budget = ynab::Budget::new(&key).context(LoadBudget)?;
+
+    let mut app = app::App::new(budget);
+    app.run();
+
+    Ok(())
+}
 
 fn main() {
-    let mut key = String::new();
-    std::fs::File::open(paths::api_key())
-        .unwrap()
-        .read_to_string(&mut key)
-        .unwrap();
-    let key = key.trim();
-    let budget = ynab::Budget::new(&key);
-
-    let mut app = cursive::Cursive::default();
-    let term_width = app.screen_size().x;
-    app.set_theme(display::theme());
-    app.add_global_callback('q', |s| s.quit());
-
-    let mut layout = cursive::views::LinearLayout::vertical();
-    layout.add_child(cursive::views::TextView::new(format!(
-        "Budget: {} ({})\n{}",
-        budget.name(),
-        budget.id(),
-        "=".repeat(term_width),
-    )));
-
-    layout.add_child(views::TxnTables::new("txn_tables", &budget));
-
-    app.set_user_data(budget);
-    app.add_fullscreen_layer(layout);
-    app.run();
+    match run() {
+        Ok(_) => {}
+        Err(e) => {
+            eprintln!("ynab-reimbursements: {}", e);
+            std::process::exit(1);
+        }
+    }
 }

@@ -9,4 +9,5 @@ cursive = "0.12"
 # cursive = { version = "0.12", default-features = false, features = ["crossterm-backend"] }
 cursive_table_view = "0.10"
 directories = "2.0"
+snafu = "0.4"
 ynab-api = { path = "ynab-api" }

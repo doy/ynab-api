@@ -1,3 +1,19 @@
+use snafu::{OptionExt, ResultExt};
+
+#[derive(Debug, snafu::Snafu)]
+pub enum Error {
+    #[snafu(display("couldn't get default budget: {}", source))]
+    GetBudget { source: super::client::Error },
+
+    #[snafu(display("couldn't update transactions: {}", source))]
+    UpdateTransactions { source: super::client::Error },
+
+    #[snafu(display("couldn't find the reimbursables category"))]
+    FindReimbursablesCategory,
+}
+
+pub type Result<T> = std::result::Result<T, Error>;
+
 pub struct Budget {
     client: super::client::Client,
     id: String,
@@ -6,10 +22,10 @@ pub struct Budget {
 }
 
 impl Budget {
-    pub fn new(key: &str) -> Self {
+    pub fn new(key: &str) -> Result<Self> {
         let client = super::client::Client::new(key);
-        let budget = client.default_budget();
-        let reimbursables = Self::get_reimbursables(&budget);
+        let budget = client.default_budget().context(GetBudget)?;
+        let reimbursables = Self::get_reimbursables(&budget)?;
         let budget = Self {
             client,
             id: budget.id.clone(),
@@ -17,15 +33,17 @@ impl Budget {
             reimbursables,
         };
         budget.check();
-        budget
+        Ok(budget)
     }
 
-    pub fn refresh(&mut self) {
-        let budget = self.client.default_budget();
+    #[must_use]
+    pub fn refresh(&mut self) -> Result<()> {
+        let budget = self.client.default_budget().context(GetBudget)?;
         self.id = budget.id.clone();
         self.name = budget.name.clone();
-        self.reimbursables = Self::get_reimbursables(&budget);
+        self.reimbursables = Self::get_reimbursables(&budget)?;
         self.check();
+        Ok(())
     }
 
     pub fn name(&self) -> String {
@@ -40,10 +58,11 @@ impl Budget {
         &self.reimbursables
     }
 
+    #[must_use]
     pub fn reconcile_transactions(
         &self,
         txns: &[&super::transaction::Transaction],
-    ) -> Option<String> {
+    ) -> Result<()> {
         let mut to_update =
             ynab_api::models::UpdateTransactionsWrapper::new();
         to_update.transactions = Some(
@@ -55,29 +74,31 @@ impl Budget {
                 })
                 .collect(),
         );
-        self.client.update_transactions(&self.id, to_update)
+        self.client
+            .update_transactions(&self.id, to_update)
+            .context(UpdateTransactions)?;
+        Ok(())
     }
 
     fn get_reimbursables(
         budget: &ynab_api::models::BudgetDetail,
-    ) -> Vec<super::transaction::Transaction> {
-        let reimbursables_id = if let Some(categories) = &budget.categories {
-            categories
-                .iter()
-                .find(|c| c.name == "Reimbursables")
-                .map(|c| c.id.clone())
-                .unwrap()
-        } else {
-            panic!("no categories found")
-        };
+    ) -> Result<Vec<super::transaction::Transaction>> {
+        let reimbursables_id = budget
+            .categories
+            .as_ref()
+            .and_then(|categories| {
+                categories
+                    .iter()
+                    .find(|c| c.name == "Reimbursables")
+                    .map(|c| c.id.clone())
+            })
+            .context(FindReimbursablesCategory)?;
 
         let mut payee_map = std::collections::HashMap::new();
         if let Some(payees) = &budget.payees {
             for p in payees {
                 payee_map.insert(p.id.clone(), p.name.clone());
             }
-        } else {
-            panic!("no payees?");
         }
         let payee_map = payee_map;
 
@@ -87,6 +108,7 @@ impl Budget {
                 account_map.insert(a.id.clone(), a.name.clone());
             }
         }
+        let account_map = account_map;
 
         let mut reimbursables = vec![];
 
@@ -156,7 +178,7 @@ impl Budget {
         }
 
         reimbursables.sort_by_cached_key(|t| t.date.clone());
-        reimbursables
+        Ok(reimbursables)
     }
 
     fn check(&self) {
