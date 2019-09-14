@@ -9,18 +9,15 @@
  */
 
 
-#[allow(unused_imports)]
-use serde_json::Value;
 
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct ScheduledTransactionResponseData {
     #[serde(rename = "scheduled_transaction")]
-    pub scheduled_transaction: ::models::ScheduledTransactionDetail,
+    pub scheduled_transaction: crate::models::ScheduledTransactionDetail,
 }
 
 impl ScheduledTransactionResponseData {
-    pub fn new(scheduled_transaction: ::models::ScheduledTransactionDetail) -> ScheduledTransactionResponseData {
+    pub fn new(scheduled_transaction: crate::models::ScheduledTransactionDetail) -> ScheduledTransactionResponseData {
         ScheduledTransactionResponseData {
             scheduled_transaction: scheduled_transaction,
         }

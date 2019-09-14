@@ -13,7 +13,7 @@ use std::borrow::Borrow;
 
 use reqwest;
 
-use super::{Error, configuration, urlencode};
+use super::{Error, configuration};
 
 pub struct CategoriesApiClient {
     configuration: Rc<configuration::Configuration>,
@@ -28,18 +28,18 @@ impl CategoriesApiClient {
 }
 
 pub trait CategoriesApi {
-    fn get_categories(&self, budget_id: &str, last_knowledge_of_server: i64) -> Result<::models::CategoriesResponse, Error>;
-    fn get_category_by_id(&self, budget_id: &str, category_id: &str) -> Result<::models::CategoryResponse, Error>;
-    fn get_month_category_by_id(&self, budget_id: &str, month: String, category_id: &str) -> Result<::models::CategoryResponse, Error>;
-    fn update_month_category(&self, budget_id: &str, month: String, category_id: &str, data: ::models::SaveMonthCategoryWrapper) -> Result<::models::SaveCategoryResponse, Error>;
+    fn get_categories(&self, budget_id: &str, last_knowledge_of_server: i64) -> Result<crate::models::CategoriesResponse, Error>;
+    fn get_category_by_id(&self, budget_id: &str, category_id: &str) -> Result<crate::models::CategoryResponse, Error>;
+    fn get_month_category_by_id(&self, budget_id: &str, month: String, category_id: &str) -> Result<crate::models::CategoryResponse, Error>;
+    fn update_month_category(&self, budget_id: &str, month: String, category_id: &str, data: crate::models::SaveMonthCategoryWrapper) -> Result<crate::models::SaveCategoryResponse, Error>;
 }
 
 impl CategoriesApi for CategoriesApiClient {
-    fn get_categories(&self, budget_id: &str, last_knowledge_of_server: i64) -> Result<::models::CategoriesResponse, Error> {
+    fn get_categories(&self, budget_id: &str, last_knowledge_of_server: i64) -> Result<crate::models::CategoriesResponse, Error> {
         let configuration: &configuration::Configuration = self.configuration.borrow();
         let client = &configuration.client;
 
-        let uri_str = format!("{}/budgets/{budget_id}/categories", configuration.base_path, budget_id=urlencode(budget_id));
+        let uri_str = format!("{}/budgets/{budget_id}/categories", configuration.base_path, budget_id=crate::apis::urlencode(budget_id));
         let mut req_builder = client.get(uri_str.as_str());
 
         req_builder = req_builder.query(&[("last_knowledge_of_server", &last_knowledge_of_server.to_string())]);
@@ -61,11 +61,11 @@ impl CategoriesApi for CategoriesApiClient {
         Ok(client.execute(req)?.error_for_status()?.json()?)
     }
 
-    fn get_category_by_id(&self, budget_id: &str, category_id: &str) -> Result<::models::CategoryResponse, Error> {
+    fn get_category_by_id(&self, budget_id: &str, category_id: &str) -> Result<crate::models::CategoryResponse, Error> {
         let configuration: &configuration::Configuration = self.configuration.borrow();
         let client = &configuration.client;
 
-        let uri_str = format!("{}/budgets/{budget_id}/categories/{category_id}", configuration.base_path, budget_id=urlencode(budget_id), category_id=urlencode(category_id));
+        let uri_str = format!("{}/budgets/{budget_id}/categories/{category_id}", configuration.base_path, budget_id=crate::apis::urlencode(budget_id), category_id=crate::apis::urlencode(category_id));
         let mut req_builder = client.get(uri_str.as_str());
 
         if let Some(ref user_agent) = configuration.user_agent {
@@ -86,11 +86,11 @@ impl CategoriesApi for CategoriesApiClient {
         Ok(client.execute(req)?.error_for_status()?.json()?)
     }
 
-    fn get_month_category_by_id(&self, budget_id: &str, month: String, category_id: &str) -> Result<::models::CategoryResponse, Error> {
+    fn get_month_category_by_id(&self, budget_id: &str, month: String, category_id: &str) -> Result<crate::models::CategoryResponse, Error> {
         let configuration: &configuration::Configuration = self.configuration.borrow();
         let client = &configuration.client;
 
-        let uri_str = format!("{}/budgets/{budget_id}/months/{month}/categories/{category_id}", configuration.base_path, budget_id=urlencode(budget_id), month=month, category_id=urlencode(category_id));
+        let uri_str = format!("{}/budgets/{budget_id}/months/{month}/categories/{category_id}", configuration.base_path, budget_id=crate::apis::urlencode(budget_id), month=month, category_id=crate::apis::urlencode(category_id));
         let mut req_builder = client.get(uri_str.as_str());
 
         if let Some(ref user_agent) = configuration.user_agent {
@@ -111,11 +111,11 @@ impl CategoriesApi for CategoriesApiClient {
         Ok(client.execute(req)?.error_for_status()?.json()?)
     }
 
-    fn update_month_category(&self, budget_id: &str, month: String, category_id: &str, data: ::models::SaveMonthCategoryWrapper) -> Result<::models::SaveCategoryResponse, Error> {
+    fn update_month_category(&self, budget_id: &str, month: String, category_id: &str, data: crate::models::SaveMonthCategoryWrapper) -> Result<crate::models::SaveCategoryResponse, Error> {
         let configuration: &configuration::Configuration = self.configuration.borrow();
         let client = &configuration.client;
 
-        let uri_str = format!("{}/budgets/{budget_id}/months/{month}/categories/{category_id}", configuration.base_path, budget_id=urlencode(budget_id), month=month, category_id=urlencode(category_id));
+        let uri_str = format!("{}/budgets/{budget_id}/months/{month}/categories/{category_id}", configuration.base_path, budget_id=crate::apis::urlencode(budget_id), month=month, category_id=crate::apis::urlencode(category_id));
         let mut req_builder = client.patch(uri_str.as_str());
 
         if let Some(ref user_agent) = configuration.user_agent {

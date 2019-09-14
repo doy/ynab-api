@@ -9,18 +9,15 @@
  */
 
 
-#[allow(unused_imports)]
-use serde_json::Value;
 
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct PayeeLocationsResponseData {
     #[serde(rename = "payee_locations")]
-    pub payee_locations: Vec<::models::PayeeLocation>,
+    pub payee_locations: Vec<crate::models::PayeeLocation>,
 }
 
 impl PayeeLocationsResponseData {
-    pub fn new(payee_locations: Vec<::models::PayeeLocation>) -> PayeeLocationsResponseData {
+    pub fn new(payee_locations: Vec<crate::models::PayeeLocation>) -> PayeeLocationsResponseData {
         PayeeLocationsResponseData {
             payee_locations: payee_locations,
         }

@@ -9,18 +9,15 @@
  */
 
 
-#[allow(unused_imports)]
-use serde_json::Value;
 
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct UserResponse {
     #[serde(rename = "data")]
-    pub data: ::models::UserResponseData,
+    pub data: crate::models::UserResponseData,
 }
 
 impl UserResponse {
-    pub fn new(data: ::models::UserResponseData) -> UserResponse {
+    pub fn new(data: crate::models::UserResponseData) -> UserResponse {
         UserResponse {
             data: data,
         }

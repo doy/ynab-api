@@ -9,11 +9,8 @@
  */
 
 
-#[allow(unused_imports)]
-use serde_json::Value;
 
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct HybridTransaction {
     #[serde(rename = "id")]
     pub id: String,
@@ -57,20 +54,20 @@ pub struct HybridTransaction {
     pub deleted: bool,
     /// Whether the hybrid transaction represents a regular transaction or a subtransaction
     #[serde(rename = "type")]
-    pub _type: String,
-    /// For subtransaction types, this is the id of the pararent transaction.  For transaction types, this id will be always be null.
+    pub _type: Type,
+    /// For subtransaction types, this is the id of the parent transaction.  For transaction types, this id will be always be null.
     #[serde(rename = "parent_transaction_id", skip_serializing_if = "Option::is_none")]
     pub parent_transaction_id: Option<String>,
     #[serde(rename = "account_name")]
     pub account_name: String,
     #[serde(rename = "payee_name", skip_serializing_if = "Option::is_none")]
     pub payee_name: Option<String>,
-    #[serde(rename = "category_name")]
-    pub category_name: String,
+    #[serde(rename = "category_name", skip_serializing_if = "Option::is_none")]
+    pub category_name: Option<String>,
 }
 
 impl HybridTransaction {
-    pub fn new(id: String, date: String, amount: i64, cleared: String, approved: bool, account_id: String, deleted: bool, _type: String, account_name: String, category_name: String) -> HybridTransaction {
+    pub fn new(id: String, date: String, amount: i64, cleared: String, approved: bool, account_id: String, deleted: bool, _type: Type, account_name: String) -> HybridTransaction {
         HybridTransaction {
             id: id,
             date: date,
@@ -91,39 +88,13 @@ impl HybridTransaction {
             parent_transaction_id: None,
             account_name: account_name,
             payee_name: None,
-            category_name: category_name,
+            category_name: None,
         }
     }
 }
 
-/// The cleared status of the transaction
-#[derive(Debug, Serialize, Deserialize)]
-pub enum Cleared {
-    #[serde(rename = "cleared")]
-    Cleared,
-    #[serde(rename = "uncleared")]
-    Uncleared,
-    #[serde(rename = "reconciled")]
-    Reconciled,
-}
-/// The transaction flag
-#[derive(Debug, Serialize, Deserialize)]
-pub enum FlagColor {
-    #[serde(rename = "red")]
-    Red,
-    #[serde(rename = "orange")]
-    Orange,
-    #[serde(rename = "yellow")]
-    Yellow,
-    #[serde(rename = "green")]
-    Green,
-    #[serde(rename = "blue")]
-    Blue,
-    #[serde(rename = "purple")]
-    Purple,
-}
 /// Whether the hybrid transaction represents a regular transaction or a subtransaction
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub enum Type {
     #[serde(rename = "transaction")]
     Transaction,

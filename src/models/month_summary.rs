@@ -9,11 +9,8 @@
  */
 
 
-#[allow(unused_imports)]
-use serde_json::Value;
 
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct MonthSummary {
     #[serde(rename = "month")]
     pub month: String,

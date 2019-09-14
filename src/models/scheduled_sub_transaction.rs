@@ -9,11 +9,8 @@
  */
 
 
-#[allow(unused_imports)]
-use serde_json::Value;
 
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct ScheduledSubTransaction {
     #[serde(rename = "id")]
     pub id: String,
@@ -26,8 +23,8 @@ pub struct ScheduledSubTransaction {
     pub memo: Option<String>,
     #[serde(rename = "payee_id", skip_serializing_if = "Option::is_none")]
     pub payee_id: Option<String>,
-    #[serde(rename = "category_id")]
-    pub category_id: String,
+    #[serde(rename = "category_id", skip_serializing_if = "Option::is_none")]
+    pub category_id: Option<String>,
     /// If a transfer, the account_id which the scheduled subtransaction transfers to
     #[serde(rename = "transfer_account_id", skip_serializing_if = "Option::is_none")]
     pub transfer_account_id: Option<String>,
@@ -37,14 +34,14 @@ pub struct ScheduledSubTransaction {
 }
 
 impl ScheduledSubTransaction {
-    pub fn new(id: String, scheduled_transaction_id: String, amount: i64, category_id: String, deleted: bool) -> ScheduledSubTransaction {
+    pub fn new(id: String, scheduled_transaction_id: String, amount: i64, deleted: bool) -> ScheduledSubTransaction {
         ScheduledSubTransaction {
             id: id,
             scheduled_transaction_id: scheduled_transaction_id,
             amount: amount,
             memo: None,
             payee_id: None,
-            category_id: category_id,
+            category_id: None,
             transfer_account_id: None,
             deleted: deleted,
         }

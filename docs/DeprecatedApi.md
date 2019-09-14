@@ -10,23 +10,22 @@ Method | HTTP request | Description
 
 ## bulk_create_transactions
 
-> ::models::BulkResponse bulk_create_transactions(ctx, budget_id, transactions)
+> crate::models::BulkResponse bulk_create_transactions(budget_id, transactions)
 Bulk create transactions
 
 Creates multiple transactions.  Although this endpoint is still supported, it is recommended to use 'POST /budgets/{budget_id}/transactions' to create multiple transactions.
 
-### Required Parameters
+### Parameters
 
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **ctx** | **context.Context** | context containing the authentication | nil if no authentication
-  **budget_id** | **String**| The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | 
-  **transactions** | [**BulkTransactions**](BulkTransactions.md)| The list of transactions to create | 
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**budget_id** | **String** | The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | Required | 
+**transactions** | [**BulkTransactions**](BulkTransactions.md) | The list of transactions to create | Required | 
 
 ### Return type
 
-[**::models::BulkResponse**](BulkResponse.md)
+[**crate::models::BulkResponse**](BulkResponse.md)
 
 ### Authorization
 

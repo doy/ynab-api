@@ -9,11 +9,8 @@
  */
 
 
-#[allow(unused_imports)]
-use serde_json::Value;
 
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct MonthDetail {
     #[serde(rename = "month")]
     pub month: String,
@@ -39,11 +36,11 @@ pub struct MonthDetail {
     pub deleted: bool,
     /// The budget month categories.  Amounts (budgeted, activity, balance, etc.) are specific to the {month} parameter specified.
     #[serde(rename = "categories")]
-    pub categories: Vec<::models::Category>,
+    pub categories: Vec<crate::models::Category>,
 }
 
 impl MonthDetail {
-    pub fn new(month: String, income: i64, budgeted: i64, activity: i64, to_be_budgeted: i64, deleted: bool, categories: Vec<::models::Category>) -> MonthDetail {
+    pub fn new(month: String, income: i64, budgeted: i64, activity: i64, to_be_budgeted: i64, deleted: bool, categories: Vec<crate::models::Category>) -> MonthDetail {
         MonthDetail {
             month: month,
             note: None,

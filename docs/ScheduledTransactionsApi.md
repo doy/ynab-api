@@ -11,23 +11,22 @@ Method | HTTP request | Description
 
 ## get_scheduled_transaction_by_id
 
-> ::models::ScheduledTransactionResponse get_scheduled_transaction_by_id(ctx, budget_id, scheduled_transaction_id)
+> crate::models::ScheduledTransactionResponse get_scheduled_transaction_by_id(budget_id, scheduled_transaction_id)
 Single scheduled transaction
 
 Returns a single scheduled transaction
 
-### Required Parameters
+### Parameters
 
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **ctx** | **context.Context** | context containing the authentication | nil if no authentication
-  **budget_id** | **String**| The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | 
-  **scheduled_transaction_id** | **String**| The id of the scheduled transaction | 
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**budget_id** | **String** | The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | Required | 
+**scheduled_transaction_id** | **String** | The id of the scheduled transaction | Required | 
 
 ### Return type
 
-[**::models::ScheduledTransactionResponse**](ScheduledTransactionResponse.md)
+[**crate::models::ScheduledTransactionResponse**](ScheduledTransactionResponse.md)
 
 ### Authorization
 
@@ -43,32 +42,22 @@ Name | Type | Description  | Notes
 
 ## get_scheduled_transactions
 
-> ::models::ScheduledTransactionsResponse get_scheduled_transactions(ctx, budget_id, optional)
+> crate::models::ScheduledTransactionsResponse get_scheduled_transactions(budget_id, last_knowledge_of_server)
 List scheduled transactions
 
 Returns all scheduled transactions
 
-### Required Parameters
+### Parameters
 
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **ctx** | **context.Context** | context containing the authentication | nil if no authentication
-  **budget_id** | **String**| The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | 
- **optional** | **map[string]interface{}** | optional parameters | nil if no parameters
-
-### Optional Parameters
-
-Optional parameters are passed through a map[string]interface{}.
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **budget_id** | **String**| The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | 
- **last_knowledge_of_server** | **i64**| The starting server knowledge.  If provided, only entities that have changed since last_knowledge_of_server will be included. | 
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**budget_id** | **String** | The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | Required | 
+**last_knowledge_of_server** | **i64** | The starting server knowledge.  If provided, only entities that have changed since last_knowledge_of_server will be included. |  | 
 
 ### Return type
 
-[**::models::ScheduledTransactionsResponse**](ScheduledTransactionsResponse.md)
+[**crate::models::ScheduledTransactionsResponse**](ScheduledTransactionsResponse.md)
 
 ### Authorization
 

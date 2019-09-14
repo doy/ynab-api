@@ -9,21 +9,18 @@
  */
 
 
-#[allow(unused_imports)]
-use serde_json::Value;
 
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct MonthSummariesResponseData {
     #[serde(rename = "months")]
-    pub months: Vec<::models::MonthSummary>,
+    pub months: Vec<crate::models::MonthSummary>,
     /// The knowledge of the server
     #[serde(rename = "server_knowledge")]
     pub server_knowledge: i64,
 }
 
 impl MonthSummariesResponseData {
-    pub fn new(months: Vec<::models::MonthSummary>, server_knowledge: i64) -> MonthSummariesResponseData {
+    pub fn new(months: Vec<crate::models::MonthSummary>, server_knowledge: i64) -> MonthSummariesResponseData {
         MonthSummariesResponseData {
             months: months,
             server_knowledge: server_knowledge,

@@ -9,18 +9,15 @@
  */
 
 
-#[allow(unused_imports)]
-use serde_json::Value;
 
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct MonthDetailResponseData {
     #[serde(rename = "month")]
-    pub month: ::models::MonthDetail,
+    pub month: crate::models::MonthDetail,
 }
 
 impl MonthDetailResponseData {
-    pub fn new(month: ::models::MonthDetail) -> MonthDetailResponseData {
+    pub fn new(month: crate::models::MonthDetail) -> MonthDetailResponseData {
         MonthDetailResponseData {
             month: month,
         }

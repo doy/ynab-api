@@ -9,29 +9,26 @@
  */
 
 
-#[allow(unused_imports)]
-use serde_json::Value;
 
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct ScheduledTransactionDetailAllOf {
     #[serde(rename = "account_name")]
     pub account_name: String,
-    #[serde(rename = "payee_name")]
-    pub payee_name: String,
-    #[serde(rename = "category_name")]
-    pub category_name: String,
+    #[serde(rename = "payee_name", skip_serializing_if = "Option::is_none")]
+    pub payee_name: Option<String>,
+    #[serde(rename = "category_name", skip_serializing_if = "Option::is_none")]
+    pub category_name: Option<String>,
     /// If a split scheduled transaction, the subtransactions.
     #[serde(rename = "subtransactions")]
-    pub subtransactions: Vec<::models::ScheduledSubTransaction>,
+    pub subtransactions: Vec<crate::models::ScheduledSubTransaction>,
 }
 
 impl ScheduledTransactionDetailAllOf {
-    pub fn new(account_name: String, payee_name: String, category_name: String, subtransactions: Vec<::models::ScheduledSubTransaction>) -> ScheduledTransactionDetailAllOf {
+    pub fn new(account_name: String, subtransactions: Vec<crate::models::ScheduledSubTransaction>) -> ScheduledTransactionDetailAllOf {
         ScheduledTransactionDetailAllOf {
             account_name: account_name,
-            payee_name: payee_name,
-            category_name: category_name,
+            payee_name: None,
+            category_name: None,
             subtransactions: subtransactions,
         }
     }

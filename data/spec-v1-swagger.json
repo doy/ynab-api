@@ -911,7 +911,7 @@
           {
             "name": "data",
             "in": "body",
-            "description": "The transactions to update.  Optionally, transaction 'id' value(s) can be specified as null and an 'import_id' value can be provided which will allow transaction(s) to updated by their import_id.",
+            "description": "The transactions to update. Each transaction must have either an 'id' or 'import_id' specified. If 'id' is specified as null an 'import_id' value can be provided which will allow transaction(s) to be updated by their import_id. If an id is specified, it will always be used for lookup.",
             "required": true,
             "schema": {
               "$ref": "#/definitions/UpdateTransactionsWrapper"
@@ -922,7 +922,7 @@
           "209": {
             "description": "The transactions were successfully updated",
             "schema": {
-              "$ref": "#/definitions/UpdateTransactionsResponse"
+              "$ref": "#/definitions/SaveTransactionsResponse"
             }
           },
           "400": {
@@ -1005,7 +1005,7 @@
             "description": "The transaction to update",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/UpdateTransactionWrapper"
+              "$ref": "#/definitions/SaveTransactionWrapper"
             }
           }
         ],
@@ -1052,7 +1052,7 @@
         ],
         "responses": {
           "201": {
-            "description": "The bulk request was processed sucessfully",
+            "description": "The bulk request was processed successfully",
             "schema": {
               "$ref": "#/definitions/BulkResponse"
             }
@@ -1895,8 +1895,8 @@
         },
         "goal_type": {
           "type": "string",
-          "enum": ["TB", "TBD", "MF", null],
-          "description": "The type of goal, if the cagegory has a goal (TB=Target Category Balance, TBD=Target Category Balance by Date, MF=Monthly Funding)"
+          "enum": ["TB", "TBD", "MF", "NEED", null],
+          "description": "The type of goal, if the category has a goal (TB=Target Category Balance, TBD=Target Category Balance by Date, MF=Monthly Funding)"
         },
         "goal_creation_month": {
           "type": "string",
@@ -2124,6 +2124,34 @@
         }
       }
     },
+    "UpdateTransactionsWrapper": {
+      "type": "object",
+      "required": ["transactions"],
+      "properties": {
+        "transactions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UpdateTransaction"
+          }
+        }
+      }
+    },
+    "UpdateTransaction": {
+      "allOf": [
+        {
+          "type": "object",
+          "required": ["id"],
+          "properties": {
+            "id": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "$ref": "#/definitions/SaveTransaction"
+        }
+      ]
+    },
     "SaveTransaction": {
       "type": "object",
       "required": ["account_id", "date", "amount"],
@@ -2145,7 +2173,7 @@
         "payee_id": {
           "type": "string",
           "format": "uuid",
-          "description": "The payee for the transaction"
+          "description": "The payee for the transaction.  To create a transfer between two accounts, use the account transfer payee pointing to the target account.  Account transfer payees are specified as tranfer_payee_id on the account resource."
         },
         "payee_name": {
           "type": "string",
@@ -2163,7 +2191,6 @@
         },
         "cleared": {
           "type": "string",
-          "enum": ["cleared", "uncleared", "reconciled"],
           "description": "The cleared status of the transaction"
         },
         "approved": {
@@ -2172,144 +2199,16 @@
         },
         "flag_color": {
           "type": "string",
-          "enum": ["red", "orange", "yellow", "green", "blue", "purple", null],
           "description": "The transaction flag"
         },
         "import_id": {
           "type": "string",
           "maxLength": 36,
-          "description": "If specified, the new transaction will be assigned this import_id and considered \"imported\". *At the time of import* we will attempt to match \"imported\" transactions with non-imported (i.e. \"user-entered\") transactions.<br><br>Transactions imported through File Based Import or Direct Import (not through the API) are assigned an import_id in the format: 'YNAB:[milliunit_amount]:[iso_date]:[occurrence]'. For example, a transaction dated 2015-12-30 in the amount of -$294.23 USD would have an import_id of 'YNAB:-294230:2015-12-30:1'.  If a second transaction on the same account was imported and had the same date and same amount, its import_id would be 'YNAB:-294230:2015-12-30:2'.  Using a consistent format will prevent duplicates through Direct Import and File Based Import.<br><br>If import_id is omitted or specified as null, the transaction will be treated as a \"user-entered\" transaction. As such, it will be eligible to be matched against transactions later being imported (via DI, FBI, or API)."
+          "description": "If specified, the new transaction will be assigned this import_id and considered \"imported\".  We will also attempt to match this imported transaction to an existing \"user-entered\" transation on the same account, with the same amount, and with a date +/-10 days from the imported transaction date.<br><br>Transactions imported through File Based Import or Direct Import (not through the API) are assigned an import_id in the format: 'YNAB:[milliunit_amount]:[iso_date]:[occurrence]'. For example, a transaction dated 2015-12-30 in the amount of -$294.23 USD would have an import_id of 'YNAB:-294230:2015-12-30:1'.  If a second transaction on the same account was imported and had the same date and same amount, its import_id would be 'YNAB:-294230:2015-12-30:2'.  Using a consistent format will prevent duplicates through Direct Import and File Based Import.<br><br>If import_id is omitted or specified as null, the transaction will be treated as a \"user-entered\" transaction. As such, it will be eligible to be matched against transactions later being imported (via DI, FBI, or API)."
         }
       }
     },
     "SaveTransactionsResponse": {
-      "type": "object",
-      "required": ["data"],
-      "properties": {
-        "data": {
-          "type": "object",
-          "required": ["transaction_ids", "server_knowledge"],
-          "properties": {
-            "transaction_ids": {
-              "type": "array",
-              "description": "The transaction ids that were saved",
-              "items": {
-                "type": "string"
-              }
-            },
-            "transaction": {
-              "description": "If a single transaction was specified, the transaction that was saved",
-              "$ref": "#/definitions/TransactionDetail"
-            },
-            "transactions": {
-              "type": "array",
-              "description": "If multiple transactions were specified, the transactions that were saved",
-              "items": {
-                "$ref": "#/definitions/TransactionDetail"
-              }
-            },
-            "duplicate_import_ids": {
-              "type": "array",
-              "description": "If multiple transactions were specified, a list of import_ids that were not created because of an existing import_id found on the same account",
-              "items": {
-                "type": "string"
-              }
-            },
-            "server_knowledge": {
-              "type": "integer",
-              "format": "int64",
-              "description": "The knowledge of the server"
-            }
-          }
-        }
-      }
-    },
-    "UpdateTransactionWrapper": {
-      "type": "object",
-      "required": ["transaction"],
-      "properties": {
-        "transaction": {
-          "$ref": "#/definitions/UpdateTransaction"
-        }
-      }
-    },
-    "UpdateTransactionsWrapper": {
-      "type": "object",
-      "properties": {
-        "transaction": {
-          "$ref": "#/definitions/UpdateTransaction"
-        },
-        "transactions": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/UpdateTransaction"
-          }
-        }
-      }
-    },
-    "UpdateTransaction": {
-      "type": "object",
-      "required": ["account_id", "date", "amount"],
-      "properties": {
-        "id": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "account_id": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "date": {
-          "type": "string",
-          "format": "date",
-          "description": "The transaction date in ISO format (e.g. 2016-12-01).  Future dates (scheduled transactions) are not permitted.  Split transaction dates cannot be changed and if a different date is supplied it will be ignored."
-        },
-        "amount": {
-          "type": "integer",
-          "format": "int64",
-          "description": "The transaction amount in milliunits format.  Split transaction amounts cannot be changed and if a different amount is supplied it will be ignored."
-        },
-        "payee_id": {
-          "type": "string",
-          "format": "uuid",
-          "description": "The payee for the transaction"
-        },
-        "payee_name": {
-          "type": "string",
-          "maxLength": 50,
-          "description": "The payee name.  If a payee_name value is provided and payee_id has a null value, the payee_name value will be used to resolve the payee by either (1) a matching payee rename rule (only if import_id is also specified) or (2) a payee with the same name or (3) creation of a new payee."
-        },
-        "category_id": {
-          "type": "string",
-          "format": "uuid",
-          "description": "The category for the transaction.  Split and Credit Card Payment categories are not permitted and will be ignored if supplied.  If an existing transaction has a Split category it cannot be changed."
-        },
-        "memo": {
-          "type": "string",
-          "maxLength": 200
-        },
-        "cleared": {
-          "type": "string",
-          "enum": ["cleared", "uncleared", "reconciled"],
-          "description": "The cleared status of the transaction"
-        },
-        "approved": {
-          "type": "boolean",
-          "description": "Whether or not the transaction is approved.  If not supplied, transaction will be unapproved by default."
-        },
-        "flag_color": {
-          "type": "string",
-          "enum": ["red", "orange", "yellow", "green", "blue", "purple", null],
-          "description": "The transaction flag"
-        },
-        "import_id": {
-          "type": "string",
-          "maxLength": 36,
-          "description": "If specified, the new transaction will be assigned this import_id and considered \"imported\". *At the time of import* we will attempt to match \"imported\" transactions with non-imported (i.e. \"user-entered\") transactions.<br><br>Transactions imported through File Based Import or Direct Import (not through the API) are assigned an import_id in the format: 'YNAB:[milliunit_amount]:[iso_date]:[occurrence]'. For example, a transaction dated 2015-12-30 in the amount of -$294.23 USD would have an import_id of 'YNAB:-294230:2015-12-30:1'.  If a second transaction on the same account was imported and had the same date and same amount, its import_id would be 'YNAB:-294230:2015-12-30:2'.  Using a consistent format will prevent duplicates through Direct Import and File Based Import.<br><br>If import_id is omitted or specified as null, the transaction will be treated as a \"user-entered\" transaction. As such, it will be eligible to be matched against transactions later being imported (via DI, FBI, or API)."
-        }
-      }
-    },
-    "UpdateTransactionsResponse": {
       "type": "object",
       "required": ["data"],
       "properties": {
@@ -2396,7 +2295,6 @@
         },
         "cleared": {
           "type": "string",
-          "enum": ["cleared", "uncleared", "reconciled"],
           "description": "The cleared status of the transaction"
         },
         "approved": {
@@ -2405,7 +2303,6 @@
         },
         "flag_color": {
           "type": "string",
-          "enum": ["red", "orange", "yellow", "green", "blue", "purple", null],
           "description": "The transaction flag"
         },
         "account_id": {
@@ -2479,7 +2376,7 @@
         },
         {
           "type": "object",
-          "required": ["type", "account_name", "category_name"],
+          "required": ["type", "account_name"],
           "properties": {
             "type": {
               "type": "string",
@@ -2488,7 +2385,7 @@
             },
             "parent_transaction_id": {
               "type": "string",
-              "description": "For subtransaction types, this is the id of the pararent transaction.  For transaction types, this id will be always be null."
+              "description": "For subtransaction types, this is the id of the parent transaction.  For transaction types, this id will be always be null."
             },
             "account_name": {
               "type": "string"
@@ -2655,9 +2552,7 @@
         "date_next",
         "frequency",
         "amount",
-        "flag_color",
         "account_id",
-        "category_id",
         "deleted"
       ],
       "properties": {
@@ -2676,22 +2571,7 @@
           "description": "The next date for which the Scheduled Transaction is scheduled."
         },
         "frequency": {
-          "type": "string",
-          "enum": [
-            "never",
-            "daily",
-            "weekly",
-            "everyOtherWeek",
-            "twiceAMonth",
-            "every4Weeks",
-            "monthly",
-            "everyOtherMonth",
-            "every3Months",
-            "every4Months",
-            "twiceAYear",
-            "yearly",
-            "everyOtherYear"
-          ]
+          "type": "string"
         },
         "amount": {
           "type": "integer",
@@ -2703,7 +2583,6 @@
         },
         "flag_color": {
           "type": "string",
-          "enum": ["red", "orange", "yellow", "green", "blue", "purple", null],
           "description": "The scheduled transaction flag"
         },
         "account_id": {
@@ -2736,7 +2615,7 @@
         },
         {
           "type": "object",
-          "required": ["account_name", "payee_name", "category_name", "subtransactions"],
+          "required": ["account_name", "subtransactions"],
           "properties": {
             "account_name": {
               "type": "string"
@@ -2764,7 +2643,6 @@
         "id",
         "scheduled_transaction_id",
         "amount",
-        "category_id",
         "deleted"
       ],
       "properties": {

@@ -10,18 +10,18 @@ Method | HTTP request | Description
 
 ## get_user
 
-> ::models::UserResponse get_user(ctx, )
+> crate::models::UserResponse get_user()
 User info
 
 Returns authenticated user information
 
-### Required Parameters
+### Parameters
 
 This endpoint does not need any parameter.
 
 ### Return type
 
-[**::models::UserResponse**](UserResponse.md)
+[**crate::models::UserResponse**](UserResponse.md)
 
 ### Authorization
 

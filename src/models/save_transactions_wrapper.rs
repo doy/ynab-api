@@ -9,16 +9,13 @@
  */
 
 
-#[allow(unused_imports)]
-use serde_json::Value;
 
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct SaveTransactionsWrapper {
     #[serde(rename = "transaction", skip_serializing_if = "Option::is_none")]
-    pub transaction: Option<::models::SaveTransaction>,
+    pub transaction: Option<crate::models::SaveTransaction>,
     #[serde(rename = "transactions", skip_serializing_if = "Option::is_none")]
-    pub transactions: Option<Vec<::models::SaveTransaction>>,
+    pub transactions: Option<Vec<crate::models::SaveTransaction>>,
 }
 
 impl SaveTransactionsWrapper {

@@ -13,7 +13,7 @@ use std::borrow::Borrow;
 
 use reqwest;
 
-use super::{Error, configuration, urlencode};
+use super::{Error, configuration};
 
 pub struct TransactionsApiClient {
     configuration: Rc<configuration::Configuration>,
@@ -28,22 +28,22 @@ impl TransactionsApiClient {
 }
 
 pub trait TransactionsApi {
-    fn create_transaction(&self, budget_id: &str, data: ::models::SaveTransactionsWrapper) -> Result<::models::SaveTransactionsResponse, Error>;
-    fn get_transaction_by_id(&self, budget_id: &str, transaction_id: &str) -> Result<::models::TransactionResponse, Error>;
-    fn get_transactions(&self, budget_id: &str, since_date: String, _type: &str, last_knowledge_of_server: i64) -> Result<::models::TransactionsResponse, Error>;
-    fn get_transactions_by_account(&self, budget_id: &str, account_id: &str, since_date: String, _type: &str, last_knowledge_of_server: i64) -> Result<::models::TransactionsResponse, Error>;
-    fn get_transactions_by_category(&self, budget_id: &str, category_id: &str, since_date: String, _type: &str, last_knowledge_of_server: i64) -> Result<::models::HybridTransactionsResponse, Error>;
-    fn get_transactions_by_payee(&self, budget_id: &str, payee_id: &str, since_date: String, _type: &str, last_knowledge_of_server: i64) -> Result<::models::HybridTransactionsResponse, Error>;
-    fn update_transaction(&self, budget_id: &str, transaction_id: &str, data: ::models::UpdateTransactionWrapper) -> Result<::models::TransactionResponse, Error>;
-    fn update_transactions(&self, budget_id: &str, data: ::models::UpdateTransactionsWrapper) -> Result<::models::UpdateTransactionsResponse, Error>;
+    fn create_transaction(&self, budget_id: &str, data: crate::models::SaveTransactionsWrapper) -> Result<crate::models::SaveTransactionsResponse, Error>;
+    fn get_transaction_by_id(&self, budget_id: &str, transaction_id: &str) -> Result<crate::models::TransactionResponse, Error>;
+    fn get_transactions(&self, budget_id: &str, since_date: String, _type: &str, last_knowledge_of_server: i64) -> Result<crate::models::TransactionsResponse, Error>;
+    fn get_transactions_by_account(&self, budget_id: &str, account_id: &str, since_date: String, _type: &str, last_knowledge_of_server: i64) -> Result<crate::models::TransactionsResponse, Error>;
+    fn get_transactions_by_category(&self, budget_id: &str, category_id: &str, since_date: String, _type: &str, last_knowledge_of_server: i64) -> Result<crate::models::HybridTransactionsResponse, Error>;
+    fn get_transactions_by_payee(&self, budget_id: &str, payee_id: &str, since_date: String, _type: &str, last_knowledge_of_server: i64) -> Result<crate::models::HybridTransactionsResponse, Error>;
+    fn update_transaction(&self, budget_id: &str, transaction_id: &str, data: crate::models::SaveTransactionWrapper) -> Result<crate::models::TransactionResponse, Error>;
+    fn update_transactions(&self, budget_id: &str, data: crate::models::UpdateTransactionsWrapper) -> Result<crate::models::SaveTransactionsResponse, Error>;
 }
 
 impl TransactionsApi for TransactionsApiClient {
-    fn create_transaction(&self, budget_id: &str, data: ::models::SaveTransactionsWrapper) -> Result<::models::SaveTransactionsResponse, Error> {
+    fn create_transaction(&self, budget_id: &str, data: crate::models::SaveTransactionsWrapper) -> Result<crate::models::SaveTransactionsResponse, Error> {
         let configuration: &configuration::Configuration = self.configuration.borrow();
         let client = &configuration.client;
 
-        let uri_str = format!("{}/budgets/{budget_id}/transactions", configuration.base_path, budget_id=urlencode(budget_id));
+        let uri_str = format!("{}/budgets/{budget_id}/transactions", configuration.base_path, budget_id=crate::apis::urlencode(budget_id));
         let mut req_builder = client.post(uri_str.as_str());
 
         if let Some(ref user_agent) = configuration.user_agent {
@@ -65,11 +65,11 @@ impl TransactionsApi for TransactionsApiClient {
         Ok(client.execute(req)?.error_for_status()?.json()?)
     }
 
-    fn get_transaction_by_id(&self, budget_id: &str, transaction_id: &str) -> Result<::models::TransactionResponse, Error> {
+    fn get_transaction_by_id(&self, budget_id: &str, transaction_id: &str) -> Result<crate::models::TransactionResponse, Error> {
         let configuration: &configuration::Configuration = self.configuration.borrow();
         let client = &configuration.client;
 
-        let uri_str = format!("{}/budgets/{budget_id}/transactions/{transaction_id}", configuration.base_path, budget_id=urlencode(budget_id), transaction_id=urlencode(transaction_id));
+        let uri_str = format!("{}/budgets/{budget_id}/transactions/{transaction_id}", configuration.base_path, budget_id=crate::apis::urlencode(budget_id), transaction_id=crate::apis::urlencode(transaction_id));
         let mut req_builder = client.get(uri_str.as_str());
 
         if let Some(ref user_agent) = configuration.user_agent {
@@ -90,39 +90,11 @@ impl TransactionsApi for TransactionsApiClient {
         Ok(client.execute(req)?.error_for_status()?.json()?)
     }
 
-    fn get_transactions(&self, budget_id: &str, since_date: String, _type: &str, last_knowledge_of_server: i64) -> Result<::models::TransactionsResponse, Error> {
+    fn get_transactions(&self, budget_id: &str, since_date: String, _type: &str, last_knowledge_of_server: i64) -> Result<crate::models::TransactionsResponse, Error> {
         let configuration: &configuration::Configuration = self.configuration.borrow();
         let client = &configuration.client;
 
-        let uri_str = format!("{}/budgets/{budget_id}/transactions", configuration.base_path, budget_id=urlencode(budget_id));
-        let mut req_builder = client.get(uri_str.as_str());
-
-        req_builder = req_builder.query(&[("since_date", &since_date.to_string())]);
-        req_builder = req_builder.query(&[("type", &_type.to_string())]);
-        req_builder = req_builder.query(&[("last_knowledge_of_server", &last_knowledge_of_server.to_string())]);
-        if let Some(ref user_agent) = configuration.user_agent {
-            req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
-        }
-        if let Some(ref apikey) = configuration.api_key {
-            let key = apikey.key.clone();
-            let val = match apikey.prefix {
-                Some(ref prefix) => format!("{} {}", prefix, key),
-                None => key,
-            };
-            req_builder = req_builder.header("Authorization", val);
-        };
-
-        // send request
-        let req = req_builder.build()?;
-
-        Ok(client.execute(req)?.error_for_status()?.json()?)
-    }
-
-    fn get_transactions_by_account(&self, budget_id: &str, account_id: &str, since_date: String, _type: &str, last_knowledge_of_server: i64) -> Result<::models::TransactionsResponse, Error> {
-        let configuration: &configuration::Configuration = self.configuration.borrow();
-        let client = &configuration.client;
-
-        let uri_str = format!("{}/budgets/{budget_id}/accounts/{account_id}/transactions", configuration.base_path, budget_id=urlencode(budget_id), account_id=urlencode(account_id));
+        let uri_str = format!("{}/budgets/{budget_id}/transactions", configuration.base_path, budget_id=crate::apis::urlencode(budget_id));
         let mut req_builder = client.get(uri_str.as_str());
 
         req_builder = req_builder.query(&[("since_date", &since_date.to_string())]);
@@ -146,11 +118,11 @@ impl TransactionsApi for TransactionsApiClient {
         Ok(client.execute(req)?.error_for_status()?.json()?)
     }
 
-    fn get_transactions_by_category(&self, budget_id: &str, category_id: &str, since_date: String, _type: &str, last_knowledge_of_server: i64) -> Result<::models::HybridTransactionsResponse, Error> {
+    fn get_transactions_by_account(&self, budget_id: &str, account_id: &str, since_date: String, _type: &str, last_knowledge_of_server: i64) -> Result<crate::models::TransactionsResponse, Error> {
         let configuration: &configuration::Configuration = self.configuration.borrow();
         let client = &configuration.client;
 
-        let uri_str = format!("{}/budgets/{budget_id}/categories/{category_id}/transactions", configuration.base_path, budget_id=urlencode(budget_id), category_id=urlencode(category_id));
+        let uri_str = format!("{}/budgets/{budget_id}/accounts/{account_id}/transactions", configuration.base_path, budget_id=crate::apis::urlencode(budget_id), account_id=crate::apis::urlencode(account_id));
         let mut req_builder = client.get(uri_str.as_str());
 
         req_builder = req_builder.query(&[("since_date", &since_date.to_string())]);
@@ -174,11 +146,11 @@ impl TransactionsApi for TransactionsApiClient {
         Ok(client.execute(req)?.error_for_status()?.json()?)
     }
 
-    fn get_transactions_by_payee(&self, budget_id: &str, payee_id: &str, since_date: String, _type: &str, last_knowledge_of_server: i64) -> Result<::models::HybridTransactionsResponse, Error> {
+    fn get_transactions_by_category(&self, budget_id: &str, category_id: &str, since_date: String, _type: &str, last_knowledge_of_server: i64) -> Result<crate::models::HybridTransactionsResponse, Error> {
         let configuration: &configuration::Configuration = self.configuration.borrow();
         let client = &configuration.client;
 
-        let uri_str = format!("{}/budgets/{budget_id}/payees/{payee_id}/transactions", configuration.base_path, budget_id=urlencode(budget_id), payee_id=urlencode(payee_id));
+        let uri_str = format!("{}/budgets/{budget_id}/categories/{category_id}/transactions", configuration.base_path, budget_id=crate::apis::urlencode(budget_id), category_id=crate::apis::urlencode(category_id));
         let mut req_builder = client.get(uri_str.as_str());
 
         req_builder = req_builder.query(&[("since_date", &since_date.to_string())]);
@@ -202,11 +174,39 @@ impl TransactionsApi for TransactionsApiClient {
         Ok(client.execute(req)?.error_for_status()?.json()?)
     }
 
-    fn update_transaction(&self, budget_id: &str, transaction_id: &str, data: ::models::UpdateTransactionWrapper) -> Result<::models::TransactionResponse, Error> {
+    fn get_transactions_by_payee(&self, budget_id: &str, payee_id: &str, since_date: String, _type: &str, last_knowledge_of_server: i64) -> Result<crate::models::HybridTransactionsResponse, Error> {
         let configuration: &configuration::Configuration = self.configuration.borrow();
         let client = &configuration.client;
 
-        let uri_str = format!("{}/budgets/{budget_id}/transactions/{transaction_id}", configuration.base_path, budget_id=urlencode(budget_id), transaction_id=urlencode(transaction_id));
+        let uri_str = format!("{}/budgets/{budget_id}/payees/{payee_id}/transactions", configuration.base_path, budget_id=crate::apis::urlencode(budget_id), payee_id=crate::apis::urlencode(payee_id));
+        let mut req_builder = client.get(uri_str.as_str());
+
+        req_builder = req_builder.query(&[("since_date", &since_date.to_string())]);
+        req_builder = req_builder.query(&[("type", &_type.to_string())]);
+        req_builder = req_builder.query(&[("last_knowledge_of_server", &last_knowledge_of_server.to_string())]);
+        if let Some(ref user_agent) = configuration.user_agent {
+            req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+        }
+        if let Some(ref apikey) = configuration.api_key {
+            let key = apikey.key.clone();
+            let val = match apikey.prefix {
+                Some(ref prefix) => format!("{} {}", prefix, key),
+                None => key,
+            };
+            req_builder = req_builder.header("Authorization", val);
+        };
+
+        // send request
+        let req = req_builder.build()?;
+
+        Ok(client.execute(req)?.error_for_status()?.json()?)
+    }
+
+    fn update_transaction(&self, budget_id: &str, transaction_id: &str, data: crate::models::SaveTransactionWrapper) -> Result<crate::models::TransactionResponse, Error> {
+        let configuration: &configuration::Configuration = self.configuration.borrow();
+        let client = &configuration.client;
+
+        let uri_str = format!("{}/budgets/{budget_id}/transactions/{transaction_id}", configuration.base_path, budget_id=crate::apis::urlencode(budget_id), transaction_id=crate::apis::urlencode(transaction_id));
         let mut req_builder = client.put(uri_str.as_str());
 
         if let Some(ref user_agent) = configuration.user_agent {
@@ -228,11 +228,11 @@ impl TransactionsApi for TransactionsApiClient {
         Ok(client.execute(req)?.error_for_status()?.json()?)
     }
 
-    fn update_transactions(&self, budget_id: &str, data: ::models::UpdateTransactionsWrapper) -> Result<::models::UpdateTransactionsResponse, Error> {
+    fn update_transactions(&self, budget_id: &str, data: crate::models::UpdateTransactionsWrapper) -> Result<crate::models::SaveTransactionsResponse, Error> {
         let configuration: &configuration::Configuration = self.configuration.borrow();
         let client = &configuration.client;
 
-        let uri_str = format!("{}/budgets/{budget_id}/transactions", configuration.base_path, budget_id=urlencode(budget_id));
+        let uri_str = format!("{}/budgets/{budget_id}/transactions", configuration.base_path, budget_id=crate::apis::urlencode(budget_id));
         let mut req_builder = client.patch(uri_str.as_str());
 
         if let Some(ref user_agent) = configuration.user_agent {

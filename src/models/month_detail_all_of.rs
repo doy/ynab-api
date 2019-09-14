@@ -9,19 +9,16 @@
  */
 
 
-#[allow(unused_imports)]
-use serde_json::Value;
 
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct MonthDetailAllOf {
     /// The budget month categories.  Amounts (budgeted, activity, balance, etc.) are specific to the {month} parameter specified.
     #[serde(rename = "categories")]
-    pub categories: Vec<::models::Category>,
+    pub categories: Vec<crate::models::Category>,
 }
 
 impl MonthDetailAllOf {
-    pub fn new(categories: Vec<::models::Category>) -> MonthDetailAllOf {
+    pub fn new(categories: Vec<crate::models::Category>) -> MonthDetailAllOf {
         MonthDetailAllOf {
             categories: categories,
         }

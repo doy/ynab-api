@@ -12,23 +12,22 @@ Method | HTTP request | Description
 
 ## get_payee_location_by_id
 
-> ::models::PayeeLocationResponse get_payee_location_by_id(ctx, budget_id, payee_location_id)
+> crate::models::PayeeLocationResponse get_payee_location_by_id(budget_id, payee_location_id)
 Single payee location
 
 Returns a single payee location
 
-### Required Parameters
+### Parameters
 
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **ctx** | **context.Context** | context containing the authentication | nil if no authentication
-  **budget_id** | **String**| The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | 
-  **payee_location_id** | **String**| id of payee location | 
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**budget_id** | **String** | The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | Required | 
+**payee_location_id** | **String** | id of payee location | Required | 
 
 ### Return type
 
-[**::models::PayeeLocationResponse**](PayeeLocationResponse.md)
+[**crate::models::PayeeLocationResponse**](PayeeLocationResponse.md)
 
 ### Authorization
 
@@ -44,22 +43,21 @@ Name | Type | Description  | Notes
 
 ## get_payee_locations
 
-> ::models::PayeeLocationsResponse get_payee_locations(ctx, budget_id)
+> crate::models::PayeeLocationsResponse get_payee_locations(budget_id)
 List payee locations
 
 Returns all payee locations
 
-### Required Parameters
+### Parameters
 
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **ctx** | **context.Context** | context containing the authentication | nil if no authentication
-  **budget_id** | **String**| The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | 
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**budget_id** | **String** | The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | Required | 
 
 ### Return type
 
-[**::models::PayeeLocationsResponse**](PayeeLocationsResponse.md)
+[**crate::models::PayeeLocationsResponse**](PayeeLocationsResponse.md)
 
 ### Authorization
 
@@ -75,23 +73,22 @@ Name | Type | Description  | Notes
 
 ## get_payee_locations_by_payee
 
-> ::models::PayeeLocationsResponse get_payee_locations_by_payee(ctx, budget_id, payee_id)
+> crate::models::PayeeLocationsResponse get_payee_locations_by_payee(budget_id, payee_id)
 List locations for a payee
 
 Returns all payee locations for the specified payee
 
-### Required Parameters
+### Parameters
 
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **ctx** | **context.Context** | context containing the authentication | nil if no authentication
-  **budget_id** | **String**| The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | 
-  **payee_id** | **String**| id of payee | 
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**budget_id** | **String** | The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | Required | 
+**payee_id** | **String** | id of payee | Required | 
 
 ### Return type
 
-[**::models::PayeeLocationsResponse**](PayeeLocationsResponse.md)
+[**crate::models::PayeeLocationsResponse**](PayeeLocationsResponse.md)
 
 ### Authorization
 

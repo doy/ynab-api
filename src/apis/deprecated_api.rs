@@ -13,7 +13,7 @@ use std::borrow::Borrow;
 
 use reqwest;
 
-use super::{Error, configuration, urlencode};
+use super::{Error, configuration};
 
 pub struct DeprecatedApiClient {
     configuration: Rc<configuration::Configuration>,
@@ -28,15 +28,15 @@ impl DeprecatedApiClient {
 }
 
 pub trait DeprecatedApi {
-    fn bulk_create_transactions(&self, budget_id: &str, transactions: ::models::BulkTransactions) -> Result<::models::BulkResponse, Error>;
+    fn bulk_create_transactions(&self, budget_id: &str, transactions: crate::models::BulkTransactions) -> Result<crate::models::BulkResponse, Error>;
 }
 
 impl DeprecatedApi for DeprecatedApiClient {
-    fn bulk_create_transactions(&self, budget_id: &str, transactions: ::models::BulkTransactions) -> Result<::models::BulkResponse, Error> {
+    fn bulk_create_transactions(&self, budget_id: &str, transactions: crate::models::BulkTransactions) -> Result<crate::models::BulkResponse, Error> {
         let configuration: &configuration::Configuration = self.configuration.borrow();
         let client = &configuration.client;
 
-        let uri_str = format!("{}/budgets/{budget_id}/transactions/bulk", configuration.base_path, budget_id=urlencode(budget_id));
+        let uri_str = format!("{}/budgets/{budget_id}/transactions/bulk", configuration.base_path, budget_id=crate::apis::urlencode(budget_id));
         let mut req_builder = client.post(uri_str.as_str());
 
         if let Some(ref user_agent) = configuration.user_agent {

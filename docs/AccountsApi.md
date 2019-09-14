@@ -11,23 +11,22 @@ Method | HTTP request | Description
 
 ## get_account_by_id
 
-> ::models::AccountResponse get_account_by_id(ctx, budget_id, account_id)
+> crate::models::AccountResponse get_account_by_id(budget_id, account_id)
 Single account
 
 Returns a single account
 
-### Required Parameters
+### Parameters
 
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **ctx** | **context.Context** | context containing the authentication | nil if no authentication
-  **budget_id** | **String**| The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | 
-  **account_id** | [**String**](.md)| The id of the account | 
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**budget_id** | **String** | The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | Required | 
+**account_id** | [**String**](.md) | The id of the account | Required | 
 
 ### Return type
 
-[**::models::AccountResponse**](AccountResponse.md)
+[**crate::models::AccountResponse**](AccountResponse.md)
 
 ### Authorization
 
@@ -43,32 +42,22 @@ Name | Type | Description  | Notes
 
 ## get_accounts
 
-> ::models::AccountsResponse get_accounts(ctx, budget_id, optional)
+> crate::models::AccountsResponse get_accounts(budget_id, last_knowledge_of_server)
 Account list
 
 Returns all accounts
 
-### Required Parameters
+### Parameters
 
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **ctx** | **context.Context** | context containing the authentication | nil if no authentication
-  **budget_id** | **String**| The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | 
- **optional** | **map[string]interface{}** | optional parameters | nil if no parameters
-
-### Optional Parameters
-
-Optional parameters are passed through a map[string]interface{}.
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **budget_id** | **String**| The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | 
- **last_knowledge_of_server** | **i64**| The starting server knowledge.  If provided, only entities that have changed since last_knowledge_of_server will be included. | 
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**budget_id** | **String** | The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | Required | 
+**last_knowledge_of_server** | **i64** | The starting server knowledge.  If provided, only entities that have changed since last_knowledge_of_server will be included. |  | 
 
 ### Return type
 
-[**::models::AccountsResponse**](AccountsResponse.md)
+[**crate::models::AccountsResponse**](AccountsResponse.md)
 
 ### Authorization
 

@@ -13,7 +13,7 @@ use std::borrow::Borrow;
 
 use reqwest;
 
-use super::{Error, configuration, urlencode};
+use super::{Error, configuration};
 
 pub struct MonthsApiClient {
     configuration: Rc<configuration::Configuration>,
@@ -28,16 +28,16 @@ impl MonthsApiClient {
 }
 
 pub trait MonthsApi {
-    fn get_budget_month(&self, budget_id: &str, month: String) -> Result<::models::MonthDetailResponse, Error>;
-    fn get_budget_months(&self, budget_id: &str, last_knowledge_of_server: i64) -> Result<::models::MonthSummariesResponse, Error>;
+    fn get_budget_month(&self, budget_id: &str, month: String) -> Result<crate::models::MonthDetailResponse, Error>;
+    fn get_budget_months(&self, budget_id: &str, last_knowledge_of_server: i64) -> Result<crate::models::MonthSummariesResponse, Error>;
 }
 
 impl MonthsApi for MonthsApiClient {
-    fn get_budget_month(&self, budget_id: &str, month: String) -> Result<::models::MonthDetailResponse, Error> {
+    fn get_budget_month(&self, budget_id: &str, month: String) -> Result<crate::models::MonthDetailResponse, Error> {
         let configuration: &configuration::Configuration = self.configuration.borrow();
         let client = &configuration.client;
 
-        let uri_str = format!("{}/budgets/{budget_id}/months/{month}", configuration.base_path, budget_id=urlencode(budget_id), month=month);
+        let uri_str = format!("{}/budgets/{budget_id}/months/{month}", configuration.base_path, budget_id=crate::apis::urlencode(budget_id), month=month);
         let mut req_builder = client.get(uri_str.as_str());
 
         if let Some(ref user_agent) = configuration.user_agent {
@@ -58,11 +58,11 @@ impl MonthsApi for MonthsApiClient {
         Ok(client.execute(req)?.error_for_status()?.json()?)
     }
 
-    fn get_budget_months(&self, budget_id: &str, last_knowledge_of_server: i64) -> Result<::models::MonthSummariesResponse, Error> {
+    fn get_budget_months(&self, budget_id: &str, last_knowledge_of_server: i64) -> Result<crate::models::MonthSummariesResponse, Error> {
         let configuration: &configuration::Configuration = self.configuration.borrow();
         let client = &configuration.client;
 
-        let uri_str = format!("{}/budgets/{budget_id}/months", configuration.base_path, budget_id=urlencode(budget_id));
+        let uri_str = format!("{}/budgets/{budget_id}/months", configuration.base_path, budget_id=crate::apis::urlencode(budget_id));
         let mut req_builder = client.get(uri_str.as_str());
 
         req_builder = req_builder.query(&[("last_knowledge_of_server", &last_knowledge_of_server.to_string())]);

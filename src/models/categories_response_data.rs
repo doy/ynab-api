@@ -9,21 +9,18 @@
  */
 
 
-#[allow(unused_imports)]
-use serde_json::Value;
 
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct CategoriesResponseData {
     #[serde(rename = "category_groups")]
-    pub category_groups: Vec<::models::CategoryGroupWithCategories>,
+    pub category_groups: Vec<crate::models::CategoryGroupWithCategories>,
     /// The knowledge of the server
     #[serde(rename = "server_knowledge")]
     pub server_knowledge: i64,
 }
 
 impl CategoriesResponseData {
-    pub fn new(category_groups: Vec<::models::CategoryGroupWithCategories>, server_knowledge: i64) -> CategoriesResponseData {
+    pub fn new(category_groups: Vec<crate::models::CategoryGroupWithCategories>, server_knowledge: i64) -> CategoriesResponseData {
         CategoriesResponseData {
             category_groups: category_groups,
             server_knowledge: server_knowledge,

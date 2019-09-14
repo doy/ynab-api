@@ -9,18 +9,15 @@
  */
 
 
-#[allow(unused_imports)]
-use serde_json::Value;
 
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct ErrorResponse {
     #[serde(rename = "error")]
-    pub error: ::models::ErrorDetail,
+    pub error: crate::models::ErrorDetail,
 }
 
 impl ErrorResponse {
-    pub fn new(error: ::models::ErrorDetail) -> ErrorResponse {
+    pub fn new(error: crate::models::ErrorDetail) -> ErrorResponse {
         ErrorResponse {
             error: error,
         }

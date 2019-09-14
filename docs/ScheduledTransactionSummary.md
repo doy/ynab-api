@@ -10,10 +10,10 @@ Name | Type | Description | Notes
 **frequency** | **String** |  | 
 **amount** | **i64** | The scheduled transaction amount in milliunits format | 
 **memo** | **String** |  | [optional] 
-**flag_color** | **String** | The scheduled transaction flag | 
+**flag_color** | **String** | The scheduled transaction flag | [optional] 
 **account_id** | **String** |  | 
 **payee_id** | **String** |  | [optional] 
-**category_id** | **String** |  | 
+**category_id** | **String** |  | [optional] 
 **transfer_account_id** | **String** | If a transfer, the account_id which the scheduled transaction transfers to | [optional] 
 **deleted** | **bool** | Whether or not the scheduled transaction has been deleted.  Deleted scheduled transactions will only be included in delta requests. | 
 

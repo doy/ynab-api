@@ -9,11 +9,8 @@
  */
 
 
-#[allow(unused_imports)]
-use serde_json::Value;
 
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct BudgetSummary {
     #[serde(rename = "id")]
     pub id: String,
@@ -29,9 +26,9 @@ pub struct BudgetSummary {
     #[serde(rename = "last_month", skip_serializing_if = "Option::is_none")]
     pub last_month: Option<String>,
     #[serde(rename = "date_format", skip_serializing_if = "Option::is_none")]
-    pub date_format: Option<::models::DateFormat>,
+    pub date_format: Option<crate::models::DateFormat>,
     #[serde(rename = "currency_format", skip_serializing_if = "Option::is_none")]
-    pub currency_format: Option<::models::CurrencyFormat>,
+    pub currency_format: Option<crate::models::CurrencyFormat>,
 }
 
 impl BudgetSummary {

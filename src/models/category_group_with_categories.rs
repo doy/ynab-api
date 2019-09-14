@@ -9,11 +9,8 @@
  */
 
 
-#[allow(unused_imports)]
-use serde_json::Value;
 
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct CategoryGroupWithCategories {
     #[serde(rename = "id")]
     pub id: String,
@@ -27,11 +24,11 @@ pub struct CategoryGroupWithCategories {
     pub deleted: bool,
     /// Category group categories.  Amounts (budgeted, activity, balance, etc.) are specific to the current budget month (UTC).
     #[serde(rename = "categories")]
-    pub categories: Vec<::models::Category>,
+    pub categories: Vec<crate::models::Category>,
 }
 
 impl CategoryGroupWithCategories {
-    pub fn new(id: String, name: String, hidden: bool, deleted: bool, categories: Vec<::models::Category>) -> CategoryGroupWithCategories {
+    pub fn new(id: String, name: String, hidden: bool, deleted: bool, categories: Vec<crate::models::Category>) -> CategoryGroupWithCategories {
         CategoryGroupWithCategories {
             id: id,
             name: name,

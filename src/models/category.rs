@@ -9,11 +9,8 @@
  */
 
 
-#[allow(unused_imports)]
-use serde_json::Value;
 
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct Category {
     #[serde(rename = "id")]
     pub id: String,
@@ -38,9 +35,9 @@ pub struct Category {
     /// Balance in milliunits format
     #[serde(rename = "balance")]
     pub balance: i64,
-    /// The type of goal, if the cagegory has a goal (TB=Target Category Balance, TBD=Target Category Balance by Date, MF=Monthly Funding)
+    /// The type of goal, if the category has a goal (TB=Target Category Balance, TBD=Target Category Balance by Date, MF=Monthly Funding)
     #[serde(rename = "goal_type", skip_serializing_if = "Option::is_none")]
-    pub goal_type: Option<String>,
+    pub goal_type: Option<GoalType>,
     /// The month a goal was created
     #[serde(rename = "goal_creation_month", skip_serializing_if = "Option::is_none")]
     pub goal_creation_month: Option<String>,
@@ -80,8 +77,8 @@ impl Category {
     }
 }
 
-/// The type of goal, if the cagegory has a goal (TB=Target Category Balance, TBD=Target Category Balance by Date, MF=Monthly Funding)
-#[derive(Debug, Serialize, Deserialize)]
+/// The type of goal, if the category has a goal (TB=Target Category Balance, TBD=Target Category Balance by Date, MF=Monthly Funding)
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub enum GoalType {
     #[serde(rename = "TB")]
     TB,
@@ -89,5 +86,7 @@ pub enum GoalType {
     TBD,
     #[serde(rename = "MF")]
     MF,
+    #[serde(rename = "NEED")]
+    NEED,
 }
 

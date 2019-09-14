@@ -10,16 +10,16 @@ Name | Type | Description | Notes
 **frequency** | **String** |  | 
 **amount** | **i64** | The scheduled transaction amount in milliunits format | 
 **memo** | **String** |  | [optional] 
-**flag_color** | **String** | The scheduled transaction flag | 
+**flag_color** | **String** | The scheduled transaction flag | [optional] 
 **account_id** | **String** |  | 
 **payee_id** | **String** |  | [optional] 
-**category_id** | **String** |  | 
+**category_id** | **String** |  | [optional] 
 **transfer_account_id** | **String** | If a transfer, the account_id which the scheduled transaction transfers to | [optional] 
 **deleted** | **bool** | Whether or not the scheduled transaction has been deleted.  Deleted scheduled transactions will only be included in delta requests. | 
 **account_name** | **String** |  | 
-**payee_name** | **String** |  | 
-**category_name** | **String** |  | 
-**subtransactions** | [**Vec<::models::ScheduledSubTransaction>**](ScheduledSubTransaction.md) | If a split scheduled transaction, the subtransactions. | 
+**payee_name** | **String** |  | [optional] 
+**category_name** | **String** |  | [optional] 
+**subtransactions** | [**Vec<crate::models::ScheduledSubTransaction>**](ScheduledSubTransaction.md) | If a split scheduled transaction, the subtransactions. | 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

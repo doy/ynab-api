@@ -9,11 +9,8 @@
  */
 
 
-#[allow(unused_imports)]
-use serde_json::Value;
 
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct TransactionDetailAllOf {
     #[serde(rename = "account_name")]
     pub account_name: String,
@@ -23,11 +20,11 @@ pub struct TransactionDetailAllOf {
     pub category_name: Option<String>,
     /// If a split transaction, the subtransactions.
     #[serde(rename = "subtransactions")]
-    pub subtransactions: Vec<::models::SubTransaction>,
+    pub subtransactions: Vec<crate::models::SubTransaction>,
 }
 
 impl TransactionDetailAllOf {
-    pub fn new(account_name: String, subtransactions: Vec<::models::SubTransaction>) -> TransactionDetailAllOf {
+    pub fn new(account_name: String, subtransactions: Vec<crate::models::SubTransaction>) -> TransactionDetailAllOf {
         TransactionDetailAllOf {
             account_name: account_name,
             payee_name: None,

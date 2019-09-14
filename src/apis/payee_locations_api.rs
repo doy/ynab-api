@@ -13,7 +13,7 @@ use std::borrow::Borrow;
 
 use reqwest;
 
-use super::{Error, configuration, urlencode};
+use super::{Error, configuration};
 
 pub struct PayeeLocationsApiClient {
     configuration: Rc<configuration::Configuration>,
@@ -28,17 +28,17 @@ impl PayeeLocationsApiClient {
 }
 
 pub trait PayeeLocationsApi {
-    fn get_payee_location_by_id(&self, budget_id: &str, payee_location_id: &str) -> Result<::models::PayeeLocationResponse, Error>;
-    fn get_payee_locations(&self, budget_id: &str) -> Result<::models::PayeeLocationsResponse, Error>;
-    fn get_payee_locations_by_payee(&self, budget_id: &str, payee_id: &str) -> Result<::models::PayeeLocationsResponse, Error>;
+    fn get_payee_location_by_id(&self, budget_id: &str, payee_location_id: &str) -> Result<crate::models::PayeeLocationResponse, Error>;
+    fn get_payee_locations(&self, budget_id: &str) -> Result<crate::models::PayeeLocationsResponse, Error>;
+    fn get_payee_locations_by_payee(&self, budget_id: &str, payee_id: &str) -> Result<crate::models::PayeeLocationsResponse, Error>;
 }
 
 impl PayeeLocationsApi for PayeeLocationsApiClient {
-    fn get_payee_location_by_id(&self, budget_id: &str, payee_location_id: &str) -> Result<::models::PayeeLocationResponse, Error> {
+    fn get_payee_location_by_id(&self, budget_id: &str, payee_location_id: &str) -> Result<crate::models::PayeeLocationResponse, Error> {
         let configuration: &configuration::Configuration = self.configuration.borrow();
         let client = &configuration.client;
 
-        let uri_str = format!("{}/budgets/{budget_id}/payee_locations/{payee_location_id}", configuration.base_path, budget_id=urlencode(budget_id), payee_location_id=urlencode(payee_location_id));
+        let uri_str = format!("{}/budgets/{budget_id}/payee_locations/{payee_location_id}", configuration.base_path, budget_id=crate::apis::urlencode(budget_id), payee_location_id=crate::apis::urlencode(payee_location_id));
         let mut req_builder = client.get(uri_str.as_str());
 
         if let Some(ref user_agent) = configuration.user_agent {
@@ -59,11 +59,11 @@ impl PayeeLocationsApi for PayeeLocationsApiClient {
         Ok(client.execute(req)?.error_for_status()?.json()?)
     }
 
-    fn get_payee_locations(&self, budget_id: &str) -> Result<::models::PayeeLocationsResponse, Error> {
+    fn get_payee_locations(&self, budget_id: &str) -> Result<crate::models::PayeeLocationsResponse, Error> {
         let configuration: &configuration::Configuration = self.configuration.borrow();
         let client = &configuration.client;
 
-        let uri_str = format!("{}/budgets/{budget_id}/payee_locations", configuration.base_path, budget_id=urlencode(budget_id));
+        let uri_str = format!("{}/budgets/{budget_id}/payee_locations", configuration.base_path, budget_id=crate::apis::urlencode(budget_id));
         let mut req_builder = client.get(uri_str.as_str());
 
         if let Some(ref user_agent) = configuration.user_agent {
@@ -84,11 +84,11 @@ impl PayeeLocationsApi for PayeeLocationsApiClient {
         Ok(client.execute(req)?.error_for_status()?.json()?)
     }
 
-    fn get_payee_locations_by_payee(&self, budget_id: &str, payee_id: &str) -> Result<::models::PayeeLocationsResponse, Error> {
+    fn get_payee_locations_by_payee(&self, budget_id: &str, payee_id: &str) -> Result<crate::models::PayeeLocationsResponse, Error> {
         let configuration: &configuration::Configuration = self.configuration.borrow();
         let client = &configuration.client;
 
-        let uri_str = format!("{}/budgets/{budget_id}/payees/{payee_id}/payee_locations", configuration.base_path, budget_id=urlencode(budget_id), payee_id=urlencode(payee_id));
+        let uri_str = format!("{}/budgets/{budget_id}/payees/{payee_id}/payee_locations", configuration.base_path, budget_id=crate::apis::urlencode(budget_id), payee_id=crate::apis::urlencode(payee_id));
         let mut req_builder = client.get(uri_str.as_str());
 
         if let Some(ref user_agent) = configuration.user_agent {

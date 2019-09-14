@@ -13,7 +13,7 @@ use std::borrow::Borrow;
 
 use reqwest;
 
-use super::{Error, configuration, urlencode};
+use super::{Error, configuration};
 
 pub struct ScheduledTransactionsApiClient {
     configuration: Rc<configuration::Configuration>,
@@ -28,16 +28,16 @@ impl ScheduledTransactionsApiClient {
 }
 
 pub trait ScheduledTransactionsApi {
-    fn get_scheduled_transaction_by_id(&self, budget_id: &str, scheduled_transaction_id: &str) -> Result<::models::ScheduledTransactionResponse, Error>;
-    fn get_scheduled_transactions(&self, budget_id: &str, last_knowledge_of_server: i64) -> Result<::models::ScheduledTransactionsResponse, Error>;
+    fn get_scheduled_transaction_by_id(&self, budget_id: &str, scheduled_transaction_id: &str) -> Result<crate::models::ScheduledTransactionResponse, Error>;
+    fn get_scheduled_transactions(&self, budget_id: &str, last_knowledge_of_server: i64) -> Result<crate::models::ScheduledTransactionsResponse, Error>;
 }
 
 impl ScheduledTransactionsApi for ScheduledTransactionsApiClient {
-    fn get_scheduled_transaction_by_id(&self, budget_id: &str, scheduled_transaction_id: &str) -> Result<::models::ScheduledTransactionResponse, Error> {
+    fn get_scheduled_transaction_by_id(&self, budget_id: &str, scheduled_transaction_id: &str) -> Result<crate::models::ScheduledTransactionResponse, Error> {
         let configuration: &configuration::Configuration = self.configuration.borrow();
         let client = &configuration.client;
 
-        let uri_str = format!("{}/budgets/{budget_id}/scheduled_transactions/{scheduled_transaction_id}", configuration.base_path, budget_id=urlencode(budget_id), scheduled_transaction_id=urlencode(scheduled_transaction_id));
+        let uri_str = format!("{}/budgets/{budget_id}/scheduled_transactions/{scheduled_transaction_id}", configuration.base_path, budget_id=crate::apis::urlencode(budget_id), scheduled_transaction_id=crate::apis::urlencode(scheduled_transaction_id));
         let mut req_builder = client.get(uri_str.as_str());
 
         if let Some(ref user_agent) = configuration.user_agent {
@@ -58,11 +58,11 @@ impl ScheduledTransactionsApi for ScheduledTransactionsApiClient {
         Ok(client.execute(req)?.error_for_status()?.json()?)
     }
 
-    fn get_scheduled_transactions(&self, budget_id: &str, last_knowledge_of_server: i64) -> Result<::models::ScheduledTransactionsResponse, Error> {
+    fn get_scheduled_transactions(&self, budget_id: &str, last_knowledge_of_server: i64) -> Result<crate::models::ScheduledTransactionsResponse, Error> {
         let configuration: &configuration::Configuration = self.configuration.borrow();
         let client = &configuration.client;
 
-        let uri_str = format!("{}/budgets/{budget_id}/scheduled_transactions", configuration.base_path, budget_id=urlencode(budget_id));
+        let uri_str = format!("{}/budgets/{budget_id}/scheduled_transactions", configuration.base_path, budget_id=crate::apis::urlencode(budget_id));
         let mut req_builder = client.get(uri_str.as_str());
 
         req_builder = req_builder.query(&[("last_knowledge_of_server", &last_knowledge_of_server.to_string())]);

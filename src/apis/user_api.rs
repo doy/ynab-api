@@ -13,7 +13,7 @@ use std::borrow::Borrow;
 
 use reqwest;
 
-use super::{Error, configuration, urlencode};
+use super::{Error, configuration};
 
 pub struct UserApiClient {
     configuration: Rc<configuration::Configuration>,
@@ -28,11 +28,11 @@ impl UserApiClient {
 }
 
 pub trait UserApi {
-    fn get_user(&self, ) -> Result<::models::UserResponse, Error>;
+    fn get_user(&self, ) -> Result<crate::models::UserResponse, Error>;
 }
 
 impl UserApi for UserApiClient {
-    fn get_user(&self, ) -> Result<::models::UserResponse, Error> {
+    fn get_user(&self, ) -> Result<crate::models::UserResponse, Error> {
         let configuration: &configuration::Configuration = self.configuration.borrow();
         let client = &configuration.client;
 

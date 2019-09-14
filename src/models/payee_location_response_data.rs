@@ -9,18 +9,15 @@
  */
 
 
-#[allow(unused_imports)]
-use serde_json::Value;
 
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct PayeeLocationResponseData {
     #[serde(rename = "payee_location")]
-    pub payee_location: ::models::PayeeLocation,
+    pub payee_location: crate::models::PayeeLocation,
 }
 
 impl PayeeLocationResponseData {
-    pub fn new(payee_location: ::models::PayeeLocation) -> PayeeLocationResponseData {
+    pub fn new(payee_location: crate::models::PayeeLocation) -> PayeeLocationResponseData {
         PayeeLocationResponseData {
             payee_location: payee_location,
         }

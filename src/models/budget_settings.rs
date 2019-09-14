@@ -9,20 +9,17 @@
  */
 
 
-#[allow(unused_imports)]
-use serde_json::Value;
 
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct BudgetSettings {
     #[serde(rename = "date_format")]
-    pub date_format: ::models::DateFormat,
+    pub date_format: crate::models::DateFormat,
     #[serde(rename = "currency_format")]
-    pub currency_format: ::models::CurrencyFormat,
+    pub currency_format: crate::models::CurrencyFormat,
 }
 
 impl BudgetSettings {
-    pub fn new(date_format: ::models::DateFormat, currency_format: ::models::CurrencyFormat) -> BudgetSettings {
+    pub fn new(date_format: crate::models::DateFormat, currency_format: crate::models::CurrencyFormat) -> BudgetSettings {
         BudgetSettings {
             date_format: date_format,
             currency_format: currency_format,

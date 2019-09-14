@@ -9,18 +9,15 @@
  */
 
 
-#[allow(unused_imports)]
-use serde_json::Value;
 
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct CategoryResponseData {
     #[serde(rename = "category")]
-    pub category: ::models::Category,
+    pub category: crate::models::Category,
 }
 
 impl CategoryResponseData {
-    pub fn new(category: ::models::Category) -> CategoryResponseData {
+    pub fn new(category: crate::models::Category) -> CategoryResponseData {
         CategoryResponseData {
             category: category,
         }

@@ -9,11 +9,8 @@
  */
 
 
-#[allow(unused_imports)]
-use serde_json::Value;
 
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct TransactionDetail {
     #[serde(rename = "id")]
     pub id: String,
@@ -63,11 +60,11 @@ pub struct TransactionDetail {
     pub category_name: Option<String>,
     /// If a split transaction, the subtransactions.
     #[serde(rename = "subtransactions")]
-    pub subtransactions: Vec<::models::SubTransaction>,
+    pub subtransactions: Vec<crate::models::SubTransaction>,
 }
 
 impl TransactionDetail {
-    pub fn new(id: String, date: String, amount: i64, cleared: String, approved: bool, account_id: String, deleted: bool, account_name: String, subtransactions: Vec<::models::SubTransaction>) -> TransactionDetail {
+    pub fn new(id: String, date: String, amount: i64, cleared: String, approved: bool, account_id: String, deleted: bool, account_name: String, subtransactions: Vec<crate::models::SubTransaction>) -> TransactionDetail {
         TransactionDetail {
             id: id,
             date: date,
@@ -92,30 +89,4 @@ impl TransactionDetail {
     }
 }
 
-/// The cleared status of the transaction
-#[derive(Debug, Serialize, Deserialize)]
-pub enum Cleared {
-    #[serde(rename = "cleared")]
-    Cleared,
-    #[serde(rename = "uncleared")]
-    Uncleared,
-    #[serde(rename = "reconciled")]
-    Reconciled,
-}
-/// The transaction flag
-#[derive(Debug, Serialize, Deserialize)]
-pub enum FlagColor {
-    #[serde(rename = "red")]
-    Red,
-    #[serde(rename = "orange")]
-    Orange,
-    #[serde(rename = "yellow")]
-    Yellow,
-    #[serde(rename = "green")]
-    Green,
-    #[serde(rename = "blue")]
-    Blue,
-    #[serde(rename = "purple")]
-    Purple,
-}
 

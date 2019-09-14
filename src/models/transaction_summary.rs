@@ -9,11 +9,8 @@
  */
 
 
-#[allow(unused_imports)]
-use serde_json::Value;
 
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct TransactionSummary {
     #[serde(rename = "id")]
     pub id: String,
@@ -79,30 +76,4 @@ impl TransactionSummary {
     }
 }
 
-/// The cleared status of the transaction
-#[derive(Debug, Serialize, Deserialize)]
-pub enum Cleared {
-    #[serde(rename = "cleared")]
-    Cleared,
-    #[serde(rename = "uncleared")]
-    Uncleared,
-    #[serde(rename = "reconciled")]
-    Reconciled,
-}
-/// The transaction flag
-#[derive(Debug, Serialize, Deserialize)]
-pub enum FlagColor {
-    #[serde(rename = "red")]
-    Red,
-    #[serde(rename = "orange")]
-    Orange,
-    #[serde(rename = "yellow")]
-    Yellow,
-    #[serde(rename = "green")]
-    Green,
-    #[serde(rename = "blue")]
-    Blue,
-    #[serde(rename = "purple")]
-    Purple,
-}
 

@@ -9,11 +9,8 @@
  */
 
 
-#[allow(unused_imports)]
-use serde_json::Value;
 
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct Account {
     #[serde(rename = "id")]
     pub id: String,
@@ -21,7 +18,7 @@ pub struct Account {
     pub name: String,
     /// The type of account. Note: payPal, merchantAccount, investmentAccount, and mortgage types have been deprecated and will be removed in the future.
     #[serde(rename = "type")]
-    pub _type: String,
+    pub _type: Type,
     /// Whether this account is on budget or not
     #[serde(rename = "on_budget")]
     pub on_budget: bool,
@@ -48,7 +45,7 @@ pub struct Account {
 }
 
 impl Account {
-    pub fn new(id: String, name: String, _type: String, on_budget: bool, closed: bool, balance: i64, cleared_balance: i64, uncleared_balance: i64, transfer_payee_id: String, deleted: bool) -> Account {
+    pub fn new(id: String, name: String, _type: Type, on_budget: bool, closed: bool, balance: i64, cleared_balance: i64, uncleared_balance: i64, transfer_payee_id: String, deleted: bool) -> Account {
         Account {
             id: id,
             name: name,
@@ -66,7 +63,7 @@ impl Account {
 }
 
 /// The type of account. Note: payPal, merchantAccount, investmentAccount, and mortgage types have been deprecated and will be removed in the future.
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub enum Type {
     #[serde(rename = "checking")]
     Checking,

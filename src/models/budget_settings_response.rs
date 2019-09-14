@@ -9,18 +9,15 @@
  */
 
 
-#[allow(unused_imports)]
-use serde_json::Value;
 
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct BudgetSettingsResponse {
     #[serde(rename = "data")]
-    pub data: ::models::BudgetSettingsResponseData,
+    pub data: crate::models::BudgetSettingsResponseData,
 }
 
 impl BudgetSettingsResponse {
-    pub fn new(data: ::models::BudgetSettingsResponseData) -> BudgetSettingsResponse {
+    pub fn new(data: crate::models::BudgetSettingsResponseData) -> BudgetSettingsResponse {
         BudgetSettingsResponse {
             data: data,
         }

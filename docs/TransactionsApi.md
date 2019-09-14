@@ -17,23 +17,22 @@ Method | HTTP request | Description
 
 ## create_transaction
 
-> ::models::SaveTransactionsResponse create_transaction(ctx, budget_id, data)
+> crate::models::SaveTransactionsResponse create_transaction(budget_id, data)
 Create a single transaction or multiple transactions
 
 Creates a single transaction or multiple transactions.  If you provide a body containing a 'transaction' object, a single transaction will be created and if you provide a body containing a 'transactions' array, multiple transactions will be created.  Scheduled transactions cannot be created on this endpoint.
 
-### Required Parameters
+### Parameters
 
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **ctx** | **context.Context** | context containing the authentication | nil if no authentication
-  **budget_id** | **String**| The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | 
-  **data** | [**SaveTransactionsWrapper**](SaveTransactionsWrapper.md)| The transaction or transactions to create.  To create a single transaction you can specify a value for the 'transaction' object and to create multiple transactions you can specify an array of 'transactions'.  It is expected that you will only provide a value for one of these objects. | 
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**budget_id** | **String** | The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | Required | 
+**data** | [**SaveTransactionsWrapper**](SaveTransactionsWrapper.md) | The transaction or transactions to create.  To create a single transaction you can specify a value for the 'transaction' object and to create multiple transactions you can specify an array of 'transactions'.  It is expected that you will only provide a value for one of these objects. | Required | 
 
 ### Return type
 
-[**::models::SaveTransactionsResponse**](SaveTransactionsResponse.md)
+[**crate::models::SaveTransactionsResponse**](SaveTransactionsResponse.md)
 
 ### Authorization
 
@@ -49,23 +48,22 @@ Name | Type | Description  | Notes
 
 ## get_transaction_by_id
 
-> ::models::TransactionResponse get_transaction_by_id(ctx, budget_id, transaction_id)
+> crate::models::TransactionResponse get_transaction_by_id(budget_id, transaction_id)
 Single transaction
 
 Returns a single transaction
 
-### Required Parameters
+### Parameters
 
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **ctx** | **context.Context** | context containing the authentication | nil if no authentication
-  **budget_id** | **String**| The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | 
-  **transaction_id** | **String**| The id of the transaction | 
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**budget_id** | **String** | The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | Required | 
+**transaction_id** | **String** | The id of the transaction | Required | 
 
 ### Return type
 
-[**::models::TransactionResponse**](TransactionResponse.md)
+[**crate::models::TransactionResponse**](TransactionResponse.md)
 
 ### Authorization
 
@@ -81,34 +79,24 @@ Name | Type | Description  | Notes
 
 ## get_transactions
 
-> ::models::TransactionsResponse get_transactions(ctx, budget_id, optional)
+> crate::models::TransactionsResponse get_transactions(budget_id, since_date, _type, last_knowledge_of_server)
 List transactions
 
 Returns budget transactions
 
-### Required Parameters
+### Parameters
 
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **ctx** | **context.Context** | context containing the authentication | nil if no authentication
-  **budget_id** | **String**| The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | 
- **optional** | **map[string]interface{}** | optional parameters | nil if no parameters
-
-### Optional Parameters
-
-Optional parameters are passed through a map[string]interface{}.
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **budget_id** | **String**| The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | 
- **since_date** | **String**| If specified, only transactions on or after this date will be included.  The date should be ISO formatted (e.g. 2016-12-30). | 
- **_type** | **String**| If specified, only transactions of the specified type will be included. 'uncategorized' and 'unapproved' are currently supported. | 
- **last_knowledge_of_server** | **i64**| The starting server knowledge.  If provided, only entities that have changed since last_knowledge_of_server will be included. | 
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**budget_id** | **String** | The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | Required | 
+**since_date** | **String** | If specified, only transactions on or after this date will be included.  The date should be ISO formatted (e.g. 2016-12-30). |  | 
+**_type** | **String** | If specified, only transactions of the specified type will be included. 'uncategorized' and 'unapproved' are currently supported. |  | 
+**last_knowledge_of_server** | **i64** | The starting server knowledge.  If provided, only entities that have changed since last_knowledge_of_server will be included. |  | 
 
 ### Return type
 
-[**::models::TransactionsResponse**](TransactionsResponse.md)
+[**crate::models::TransactionsResponse**](TransactionsResponse.md)
 
 ### Authorization
 
@@ -124,36 +112,25 @@ Name | Type | Description  | Notes
 
 ## get_transactions_by_account
 
-> ::models::TransactionsResponse get_transactions_by_account(ctx, budget_id, account_id, optional)
+> crate::models::TransactionsResponse get_transactions_by_account(budget_id, account_id, since_date, _type, last_knowledge_of_server)
 List account transactions
 
 Returns all transactions for a specified account
 
-### Required Parameters
+### Parameters
 
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **ctx** | **context.Context** | context containing the authentication | nil if no authentication
-  **budget_id** | **String**| The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | 
-  **account_id** | **String**| The id of the account | 
- **optional** | **map[string]interface{}** | optional parameters | nil if no parameters
-
-### Optional Parameters
-
-Optional parameters are passed through a map[string]interface{}.
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **budget_id** | **String**| The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | 
- **account_id** | **String**| The id of the account | 
- **since_date** | **String**| If specified, only transactions on or after this date will be included.  The date should be ISO formatted (e.g. 2016-12-30). | 
- **_type** | **String**| If specified, only transactions of the specified type will be included. 'uncategorized' and 'unapproved' are currently supported. | 
- **last_knowledge_of_server** | **i64**| The starting server knowledge.  If provided, only entities that have changed since last_knowledge_of_server will be included. | 
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**budget_id** | **String** | The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | Required | 
+**account_id** | **String** | The id of the account | Required | 
+**since_date** | **String** | If specified, only transactions on or after this date will be included.  The date should be ISO formatted (e.g. 2016-12-30). |  | 
+**_type** | **String** | If specified, only transactions of the specified type will be included. 'uncategorized' and 'unapproved' are currently supported. |  | 
+**last_knowledge_of_server** | **i64** | The starting server knowledge.  If provided, only entities that have changed since last_knowledge_of_server will be included. |  | 
 
 ### Return type
 
-[**::models::TransactionsResponse**](TransactionsResponse.md)
+[**crate::models::TransactionsResponse**](TransactionsResponse.md)
 
 ### Authorization
 
@@ -169,36 +146,25 @@ Name | Type | Description  | Notes
 
 ## get_transactions_by_category
 
-> ::models::HybridTransactionsResponse get_transactions_by_category(ctx, budget_id, category_id, optional)
+> crate::models::HybridTransactionsResponse get_transactions_by_category(budget_id, category_id, since_date, _type, last_knowledge_of_server)
 List category transactions
 
 Returns all transactions for a specified category
 
-### Required Parameters
+### Parameters
 
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **ctx** | **context.Context** | context containing the authentication | nil if no authentication
-  **budget_id** | **String**| The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | 
-  **category_id** | **String**| The id of the category | 
- **optional** | **map[string]interface{}** | optional parameters | nil if no parameters
-
-### Optional Parameters
-
-Optional parameters are passed through a map[string]interface{}.
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **budget_id** | **String**| The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | 
- **category_id** | **String**| The id of the category | 
- **since_date** | **String**| If specified, only transactions on or after this date will be included.  The date should be ISO formatted (e.g. 2016-12-30). | 
- **_type** | **String**| If specified, only transactions of the specified type will be included. 'uncategorized' and 'unapproved' are currently supported. | 
- **last_knowledge_of_server** | **i64**| The starting server knowledge.  If provided, only entities that have changed since last_knowledge_of_server will be included. | 
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**budget_id** | **String** | The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | Required | 
+**category_id** | **String** | The id of the category | Required | 
+**since_date** | **String** | If specified, only transactions on or after this date will be included.  The date should be ISO formatted (e.g. 2016-12-30). |  | 
+**_type** | **String** | If specified, only transactions of the specified type will be included. 'uncategorized' and 'unapproved' are currently supported. |  | 
+**last_knowledge_of_server** | **i64** | The starting server knowledge.  If provided, only entities that have changed since last_knowledge_of_server will be included. |  | 
 
 ### Return type
 
-[**::models::HybridTransactionsResponse**](HybridTransactionsResponse.md)
+[**crate::models::HybridTransactionsResponse**](HybridTransactionsResponse.md)
 
 ### Authorization
 
@@ -214,36 +180,25 @@ Name | Type | Description  | Notes
 
 ## get_transactions_by_payee
 
-> ::models::HybridTransactionsResponse get_transactions_by_payee(ctx, budget_id, payee_id, optional)
+> crate::models::HybridTransactionsResponse get_transactions_by_payee(budget_id, payee_id, since_date, _type, last_knowledge_of_server)
 List payee transactions
 
 Returns all transactions for a specified payee
 
-### Required Parameters
+### Parameters
 
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **ctx** | **context.Context** | context containing the authentication | nil if no authentication
-  **budget_id** | **String**| The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | 
-  **payee_id** | **String**| The id of the payee | 
- **optional** | **map[string]interface{}** | optional parameters | nil if no parameters
-
-### Optional Parameters
-
-Optional parameters are passed through a map[string]interface{}.
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **budget_id** | **String**| The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | 
- **payee_id** | **String**| The id of the payee | 
- **since_date** | **String**| If specified, only transactions on or after this date will be included.  The date should be ISO formatted (e.g. 2016-12-30). | 
- **_type** | **String**| If specified, only transactions of the specified type will be included. 'uncategorized' and 'unapproved' are currently supported. | 
- **last_knowledge_of_server** | **i64**| The starting server knowledge.  If provided, only entities that have changed since last_knowledge_of_server will be included. | 
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**budget_id** | **String** | The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | Required | 
+**payee_id** | **String** | The id of the payee | Required | 
+**since_date** | **String** | If specified, only transactions on or after this date will be included.  The date should be ISO formatted (e.g. 2016-12-30). |  | 
+**_type** | **String** | If specified, only transactions of the specified type will be included. 'uncategorized' and 'unapproved' are currently supported. |  | 
+**last_knowledge_of_server** | **i64** | The starting server knowledge.  If provided, only entities that have changed since last_knowledge_of_server will be included. |  | 
 
 ### Return type
 
-[**::models::HybridTransactionsResponse**](HybridTransactionsResponse.md)
+[**crate::models::HybridTransactionsResponse**](HybridTransactionsResponse.md)
 
 ### Authorization
 
@@ -259,24 +214,23 @@ Name | Type | Description  | Notes
 
 ## update_transaction
 
-> ::models::TransactionResponse update_transaction(ctx, budget_id, transaction_id, data)
+> crate::models::TransactionResponse update_transaction(budget_id, transaction_id, data)
 Updates an existing transaction
 
 Updates a transaction
 
-### Required Parameters
+### Parameters
 
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **ctx** | **context.Context** | context containing the authentication | nil if no authentication
-  **budget_id** | **String**| The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | 
-  **transaction_id** | **String**| The id of the transaction | 
-  **data** | [**UpdateTransactionWrapper**](UpdateTransactionWrapper.md)| The transaction to update | 
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**budget_id** | **String** | The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | Required | 
+**transaction_id** | **String** | The id of the transaction | Required | 
+**data** | [**SaveTransactionWrapper**](SaveTransactionWrapper.md) | The transaction to update | Required | 
 
 ### Return type
 
-[**::models::TransactionResponse**](TransactionResponse.md)
+[**crate::models::TransactionResponse**](TransactionResponse.md)
 
 ### Authorization
 
@@ -292,23 +246,22 @@ Name | Type | Description  | Notes
 
 ## update_transactions
 
-> ::models::UpdateTransactionsResponse update_transactions(ctx, budget_id, data)
+> crate::models::SaveTransactionsResponse update_transactions(budget_id, data)
 Update multiple transactions
 
 Updates multiple transactions, by 'id' or 'import_id'.
 
-### Required Parameters
+### Parameters
 
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **ctx** | **context.Context** | context containing the authentication | nil if no authentication
-  **budget_id** | **String**| The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | 
-  **data** | [**UpdateTransactionsWrapper**](UpdateTransactionsWrapper.md)| The transactions to update.  Optionally, transaction 'id' value(s) can be specified as null and an 'import_id' value can be provided which will allow transaction(s) to updated by their import_id. | 
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**budget_id** | **String** | The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | Required | 
+**data** | [**UpdateTransactionsWrapper**](UpdateTransactionsWrapper.md) | The transactions to update. Each transaction must have either an 'id' or 'import_id' specified. If 'id' is specified as null an 'import_id' value can be provided which will allow transaction(s) to be updated by their import_id. If an id is specified, it will always be used for lookup. | Required | 
 
 ### Return type
 
-[**::models::UpdateTransactionsResponse**](UpdateTransactionsResponse.md)
+[**crate::models::SaveTransactionsResponse**](SaveTransactionsResponse.md)
 
 ### Authorization
 

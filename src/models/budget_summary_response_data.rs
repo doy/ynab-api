@@ -9,20 +9,17 @@
  */
 
 
-#[allow(unused_imports)]
-use serde_json::Value;
 
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct BudgetSummaryResponseData {
     #[serde(rename = "budgets")]
-    pub budgets: Vec<::models::BudgetSummary>,
+    pub budgets: Vec<crate::models::BudgetSummary>,
     #[serde(rename = "default_budget", skip_serializing_if = "Option::is_none")]
-    pub default_budget: Option<::models::BudgetSummary>,
+    pub default_budget: Option<crate::models::BudgetSummary>,
 }
 
 impl BudgetSummaryResponseData {
-    pub fn new(budgets: Vec<::models::BudgetSummary>) -> BudgetSummaryResponseData {
+    pub fn new(budgets: Vec<crate::models::BudgetSummary>) -> BudgetSummaryResponseData {
         BudgetSummaryResponseData {
             budgets: budgets,
             default_budget: None,

@@ -9,18 +9,15 @@
  */
 
 
-#[allow(unused_imports)]
-use serde_json::Value;
 
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct HybridTransactionsResponse {
     #[serde(rename = "data")]
-    pub data: ::models::HybridTransactionsResponseData,
+    pub data: crate::models::HybridTransactionsResponseData,
 }
 
 impl HybridTransactionsResponse {
-    pub fn new(data: ::models::HybridTransactionsResponseData) -> HybridTransactionsResponse {
+    pub fn new(data: crate::models::HybridTransactionsResponseData) -> HybridTransactionsResponse {
         HybridTransactionsResponse {
             data: data,
         }

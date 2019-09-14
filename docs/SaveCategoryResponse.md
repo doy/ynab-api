@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**data** | [***::models::SaveCategoryResponseData**](SaveCategoryResponse_data.md) |  | 
+**data** | [***crate::models::SaveCategoryResponseData**](SaveCategoryResponse_data.md) |  | 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

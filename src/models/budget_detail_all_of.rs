@@ -9,32 +9,29 @@
  */
 
 
-#[allow(unused_imports)]
-use serde_json::Value;
 
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct BudgetDetailAllOf {
     #[serde(rename = "accounts", skip_serializing_if = "Option::is_none")]
-    pub accounts: Option<Vec<::models::Account>>,
+    pub accounts: Option<Vec<crate::models::Account>>,
     #[serde(rename = "payees", skip_serializing_if = "Option::is_none")]
-    pub payees: Option<Vec<::models::Payee>>,
+    pub payees: Option<Vec<crate::models::Payee>>,
     #[serde(rename = "payee_locations", skip_serializing_if = "Option::is_none")]
-    pub payee_locations: Option<Vec<::models::PayeeLocation>>,
+    pub payee_locations: Option<Vec<crate::models::PayeeLocation>>,
     #[serde(rename = "category_groups", skip_serializing_if = "Option::is_none")]
-    pub category_groups: Option<Vec<::models::CategoryGroup>>,
+    pub category_groups: Option<Vec<crate::models::CategoryGroup>>,
     #[serde(rename = "categories", skip_serializing_if = "Option::is_none")]
-    pub categories: Option<Vec<::models::Category>>,
+    pub categories: Option<Vec<crate::models::Category>>,
     #[serde(rename = "months", skip_serializing_if = "Option::is_none")]
-    pub months: Option<Vec<::models::MonthDetail>>,
+    pub months: Option<Vec<crate::models::MonthDetail>>,
     #[serde(rename = "transactions", skip_serializing_if = "Option::is_none")]
-    pub transactions: Option<Vec<::models::TransactionSummary>>,
+    pub transactions: Option<Vec<crate::models::TransactionSummary>>,
     #[serde(rename = "subtransactions", skip_serializing_if = "Option::is_none")]
-    pub subtransactions: Option<Vec<::models::SubTransaction>>,
+    pub subtransactions: Option<Vec<crate::models::SubTransaction>>,
     #[serde(rename = "scheduled_transactions", skip_serializing_if = "Option::is_none")]
-    pub scheduled_transactions: Option<Vec<::models::ScheduledTransactionSummary>>,
+    pub scheduled_transactions: Option<Vec<crate::models::ScheduledTransactionSummary>>,
     #[serde(rename = "scheduled_subtransactions", skip_serializing_if = "Option::is_none")]
-    pub scheduled_subtransactions: Option<Vec<::models::ScheduledSubTransaction>>,
+    pub scheduled_subtransactions: Option<Vec<crate::models::ScheduledSubTransaction>>,
 }
 
 impl BudgetDetailAllOf {

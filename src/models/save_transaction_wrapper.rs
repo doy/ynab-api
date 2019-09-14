@@ -9,18 +9,15 @@
  */
 
 
-#[allow(unused_imports)]
-use serde_json::Value;
 
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct SaveTransactionWrapper {
     #[serde(rename = "transaction")]
-    pub transaction: ::models::SaveTransaction,
+    pub transaction: crate::models::SaveTransaction,
 }
 
 impl SaveTransactionWrapper {
-    pub fn new(transaction: ::models::SaveTransaction) -> SaveTransactionWrapper {
+    pub fn new(transaction: crate::models::SaveTransaction) -> SaveTransactionWrapper {
         SaveTransactionWrapper {
             transaction: transaction,
         }

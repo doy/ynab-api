@@ -9,7 +9,7 @@ Name | Type | Description | Notes
 **amount** | **i64** | The scheduled subtransaction amount in milliunits format | 
 **memo** | **String** |  | [optional] 
 **payee_id** | **String** |  | [optional] 
-**category_id** | **String** |  | 
+**category_id** | **String** |  | [optional] 
 **transfer_account_id** | **String** | If a transfer, the account_id which the scheduled subtransaction transfers to | [optional] 
 **deleted** | **bool** | Whether or not the scheduled subtransaction has been deleted.  Deleted scheduled subtransactions will only be included in delta requests. | 
 

@@ -9,18 +9,15 @@
  */
 
 
-#[allow(unused_imports)]
-use serde_json::Value;
 
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct BulkTransactions {
     #[serde(rename = "transactions")]
-    pub transactions: Vec<::models::SaveTransaction>,
+    pub transactions: Vec<crate::models::SaveTransaction>,
 }
 
 impl BulkTransactions {
-    pub fn new(transactions: Vec<::models::SaveTransaction>) -> BulkTransactions {
+    pub fn new(transactions: Vec<crate::models::SaveTransaction>) -> BulkTransactions {
         BulkTransactions {
             transactions: transactions,
         }

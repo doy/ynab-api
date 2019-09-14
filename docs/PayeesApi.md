@@ -11,23 +11,22 @@ Method | HTTP request | Description
 
 ## get_payee_by_id
 
-> ::models::PayeeResponse get_payee_by_id(ctx, budget_id, payee_id)
+> crate::models::PayeeResponse get_payee_by_id(budget_id, payee_id)
 Single payee
 
 Returns single payee
 
-### Required Parameters
+### Parameters
 
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **ctx** | **context.Context** | context containing the authentication | nil if no authentication
-  **budget_id** | **String**| The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | 
-  **payee_id** | **String**| The id of the payee | 
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**budget_id** | **String** | The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | Required | 
+**payee_id** | **String** | The id of the payee | Required | 
 
 ### Return type
 
-[**::models::PayeeResponse**](PayeeResponse.md)
+[**crate::models::PayeeResponse**](PayeeResponse.md)
 
 ### Authorization
 
@@ -43,32 +42,22 @@ Name | Type | Description  | Notes
 
 ## get_payees
 
-> ::models::PayeesResponse get_payees(ctx, budget_id, optional)
+> crate::models::PayeesResponse get_payees(budget_id, last_knowledge_of_server)
 List payees
 
 Returns all payees
 
-### Required Parameters
+### Parameters
 
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **ctx** | **context.Context** | context containing the authentication | nil if no authentication
-  **budget_id** | **String**| The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | 
- **optional** | **map[string]interface{}** | optional parameters | nil if no parameters
-
-### Optional Parameters
-
-Optional parameters are passed through a map[string]interface{}.
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **budget_id** | **String**| The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | 
- **last_knowledge_of_server** | **i64**| The starting server knowledge.  If provided, only entities that have changed since last_knowledge_of_server will be included. | 
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**budget_id** | **String** | The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | Required | 
+**last_knowledge_of_server** | **i64** | The starting server knowledge.  If provided, only entities that have changed since last_knowledge_of_server will be included. |  | 
 
 ### Return type
 
-[**::models::PayeesResponse**](PayeesResponse.md)
+[**crate::models::PayeesResponse**](PayeesResponse.md)
 
 ### Authorization
 

@@ -9,11 +9,8 @@
  */
 
 
-#[allow(unused_imports)]
-use serde_json::Value;
 
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct BulkResponseDataBulk {
     /// The list of Transaction ids that were created.
     #[serde(rename = "transaction_ids")]

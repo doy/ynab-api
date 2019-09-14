@@ -12,7 +12,7 @@ Name | Type | Description | Notes
 **to_be_budgeted** | **i64** | The available amount for 'To be Budgeted' | 
 **age_of_money** | **i32** | The Age of Money as of the month | [optional] 
 **deleted** | **bool** | Whether or not the month has been deleted.  Deleted months will only be included in delta requests. | 
-**categories** | [**Vec<::models::Category>**](Category.md) | The budget month categories.  Amounts (budgeted, activity, balance, etc.) are specific to the {month} parameter specified. | 
+**categories** | [**Vec<crate::models::Category>**](Category.md) | The budget month categories.  Amounts (budgeted, activity, balance, etc.) are specific to the {month} parameter specified. | 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

@@ -9,18 +9,15 @@
  */
 
 
-#[allow(unused_imports)]
-use serde_json::Value;
 
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct SaveMonthCategoryWrapper {
     #[serde(rename = "category")]
-    pub category: ::models::SaveMonthCategory,
+    pub category: crate::models::SaveMonthCategory,
 }
 
 impl SaveMonthCategoryWrapper {
-    pub fn new(category: ::models::SaveMonthCategory) -> SaveMonthCategoryWrapper {
+    pub fn new(category: crate::models::SaveMonthCategory) -> SaveMonthCategoryWrapper {
         SaveMonthCategoryWrapper {
             category: category,
         }

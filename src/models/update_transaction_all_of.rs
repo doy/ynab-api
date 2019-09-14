@@ -9,20 +9,17 @@
  */
 
 
-#[allow(unused_imports)]
-use serde_json::Value;
 
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct UpdateTransactionWrapper {
-    #[serde(rename = "transaction")]
-    pub transaction: ::models::UpdateTransaction,
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+pub struct UpdateTransactionAllOf {
+    #[serde(rename = "id")]
+    pub id: String,
 }
 
-impl UpdateTransactionWrapper {
-    pub fn new(transaction: ::models::UpdateTransaction) -> UpdateTransactionWrapper {
-        UpdateTransactionWrapper {
-            transaction: transaction,
+impl UpdateTransactionAllOf {
+    pub fn new(id: String) -> UpdateTransactionAllOf {
+        UpdateTransactionAllOf {
+            id: id,
         }
     }
 }

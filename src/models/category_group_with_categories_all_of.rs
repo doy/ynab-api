@@ -9,19 +9,16 @@
  */
 
 
-#[allow(unused_imports)]
-use serde_json::Value;
 
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct CategoryGroupWithCategoriesAllOf {
     /// Category group categories.  Amounts (budgeted, activity, balance, etc.) are specific to the current budget month (UTC).
     #[serde(rename = "categories")]
-    pub categories: Vec<::models::Category>,
+    pub categories: Vec<crate::models::Category>,
 }
 
 impl CategoryGroupWithCategoriesAllOf {
-    pub fn new(categories: Vec<::models::Category>) -> CategoryGroupWithCategoriesAllOf {
+    pub fn new(categories: Vec<crate::models::Category>) -> CategoryGroupWithCategoriesAllOf {
         CategoryGroupWithCategoriesAllOf {
             categories: categories,
         }

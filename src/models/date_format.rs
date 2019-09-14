@@ -10,11 +10,8 @@
 
 /// DateFormat : The date format setting for the budget.  In some cases the format will not be available and will be specified as null.
 
-#[allow(unused_imports)]
-use serde_json::Value;
 
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct DateFormat {
     #[serde(rename = "format")]
     pub format: String,

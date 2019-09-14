@@ -1,6 +1,6 @@
 [package]
 name = "ynab-api"
-version = "1.0.0"
+version = "2.0.0"
 authors = ["Jesse Luehrs <doy@tozt.net>", "You Need A Budget, LLC"]
 description = "OpenAPI-generated API bindings for the YNAB API"
 repository = "https://git.tozt.net/ynab-api"
