@@ -10,6 +10,7 @@
 
 
 
+
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct PayeeLocation {
     #[serde(rename = "id")]
@@ -28,11 +29,11 @@ pub struct PayeeLocation {
 impl PayeeLocation {
     pub fn new(id: String, payee_id: String, latitude: String, longitude: String, deleted: bool) -> PayeeLocation {
         PayeeLocation {
-            id: id,
-            payee_id: payee_id,
-            latitude: latitude,
-            longitude: longitude,
-            deleted: deleted,
+            id,
+            payee_id,
+            latitude,
+            longitude,
+            deleted,
         }
     }
 }

@@ -10,6 +10,8 @@
 
 use std::rc::Rc;
 use std::borrow::Borrow;
+#[allow(unused_imports)]
+use std::option::Option;
 
 use reqwest;
 
@@ -22,26 +24,28 @@ pub struct BudgetsApiClient {
 impl BudgetsApiClient {
     pub fn new(configuration: Rc<configuration::Configuration>) -> BudgetsApiClient {
         BudgetsApiClient {
-            configuration: configuration,
+            configuration,
         }
     }
 }
 
 pub trait BudgetsApi {
-    fn get_budget_by_id(&self, budget_id: &str, last_knowledge_of_server: i64) -> Result<crate::models::BudgetDetailResponse, Error>;
+    fn get_budget_by_id(&self, budget_id: &str, last_knowledge_of_server: Option<i64>) -> Result<crate::models::BudgetDetailResponse, Error>;
     fn get_budget_settings_by_id(&self, budget_id: &str) -> Result<crate::models::BudgetSettingsResponse, Error>;
     fn get_budgets(&self, ) -> Result<crate::models::BudgetSummaryResponse, Error>;
 }
 
 impl BudgetsApi for BudgetsApiClient {
-    fn get_budget_by_id(&self, budget_id: &str, last_knowledge_of_server: i64) -> Result<crate::models::BudgetDetailResponse, Error> {
+    fn get_budget_by_id(&self, budget_id: &str, last_knowledge_of_server: Option<i64>) -> Result<crate::models::BudgetDetailResponse, Error> {
         let configuration: &configuration::Configuration = self.configuration.borrow();
         let client = &configuration.client;
 
         let uri_str = format!("{}/budgets/{budget_id}", configuration.base_path, budget_id=crate::apis::urlencode(budget_id));
         let mut req_builder = client.get(uri_str.as_str());
 
-        req_builder = req_builder.query(&[("last_knowledge_of_server", &last_knowledge_of_server.to_string())]);
+        if let Some(ref s) = last_knowledge_of_server {
+            req_builder = req_builder.query(&[("last_knowledge_of_server", &s.to_string())]);
+        }
         if let Some(ref user_agent) = configuration.user_agent {
             req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
         }

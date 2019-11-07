@@ -10,6 +10,7 @@
 
 
 
+
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct ScheduledTransactionSummary {
     #[serde(rename = "id")]
@@ -21,7 +22,7 @@ pub struct ScheduledTransactionSummary {
     #[serde(rename = "date_next")]
     pub date_next: String,
     #[serde(rename = "frequency")]
-    pub frequency: String,
+    pub frequency: Frequency,
     /// The scheduled transaction amount in milliunits format
     #[serde(rename = "amount")]
     pub amount: i64,
@@ -29,7 +30,7 @@ pub struct ScheduledTransactionSummary {
     pub memo: Option<String>,
     /// The scheduled transaction flag
     #[serde(rename = "flag_color", skip_serializing_if = "Option::is_none")]
-    pub flag_color: Option<String>,
+    pub flag_color: Option<FlagColor>,
     #[serde(rename = "account_id")]
     pub account_id: String,
     #[serde(rename = "payee_id", skip_serializing_if = "Option::is_none")]
@@ -45,22 +46,68 @@ pub struct ScheduledTransactionSummary {
 }
 
 impl ScheduledTransactionSummary {
-    pub fn new(id: String, date_first: String, date_next: String, frequency: String, amount: i64, account_id: String, deleted: bool) -> ScheduledTransactionSummary {
+    pub fn new(id: String, date_first: String, date_next: String, frequency: Frequency, amount: i64, account_id: String, deleted: bool) -> ScheduledTransactionSummary {
         ScheduledTransactionSummary {
-            id: id,
-            date_first: date_first,
-            date_next: date_next,
-            frequency: frequency,
-            amount: amount,
+            id,
+            date_first,
+            date_next,
+            frequency,
+            amount,
             memo: None,
             flag_color: None,
-            account_id: account_id,
+            account_id,
             payee_id: None,
             category_id: None,
             transfer_account_id: None,
-            deleted: deleted,
+            deleted,
         }
     }
 }
 
+/// 
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+pub enum Frequency {
+    #[serde(rename = "never")]
+    Never,
+    #[serde(rename = "daily")]
+    Daily,
+    #[serde(rename = "weekly")]
+    Weekly,
+    #[serde(rename = "everyOtherWeek")]
+    EveryOtherWeek,
+    #[serde(rename = "twiceAMonth")]
+    TwiceAMonth,
+    #[serde(rename = "every4Weeks")]
+    Every4Weeks,
+    #[serde(rename = "monthly")]
+    Monthly,
+    #[serde(rename = "everyOtherMonth")]
+    EveryOtherMonth,
+    #[serde(rename = "every3Months")]
+    Every3Months,
+    #[serde(rename = "every4Months")]
+    Every4Months,
+    #[serde(rename = "twiceAYear")]
+    TwiceAYear,
+    #[serde(rename = "yearly")]
+    Yearly,
+    #[serde(rename = "everyOtherYear")]
+    EveryOtherYear,
+}
+/// The scheduled transaction flag
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+pub enum FlagColor {
+    #[serde(rename = "red")]
+    Red,
+    #[serde(rename = "orange")]
+    Orange,
+    #[serde(rename = "yellow")]
+    Yellow,
+    #[serde(rename = "green")]
+    Green,
+    #[serde(rename = "blue")]
+    Blue,
+    #[serde(rename = "purple")]
+    Purple,
+}
 

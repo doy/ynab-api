@@ -10,6 +10,7 @@
 
 
 
+
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct User {
     #[serde(rename = "id")]
@@ -19,7 +20,7 @@ pub struct User {
 impl User {
     pub fn new(id: String) -> User {
         User {
-            id: id,
+            id,
         }
     }
 }

@@ -10,6 +10,7 @@
 
 
 
+
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct PayeesResponseData {
     #[serde(rename = "payees")]
@@ -22,8 +23,8 @@ pub struct PayeesResponseData {
 impl PayeesResponseData {
     pub fn new(payees: Vec<crate::models::Payee>, server_knowledge: i64) -> PayeesResponseData {
         PayeesResponseData {
-            payees: payees,
-            server_knowledge: server_knowledge,
+            payees,
+            server_knowledge,
         }
     }
 }

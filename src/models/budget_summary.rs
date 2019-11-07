@@ -10,6 +10,7 @@
 
 
 
+
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct BudgetSummary {
     #[serde(rename = "id")]
@@ -34,8 +35,8 @@ pub struct BudgetSummary {
 impl BudgetSummary {
     pub fn new(id: String, name: String) -> BudgetSummary {
         BudgetSummary {
-            id: id,
-            name: name,
+            id,
+            name,
             last_modified_on: None,
             first_month: None,
             last_month: None,

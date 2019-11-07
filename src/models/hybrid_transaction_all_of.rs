@@ -10,6 +10,7 @@
 
 
 
+
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct HybridTransactionAllOf {
     /// Whether the hybrid transaction represents a regular transaction or a subtransaction
@@ -29,9 +30,9 @@ pub struct HybridTransactionAllOf {
 impl HybridTransactionAllOf {
     pub fn new(_type: Type, account_name: String) -> HybridTransactionAllOf {
         HybridTransactionAllOf {
-            _type: _type,
+            _type,
             parent_transaction_id: None,
-            account_name: account_name,
+            account_name,
             payee_name: None,
             category_name: None,
         }

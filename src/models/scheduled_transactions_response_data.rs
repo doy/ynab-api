@@ -10,6 +10,7 @@
 
 
 
+
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct ScheduledTransactionsResponseData {
     #[serde(rename = "scheduled_transactions")]
@@ -22,8 +23,8 @@ pub struct ScheduledTransactionsResponseData {
 impl ScheduledTransactionsResponseData {
     pub fn new(scheduled_transactions: Vec<crate::models::ScheduledTransactionDetail>, server_knowledge: i64) -> ScheduledTransactionsResponseData {
         ScheduledTransactionsResponseData {
-            scheduled_transactions: scheduled_transactions,
-            server_knowledge: server_knowledge,
+            scheduled_transactions,
+            server_knowledge,
         }
     }
 }

@@ -10,6 +10,8 @@
 
 use std::rc::Rc;
 use std::borrow::Borrow;
+#[allow(unused_imports)]
+use std::option::Option;
 
 use reqwest;
 
@@ -22,27 +24,29 @@ pub struct CategoriesApiClient {
 impl CategoriesApiClient {
     pub fn new(configuration: Rc<configuration::Configuration>) -> CategoriesApiClient {
         CategoriesApiClient {
-            configuration: configuration,
+            configuration,
         }
     }
 }
 
 pub trait CategoriesApi {
-    fn get_categories(&self, budget_id: &str, last_knowledge_of_server: i64) -> Result<crate::models::CategoriesResponse, Error>;
+    fn get_categories(&self, budget_id: &str, last_knowledge_of_server: Option<i64>) -> Result<crate::models::CategoriesResponse, Error>;
     fn get_category_by_id(&self, budget_id: &str, category_id: &str) -> Result<crate::models::CategoryResponse, Error>;
     fn get_month_category_by_id(&self, budget_id: &str, month: String, category_id: &str) -> Result<crate::models::CategoryResponse, Error>;
     fn update_month_category(&self, budget_id: &str, month: String, category_id: &str, data: crate::models::SaveMonthCategoryWrapper) -> Result<crate::models::SaveCategoryResponse, Error>;
 }
 
 impl CategoriesApi for CategoriesApiClient {
-    fn get_categories(&self, budget_id: &str, last_knowledge_of_server: i64) -> Result<crate::models::CategoriesResponse, Error> {
+    fn get_categories(&self, budget_id: &str, last_knowledge_of_server: Option<i64>) -> Result<crate::models::CategoriesResponse, Error> {
         let configuration: &configuration::Configuration = self.configuration.borrow();
         let client = &configuration.client;
 
         let uri_str = format!("{}/budgets/{budget_id}/categories", configuration.base_path, budget_id=crate::apis::urlencode(budget_id));
         let mut req_builder = client.get(uri_str.as_str());
 
-        req_builder = req_builder.query(&[("last_knowledge_of_server", &last_knowledge_of_server.to_string())]);
+        if let Some(ref s) = last_knowledge_of_server {
+            req_builder = req_builder.query(&[("last_knowledge_of_server", &s.to_string())]);
+        }
         if let Some(ref user_agent) = configuration.user_agent {
             req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
         }

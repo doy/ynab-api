@@ -10,6 +10,7 @@
 
 
 
+
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct ErrorResponse {
     #[serde(rename = "error")]
@@ -19,7 +20,7 @@ pub struct ErrorResponse {
 impl ErrorResponse {
     pub fn new(error: crate::models::ErrorDetail) -> ErrorResponse {
         ErrorResponse {
-            error: error,
+            error,
         }
     }
 }

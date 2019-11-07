@@ -10,6 +10,7 @@
 
 
 
+
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct BudgetSummaryResponseData {
     #[serde(rename = "budgets")]
@@ -21,7 +22,7 @@ pub struct BudgetSummaryResponseData {
 impl BudgetSummaryResponseData {
     pub fn new(budgets: Vec<crate::models::BudgetSummary>) -> BudgetSummaryResponseData {
         BudgetSummaryResponseData {
-            budgets: budgets,
+            budgets,
             default_budget: None,
         }
     }

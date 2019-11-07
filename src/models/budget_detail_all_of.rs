@@ -10,6 +10,7 @@
 
 
 
+
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct BudgetDetailAllOf {
     #[serde(rename = "accounts", skip_serializing_if = "Option::is_none")]

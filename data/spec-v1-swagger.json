@@ -1851,7 +1851,6 @@
         "budgeted",
         "activity",
         "balance",
-        "goal_target",
         "deleted"
       ],
       "properties": {
@@ -2191,6 +2190,7 @@
         },
         "cleared": {
           "type": "string",
+          "enum": ["cleared", "uncleared", "reconciled"],
           "description": "The cleared status of the transaction"
         },
         "approved": {
@@ -2199,6 +2199,7 @@
         },
         "flag_color": {
           "type": "string",
+          "enum": ["red", "orange", "yellow", "green", "blue", "purple", null],
           "description": "The transaction flag"
         },
         "import_id": {
@@ -2295,6 +2296,7 @@
         },
         "cleared": {
           "type": "string",
+          "enum": ["cleared", "uncleared", "reconciled"],
           "description": "The cleared status of the transaction"
         },
         "approved": {
@@ -2303,6 +2305,7 @@
         },
         "flag_color": {
           "type": "string",
+          "enum": ["red", "orange", "yellow", "green", "blue", "purple", null],
           "description": "The transaction flag"
         },
         "account_id": {
@@ -2571,7 +2574,22 @@
           "description": "The next date for which the Scheduled Transaction is scheduled."
         },
         "frequency": {
-          "type": "string"
+          "type": "string",
+          "enum": [
+            "never",
+            "daily",
+            "weekly",
+            "everyOtherWeek",
+            "twiceAMonth",
+            "every4Weeks",
+            "monthly",
+            "everyOtherMonth",
+            "every3Months",
+            "every4Months",
+            "twiceAYear",
+            "yearly",
+            "everyOtherYear"
+          ]
         },
         "amount": {
           "type": "integer",
@@ -2583,6 +2601,7 @@
         },
         "flag_color": {
           "type": "string",
+          "enum": ["red", "orange", "yellow", "green", "blue", "purple", null],
           "description": "The scheduled transaction flag"
         },
         "account_id": {

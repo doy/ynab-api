@@ -3,16 +3,16 @@ use std::rc::Rc;
 use super::configuration::Configuration;
 
 pub struct APIClient {
-    accounts_api: Box<crate::apis::AccountsApi>,
-    budgets_api: Box<crate::apis::BudgetsApi>,
-    categories_api: Box<crate::apis::CategoriesApi>,
-    deprecated_api: Box<crate::apis::DeprecatedApi>,
-    months_api: Box<crate::apis::MonthsApi>,
-    payee_locations_api: Box<crate::apis::PayeeLocationsApi>,
-    payees_api: Box<crate::apis::PayeesApi>,
-    scheduled_transactions_api: Box<crate::apis::ScheduledTransactionsApi>,
-    transactions_api: Box<crate::apis::TransactionsApi>,
-    user_api: Box<crate::apis::UserApi>,
+    accounts_api: Box<dyn crate::apis::AccountsApi>,
+    budgets_api: Box<dyn crate::apis::BudgetsApi>,
+    categories_api: Box<dyn crate::apis::CategoriesApi>,
+    deprecated_api: Box<dyn crate::apis::DeprecatedApi>,
+    months_api: Box<dyn crate::apis::MonthsApi>,
+    payee_locations_api: Box<dyn crate::apis::PayeeLocationsApi>,
+    payees_api: Box<dyn crate::apis::PayeesApi>,
+    scheduled_transactions_api: Box<dyn crate::apis::ScheduledTransactionsApi>,
+    transactions_api: Box<dyn crate::apis::TransactionsApi>,
+    user_api: Box<dyn crate::apis::UserApi>,
 }
 
 impl APIClient {
@@ -33,43 +33,43 @@ impl APIClient {
         }
     }
 
-    pub fn accounts_api(&self) -> &crate::apis::AccountsApi{
+    pub fn accounts_api(&self) -> &dyn crate::apis::AccountsApi{
         self.accounts_api.as_ref()
     }
 
-    pub fn budgets_api(&self) -> &crate::apis::BudgetsApi{
+    pub fn budgets_api(&self) -> &dyn crate::apis::BudgetsApi{
         self.budgets_api.as_ref()
     }
 
-    pub fn categories_api(&self) -> &crate::apis::CategoriesApi{
+    pub fn categories_api(&self) -> &dyn crate::apis::CategoriesApi{
         self.categories_api.as_ref()
     }
 
-    pub fn deprecated_api(&self) -> &crate::apis::DeprecatedApi{
+    pub fn deprecated_api(&self) -> &dyn crate::apis::DeprecatedApi{
         self.deprecated_api.as_ref()
     }
 
-    pub fn months_api(&self) -> &crate::apis::MonthsApi{
+    pub fn months_api(&self) -> &dyn crate::apis::MonthsApi{
         self.months_api.as_ref()
     }
 
-    pub fn payee_locations_api(&self) -> &crate::apis::PayeeLocationsApi{
+    pub fn payee_locations_api(&self) -> &dyn crate::apis::PayeeLocationsApi{
         self.payee_locations_api.as_ref()
     }
 
-    pub fn payees_api(&self) -> &crate::apis::PayeesApi{
+    pub fn payees_api(&self) -> &dyn crate::apis::PayeesApi{
         self.payees_api.as_ref()
     }
 
-    pub fn scheduled_transactions_api(&self) -> &crate::apis::ScheduledTransactionsApi{
+    pub fn scheduled_transactions_api(&self) -> &dyn crate::apis::ScheduledTransactionsApi{
         self.scheduled_transactions_api.as_ref()
     }
 
-    pub fn transactions_api(&self) -> &crate::apis::TransactionsApi{
+    pub fn transactions_api(&self) -> &dyn crate::apis::TransactionsApi{
         self.transactions_api.as_ref()
     }
 
-    pub fn user_api(&self) -> &crate::apis::UserApi{
+    pub fn user_api(&self) -> &dyn crate::apis::UserApi{
         self.user_api.as_ref()
     }
 

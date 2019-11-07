@@ -10,6 +10,7 @@
 
 
 
+
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct BulkResponseDataBulk {
     /// The list of Transaction ids that were created.
@@ -23,8 +24,8 @@ pub struct BulkResponseDataBulk {
 impl BulkResponseDataBulk {
     pub fn new(transaction_ids: Vec<String>, duplicate_import_ids: Vec<String>) -> BulkResponseDataBulk {
         BulkResponseDataBulk {
-            transaction_ids: transaction_ids,
-            duplicate_import_ids: duplicate_import_ids,
+            transaction_ids,
+            duplicate_import_ids,
         }
     }
 }

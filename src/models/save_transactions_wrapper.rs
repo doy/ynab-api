@@ -10,6 +10,7 @@
 
 
 
+
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct SaveTransactionsWrapper {
     #[serde(rename = "transaction", skip_serializing_if = "Option::is_none")]

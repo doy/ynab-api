@@ -10,6 +10,7 @@
 
 
 
+
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct CategoriesResponseData {
     #[serde(rename = "category_groups")]
@@ -22,8 +23,8 @@ pub struct CategoriesResponseData {
 impl CategoriesResponseData {
     pub fn new(category_groups: Vec<crate::models::CategoryGroupWithCategories>, server_knowledge: i64) -> CategoriesResponseData {
         CategoriesResponseData {
-            category_groups: category_groups,
-            server_knowledge: server_knowledge,
+            category_groups,
+            server_knowledge,
         }
     }
 }

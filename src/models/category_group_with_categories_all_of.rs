@@ -10,6 +10,7 @@
 
 
 
+
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct CategoryGroupWithCategoriesAllOf {
     /// Category group categories.  Amounts (budgeted, activity, balance, etc.) are specific to the current budget month (UTC).
@@ -20,7 +21,7 @@ pub struct CategoryGroupWithCategoriesAllOf {
 impl CategoryGroupWithCategoriesAllOf {
     pub fn new(categories: Vec<crate::models::Category>) -> CategoryGroupWithCategoriesAllOf {
         CategoryGroupWithCategoriesAllOf {
-            categories: categories,
+            categories,
         }
     }
 }

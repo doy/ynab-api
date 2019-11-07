@@ -10,6 +10,8 @@
 
 use std::rc::Rc;
 use std::borrow::Borrow;
+#[allow(unused_imports)]
+use std::option::Option;
 
 use reqwest;
 
@@ -22,14 +24,14 @@ pub struct PayeesApiClient {
 impl PayeesApiClient {
     pub fn new(configuration: Rc<configuration::Configuration>) -> PayeesApiClient {
         PayeesApiClient {
-            configuration: configuration,
+            configuration,
         }
     }
 }
 
 pub trait PayeesApi {
     fn get_payee_by_id(&self, budget_id: &str, payee_id: &str) -> Result<crate::models::PayeeResponse, Error>;
-    fn get_payees(&self, budget_id: &str, last_knowledge_of_server: i64) -> Result<crate::models::PayeesResponse, Error>;
+    fn get_payees(&self, budget_id: &str, last_knowledge_of_server: Option<i64>) -> Result<crate::models::PayeesResponse, Error>;
 }
 
 impl PayeesApi for PayeesApiClient {
@@ -58,14 +60,16 @@ impl PayeesApi for PayeesApiClient {
         Ok(client.execute(req)?.error_for_status()?.json()?)
     }
 
-    fn get_payees(&self, budget_id: &str, last_knowledge_of_server: i64) -> Result<crate::models::PayeesResponse, Error> {
+    fn get_payees(&self, budget_id: &str, last_knowledge_of_server: Option<i64>) -> Result<crate::models::PayeesResponse, Error> {
         let configuration: &configuration::Configuration = self.configuration.borrow();
         let client = &configuration.client;
 
         let uri_str = format!("{}/budgets/{budget_id}/payees", configuration.base_path, budget_id=crate::apis::urlencode(budget_id));
         let mut req_builder = client.get(uri_str.as_str());
 
-        req_builder = req_builder.query(&[("last_knowledge_of_server", &last_knowledge_of_server.to_string())]);
+        if let Some(ref s) = last_knowledge_of_server {
+            req_builder = req_builder.query(&[("last_knowledge_of_server", &s.to_string())]);
+        }
         if let Some(ref user_agent) = configuration.user_agent {
             req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
         }

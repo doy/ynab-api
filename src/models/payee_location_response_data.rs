@@ -10,6 +10,7 @@
 
 
 
+
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct PayeeLocationResponseData {
     #[serde(rename = "payee_location")]
@@ -19,7 +20,7 @@ pub struct PayeeLocationResponseData {
 impl PayeeLocationResponseData {
     pub fn new(payee_location: crate::models::PayeeLocation) -> PayeeLocationResponseData {
         PayeeLocationResponseData {
-            payee_location: payee_location,
+            payee_location,
         }
     }
 }

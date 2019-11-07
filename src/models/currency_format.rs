@@ -11,6 +11,7 @@
 /// CurrencyFormat : The currency format setting for the budget.  In some cases the format will not be available and will be specified as null.
 
 
+
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct CurrencyFormat {
     #[serde(rename = "iso_code")]
@@ -35,14 +36,14 @@ impl CurrencyFormat {
     /// The currency format setting for the budget.  In some cases the format will not be available and will be specified as null.
     pub fn new(iso_code: String, example_format: String, decimal_digits: i32, decimal_separator: String, symbol_first: bool, group_separator: String, currency_symbol: String, display_symbol: bool) -> CurrencyFormat {
         CurrencyFormat {
-            iso_code: iso_code,
-            example_format: example_format,
-            decimal_digits: decimal_digits,
-            decimal_separator: decimal_separator,
-            symbol_first: symbol_first,
-            group_separator: group_separator,
-            currency_symbol: currency_symbol,
-            display_symbol: display_symbol,
+            iso_code,
+            example_format,
+            decimal_digits,
+            decimal_separator,
+            symbol_first,
+            group_separator,
+            currency_symbol,
+            display_symbol,
         }
     }
 }

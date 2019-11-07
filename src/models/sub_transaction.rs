@@ -10,6 +10,7 @@
 
 
 
+
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct SubTransaction {
     #[serde(rename = "id")]
@@ -36,14 +37,14 @@ pub struct SubTransaction {
 impl SubTransaction {
     pub fn new(id: String, transaction_id: String, amount: i64, deleted: bool) -> SubTransaction {
         SubTransaction {
-            id: id,
-            transaction_id: transaction_id,
-            amount: amount,
+            id,
+            transaction_id,
+            amount,
             memo: None,
             payee_id: None,
             category_id: None,
             transfer_account_id: None,
-            deleted: deleted,
+            deleted,
         }
     }
 }

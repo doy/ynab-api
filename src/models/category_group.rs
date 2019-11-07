@@ -10,6 +10,7 @@
 
 
 
+
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct CategoryGroup {
     #[serde(rename = "id")]
@@ -27,10 +28,10 @@ pub struct CategoryGroup {
 impl CategoryGroup {
     pub fn new(id: String, name: String, hidden: bool, deleted: bool) -> CategoryGroup {
         CategoryGroup {
-            id: id,
-            name: name,
-            hidden: hidden,
-            deleted: deleted,
+            id,
+            name,
+            hidden,
+            deleted,
         }
     }
 }

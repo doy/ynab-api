@@ -10,6 +10,7 @@
 
 
 
+
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct SaveMonthCategoryWrapper {
     #[serde(rename = "category")]
@@ -19,7 +20,7 @@ pub struct SaveMonthCategoryWrapper {
 impl SaveMonthCategoryWrapper {
     pub fn new(category: crate::models::SaveMonthCategory) -> SaveMonthCategoryWrapper {
         SaveMonthCategoryWrapper {
-            category: category,
+            category,
         }
     }
 }

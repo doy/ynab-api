@@ -10,6 +10,7 @@
 
 
 
+
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct SaveCategoryResponse {
     #[serde(rename = "data")]
@@ -19,7 +20,7 @@ pub struct SaveCategoryResponse {
 impl SaveCategoryResponse {
     pub fn new(data: crate::models::SaveCategoryResponseData) -> SaveCategoryResponse {
         SaveCategoryResponse {
-            data: data,
+            data,
         }
     }
 }

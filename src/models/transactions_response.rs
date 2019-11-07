@@ -10,6 +10,7 @@
 
 
 
+
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct TransactionsResponse {
     #[serde(rename = "data")]
@@ -19,7 +20,7 @@ pub struct TransactionsResponse {
 impl TransactionsResponse {
     pub fn new(data: crate::models::TransactionsResponseData) -> TransactionsResponse {
         TransactionsResponse {
-            data: data,
+            data,
         }
     }
 }

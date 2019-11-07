@@ -27,8 +27,8 @@ Creates a single transaction or multiple transactions.  If you provide a body co
 
 Name | Type | Description  | Required | Notes
 ------------- | ------------- | ------------- | ------------- | -------------
-**budget_id** | **String** | The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | Required | 
-**data** | [**SaveTransactionsWrapper**](SaveTransactionsWrapper.md) | The transaction or transactions to create.  To create a single transaction you can specify a value for the 'transaction' object and to create multiple transactions you can specify an array of 'transactions'.  It is expected that you will only provide a value for one of these objects. | Required | 
+**budget_id** | **String** | The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | [required] |
+**data** | [**SaveTransactionsWrapper**](SaveTransactionsWrapper.md) | The transaction or transactions to create.  To create a single transaction you can specify a value for the 'transaction' object and to create multiple transactions you can specify an array of 'transactions'.  It is expected that you will only provide a value for one of these objects. | [required] |
 
 ### Return type
 
@@ -58,8 +58,8 @@ Returns a single transaction
 
 Name | Type | Description  | Required | Notes
 ------------- | ------------- | ------------- | ------------- | -------------
-**budget_id** | **String** | The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | Required | 
-**transaction_id** | **String** | The id of the transaction | Required | 
+**budget_id** | **String** | The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | [required] |
+**transaction_id** | **String** | The id of the transaction | [required] |
 
 ### Return type
 
@@ -89,10 +89,10 @@ Returns budget transactions
 
 Name | Type | Description  | Required | Notes
 ------------- | ------------- | ------------- | ------------- | -------------
-**budget_id** | **String** | The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | Required | 
-**since_date** | **String** | If specified, only transactions on or after this date will be included.  The date should be ISO formatted (e.g. 2016-12-30). |  | 
-**_type** | **String** | If specified, only transactions of the specified type will be included. 'uncategorized' and 'unapproved' are currently supported. |  | 
-**last_knowledge_of_server** | **i64** | The starting server knowledge.  If provided, only entities that have changed since last_knowledge_of_server will be included. |  | 
+**budget_id** | **String** | The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | [required] |
+**since_date** | Option<**String**> | If specified, only transactions on or after this date will be included.  The date should be ISO formatted (e.g. 2016-12-30). |  |
+**_type** | Option<**String**> | If specified, only transactions of the specified type will be included. 'uncategorized' and 'unapproved' are currently supported. |  |
+**last_knowledge_of_server** | Option<**i64**> | The starting server knowledge.  If provided, only entities that have changed since last_knowledge_of_server will be included. |  |
 
 ### Return type
 
@@ -122,11 +122,11 @@ Returns all transactions for a specified account
 
 Name | Type | Description  | Required | Notes
 ------------- | ------------- | ------------- | ------------- | -------------
-**budget_id** | **String** | The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | Required | 
-**account_id** | **String** | The id of the account | Required | 
-**since_date** | **String** | If specified, only transactions on or after this date will be included.  The date should be ISO formatted (e.g. 2016-12-30). |  | 
-**_type** | **String** | If specified, only transactions of the specified type will be included. 'uncategorized' and 'unapproved' are currently supported. |  | 
-**last_knowledge_of_server** | **i64** | The starting server knowledge.  If provided, only entities that have changed since last_knowledge_of_server will be included. |  | 
+**budget_id** | **String** | The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | [required] |
+**account_id** | **String** | The id of the account | [required] |
+**since_date** | Option<**String**> | If specified, only transactions on or after this date will be included.  The date should be ISO formatted (e.g. 2016-12-30). |  |
+**_type** | Option<**String**> | If specified, only transactions of the specified type will be included. 'uncategorized' and 'unapproved' are currently supported. |  |
+**last_knowledge_of_server** | Option<**i64**> | The starting server knowledge.  If provided, only entities that have changed since last_knowledge_of_server will be included. |  |
 
 ### Return type
 
@@ -156,11 +156,11 @@ Returns all transactions for a specified category
 
 Name | Type | Description  | Required | Notes
 ------------- | ------------- | ------------- | ------------- | -------------
-**budget_id** | **String** | The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | Required | 
-**category_id** | **String** | The id of the category | Required | 
-**since_date** | **String** | If specified, only transactions on or after this date will be included.  The date should be ISO formatted (e.g. 2016-12-30). |  | 
-**_type** | **String** | If specified, only transactions of the specified type will be included. 'uncategorized' and 'unapproved' are currently supported. |  | 
-**last_knowledge_of_server** | **i64** | The starting server knowledge.  If provided, only entities that have changed since last_knowledge_of_server will be included. |  | 
+**budget_id** | **String** | The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | [required] |
+**category_id** | **String** | The id of the category | [required] |
+**since_date** | Option<**String**> | If specified, only transactions on or after this date will be included.  The date should be ISO formatted (e.g. 2016-12-30). |  |
+**_type** | Option<**String**> | If specified, only transactions of the specified type will be included. 'uncategorized' and 'unapproved' are currently supported. |  |
+**last_knowledge_of_server** | Option<**i64**> | The starting server knowledge.  If provided, only entities that have changed since last_knowledge_of_server will be included. |  |
 
 ### Return type
 
@@ -190,11 +190,11 @@ Returns all transactions for a specified payee
 
 Name | Type | Description  | Required | Notes
 ------------- | ------------- | ------------- | ------------- | -------------
-**budget_id** | **String** | The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | Required | 
-**payee_id** | **String** | The id of the payee | Required | 
-**since_date** | **String** | If specified, only transactions on or after this date will be included.  The date should be ISO formatted (e.g. 2016-12-30). |  | 
-**_type** | **String** | If specified, only transactions of the specified type will be included. 'uncategorized' and 'unapproved' are currently supported. |  | 
-**last_knowledge_of_server** | **i64** | The starting server knowledge.  If provided, only entities that have changed since last_knowledge_of_server will be included. |  | 
+**budget_id** | **String** | The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | [required] |
+**payee_id** | **String** | The id of the payee | [required] |
+**since_date** | Option<**String**> | If specified, only transactions on or after this date will be included.  The date should be ISO formatted (e.g. 2016-12-30). |  |
+**_type** | Option<**String**> | If specified, only transactions of the specified type will be included. 'uncategorized' and 'unapproved' are currently supported. |  |
+**last_knowledge_of_server** | Option<**i64**> | The starting server knowledge.  If provided, only entities that have changed since last_knowledge_of_server will be included. |  |
 
 ### Return type
 
@@ -224,9 +224,9 @@ Updates a transaction
 
 Name | Type | Description  | Required | Notes
 ------------- | ------------- | ------------- | ------------- | -------------
-**budget_id** | **String** | The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | Required | 
-**transaction_id** | **String** | The id of the transaction | Required | 
-**data** | [**SaveTransactionWrapper**](SaveTransactionWrapper.md) | The transaction to update | Required | 
+**budget_id** | **String** | The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | [required] |
+**transaction_id** | **String** | The id of the transaction | [required] |
+**data** | [**SaveTransactionWrapper**](SaveTransactionWrapper.md) | The transaction to update | [required] |
 
 ### Return type
 
@@ -256,8 +256,8 @@ Updates multiple transactions, by 'id' or 'import_id'.
 
 Name | Type | Description  | Required | Notes
 ------------- | ------------- | ------------- | ------------- | -------------
-**budget_id** | **String** | The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | Required | 
-**data** | [**UpdateTransactionsWrapper**](UpdateTransactionsWrapper.md) | The transactions to update. Each transaction must have either an 'id' or 'import_id' specified. If 'id' is specified as null an 'import_id' value can be provided which will allow transaction(s) to be updated by their import_id. If an id is specified, it will always be used for lookup. | Required | 
+**budget_id** | **String** | The id of the budget (\"last-used\" can be used to specify the last used budget and \"default\" can be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget) | [required] |
+**data** | [**UpdateTransactionsWrapper**](UpdateTransactionsWrapper.md) | The transactions to update. Each transaction must have either an 'id' or 'import_id' specified. If 'id' is specified as null an 'import_id' value can be provided which will allow transaction(s) to be updated by their import_id. If an id is specified, it will always be used for lookup. | [required] |
 
 ### Return type
 

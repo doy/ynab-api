@@ -10,6 +10,7 @@
 
 
 
+
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct MonthDetail {
     #[serde(rename = "month")]
@@ -42,15 +43,15 @@ pub struct MonthDetail {
 impl MonthDetail {
     pub fn new(month: String, income: i64, budgeted: i64, activity: i64, to_be_budgeted: i64, deleted: bool, categories: Vec<crate::models::Category>) -> MonthDetail {
         MonthDetail {
-            month: month,
+            month,
             note: None,
-            income: income,
-            budgeted: budgeted,
-            activity: activity,
-            to_be_budgeted: to_be_budgeted,
+            income,
+            budgeted,
+            activity,
+            to_be_budgeted,
             age_of_money: None,
-            deleted: deleted,
-            categories: categories,
+            deleted,
+            categories,
         }
     }
 }

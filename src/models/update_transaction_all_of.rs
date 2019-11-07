@@ -10,6 +10,7 @@
 
 
 
+
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct UpdateTransactionAllOf {
     #[serde(rename = "id")]
@@ -19,7 +20,7 @@ pub struct UpdateTransactionAllOf {
 impl UpdateTransactionAllOf {
     pub fn new(id: String) -> UpdateTransactionAllOf {
         UpdateTransactionAllOf {
-            id: id,
+            id,
         }
     }
 }

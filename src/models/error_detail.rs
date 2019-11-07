@@ -10,6 +10,7 @@
 
 
 
+
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct ErrorDetail {
     #[serde(rename = "id")]
@@ -23,9 +24,9 @@ pub struct ErrorDetail {
 impl ErrorDetail {
     pub fn new(id: String, name: String, detail: String) -> ErrorDetail {
         ErrorDetail {
-            id: id,
-            name: name,
-            detail: detail,
+            id,
+            name,
+            detail,
         }
     }
 }

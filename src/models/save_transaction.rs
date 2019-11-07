@@ -10,6 +10,7 @@
 
 
 
+
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct SaveTransaction {
     #[serde(rename = "account_id")]
@@ -33,13 +34,13 @@ pub struct SaveTransaction {
     pub memo: Option<String>,
     /// The cleared status of the transaction
     #[serde(rename = "cleared", skip_serializing_if = "Option::is_none")]
-    pub cleared: Option<String>,
+    pub cleared: Option<Cleared>,
     /// Whether or not the transaction is approved.  If not supplied, transaction will be unapproved by default.
     #[serde(rename = "approved", skip_serializing_if = "Option::is_none")]
     pub approved: Option<bool>,
     /// The transaction flag
     #[serde(rename = "flag_color", skip_serializing_if = "Option::is_none")]
-    pub flag_color: Option<String>,
+    pub flag_color: Option<FlagColor>,
     /// If specified, the new transaction will be assigned this import_id and considered \"imported\".  We will also attempt to match this imported transaction to an existing \"user-entered\" transation on the same account, with the same amount, and with a date +/-10 days from the imported transaction date.<br><br>Transactions imported through File Based Import or Direct Import (not through the API) are assigned an import_id in the format: 'YNAB:[milliunit_amount]:[iso_date]:[occurrence]'. For example, a transaction dated 2015-12-30 in the amount of -$294.23 USD would have an import_id of 'YNAB:-294230:2015-12-30:1'.  If a second transaction on the same account was imported and had the same date and same amount, its import_id would be 'YNAB:-294230:2015-12-30:2'.  Using a consistent format will prevent duplicates through Direct Import and File Based Import.<br><br>If import_id is omitted or specified as null, the transaction will be treated as a \"user-entered\" transaction. As such, it will be eligible to be matched against transactions later being imported (via DI, FBI, or API).
     #[serde(rename = "import_id", skip_serializing_if = "Option::is_none")]
     pub import_id: Option<String>,
@@ -48,9 +49,9 @@ pub struct SaveTransaction {
 impl SaveTransaction {
     pub fn new(account_id: String, date: String, amount: i64) -> SaveTransaction {
         SaveTransaction {
-            account_id: account_id,
-            date: date,
-            amount: amount,
+            account_id,
+            date,
+            amount,
             payee_id: None,
             payee_name: None,
             category_id: None,
@@ -63,4 +64,30 @@ impl SaveTransaction {
     }
 }
 
+/// The cleared status of the transaction
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+pub enum Cleared {
+    #[serde(rename = "cleared")]
+    Cleared,
+    #[serde(rename = "uncleared")]
+    Uncleared,
+    #[serde(rename = "reconciled")]
+    Reconciled,
+}
+/// The transaction flag
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+pub enum FlagColor {
+    #[serde(rename = "red")]
+    Red,
+    #[serde(rename = "orange")]
+    Orange,
+    #[serde(rename = "yellow")]
+    Yellow,
+    #[serde(rename = "green")]
+    Green,
+    #[serde(rename = "blue")]
+    Blue,
+    #[serde(rename = "purple")]
+    Purple,
+}
 

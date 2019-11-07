@@ -10,6 +10,7 @@
 
 
 
+
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct ScheduledSubTransaction {
     #[serde(rename = "id")]
@@ -36,14 +37,14 @@ pub struct ScheduledSubTransaction {
 impl ScheduledSubTransaction {
     pub fn new(id: String, scheduled_transaction_id: String, amount: i64, deleted: bool) -> ScheduledSubTransaction {
         ScheduledSubTransaction {
-            id: id,
-            scheduled_transaction_id: scheduled_transaction_id,
-            amount: amount,
+            id,
+            scheduled_transaction_id,
+            amount,
             memo: None,
             payee_id: None,
             category_id: None,
             transfer_account_id: None,
-            deleted: deleted,
+            deleted,
         }
     }
 }

@@ -10,6 +10,7 @@
 
 
 
+
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct HybridTransaction {
     #[serde(rename = "id")]
@@ -24,13 +25,13 @@ pub struct HybridTransaction {
     pub memo: Option<String>,
     /// The cleared status of the transaction
     #[serde(rename = "cleared")]
-    pub cleared: String,
+    pub cleared: Cleared,
     /// Whether or not the transaction is approved
     #[serde(rename = "approved")]
     pub approved: bool,
     /// The transaction flag
     #[serde(rename = "flag_color", skip_serializing_if = "Option::is_none")]
-    pub flag_color: Option<String>,
+    pub flag_color: Option<FlagColor>,
     #[serde(rename = "account_id")]
     pub account_id: String,
     #[serde(rename = "payee_id", skip_serializing_if = "Option::is_none")]
@@ -67,32 +68,58 @@ pub struct HybridTransaction {
 }
 
 impl HybridTransaction {
-    pub fn new(id: String, date: String, amount: i64, cleared: String, approved: bool, account_id: String, deleted: bool, _type: Type, account_name: String) -> HybridTransaction {
+    pub fn new(id: String, date: String, amount: i64, cleared: Cleared, approved: bool, account_id: String, deleted: bool, _type: Type, account_name: String) -> HybridTransaction {
         HybridTransaction {
-            id: id,
-            date: date,
-            amount: amount,
+            id,
+            date,
+            amount,
             memo: None,
-            cleared: cleared,
-            approved: approved,
+            cleared,
+            approved,
             flag_color: None,
-            account_id: account_id,
+            account_id,
             payee_id: None,
             category_id: None,
             transfer_account_id: None,
             transfer_transaction_id: None,
             matched_transaction_id: None,
             import_id: None,
-            deleted: deleted,
-            _type: _type,
+            deleted,
+            _type,
             parent_transaction_id: None,
-            account_name: account_name,
+            account_name,
             payee_name: None,
             category_name: None,
         }
     }
 }
 
+/// The cleared status of the transaction
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+pub enum Cleared {
+    #[serde(rename = "cleared")]
+    Cleared,
+    #[serde(rename = "uncleared")]
+    Uncleared,
+    #[serde(rename = "reconciled")]
+    Reconciled,
+}
+/// The transaction flag
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+pub enum FlagColor {
+    #[serde(rename = "red")]
+    Red,
+    #[serde(rename = "orange")]
+    Orange,
+    #[serde(rename = "yellow")]
+    Yellow,
+    #[serde(rename = "green")]
+    Green,
+    #[serde(rename = "blue")]
+    Blue,
+    #[serde(rename = "purple")]
+    Purple,
+}
 /// Whether the hybrid transaction represents a regular transaction or a subtransaction
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub enum Type {

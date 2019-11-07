@@ -10,6 +10,7 @@
 
 
 
+
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct ScheduledTransactionDetailAllOf {
     #[serde(rename = "account_name")]
@@ -26,10 +27,10 @@ pub struct ScheduledTransactionDetailAllOf {
 impl ScheduledTransactionDetailAllOf {
     pub fn new(account_name: String, subtransactions: Vec<crate::models::ScheduledSubTransaction>) -> ScheduledTransactionDetailAllOf {
         ScheduledTransactionDetailAllOf {
-            account_name: account_name,
+            account_name,
             payee_name: None,
             category_name: None,
-            subtransactions: subtransactions,
+            subtransactions,
         }
     }
 }
