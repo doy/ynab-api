@@ -4,8 +4,8 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**id** | **String** |  | 
-**payee_id** | **String** |  | 
+**id** | [**uuid::Uuid**](uuid::Uuid.md) |  | 
+**payee_id** | [**uuid::Uuid**](uuid::Uuid.md) |  | 
 **latitude** | **String** |  | 
 **longitude** | **String** |  | 
 **deleted** | **bool** | Whether or not the payee location has been deleted.  Deleted payee locations will only be included in delta requests. | 

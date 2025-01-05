@@ -1,16 +1,16 @@
 # \UserApi
 
-All URIs are relative to *https://api.youneedabudget.com/v1*
+All URIs are relative to *https://api.ynab.com/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**get_user**](UserApi.md#get_user) | **get** /user | User info
+[**get_user**](UserApi.md#get_user) | **GET** /user | User info
 
 
 
 ## get_user
 
-> crate::models::UserResponse get_user()
+> models::UserResponse get_user()
 User info
 
 Returns authenticated user information
@@ -21,7 +21,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**crate::models::UserResponse**](UserResponse.md)
+[**models::UserResponse**](UserResponse.md)
 
 ### Authorization
 

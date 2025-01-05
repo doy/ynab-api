@@ -1,26 +1,57 @@
-use reqwest;
-use serde_json;
+use std::error;
+use std::fmt;
+
+#[derive(Debug, Clone)]
+pub struct ResponseContent<T> {
+    pub status: reqwest::StatusCode,
+    pub content: String,
+    pub entity: Option<T>,
+}
 
 #[derive(Debug)]
-pub enum Error {
+pub enum Error<T> {
     Reqwest(reqwest::Error),
     Serde(serde_json::Error),
     Io(std::io::Error),
+    ResponseError(ResponseContent<T>),
 }
 
-impl From<reqwest::Error> for Error {
+impl <T> fmt::Display for Error<T> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let (module, e) = match self {
+            Error::Reqwest(e) => ("reqwest", e.to_string()),
+            Error::Serde(e) => ("serde", e.to_string()),
+            Error::Io(e) => ("IO", e.to_string()),
+            Error::ResponseError(e) => ("response", format!("status code {}", e.status)),
+        };
+        write!(f, "error in {}: {}", module, e)
+    }
+}
+
+impl <T: fmt::Debug> error::Error for Error<T> {
+    fn source(&self) -> Option<&(dyn error::Error + 'static)> {
+        Some(match self {
+            Error::Reqwest(e) => e,
+            Error::Serde(e) => e,
+            Error::Io(e) => e,
+            Error::ResponseError(_) => return None,
+        })
+    }
+}
+
+impl <T> From<reqwest::Error> for Error<T> {
     fn from(e: reqwest::Error) -> Self {
         Error::Reqwest(e)
     }
 }
 
-impl From<serde_json::Error> for Error {
+impl <T> From<serde_json::Error> for Error<T> {
     fn from(e: serde_json::Error) -> Self {
         Error::Serde(e)
     }
 }
 
-impl From<std::io::Error> for Error {
+impl <T> From<std::io::Error> for Error<T> {
     fn from(e: std::io::Error) -> Self {
         Error::Io(e)
     }
@@ -30,26 +61,43 @@ pub fn urlencode<T: AsRef<str>>(s: T) -> String {
     ::url::form_urlencoded::byte_serialize(s.as_ref().as_bytes()).collect()
 }
 
-mod accounts_api;
-pub use self::accounts_api::{ AccountsApi, AccountsApiClient };
-mod budgets_api;
-pub use self::budgets_api::{ BudgetsApi, BudgetsApiClient };
-mod categories_api;
-pub use self::categories_api::{ CategoriesApi, CategoriesApiClient };
-mod deprecated_api;
-pub use self::deprecated_api::{ DeprecatedApi, DeprecatedApiClient };
-mod months_api;
-pub use self::months_api::{ MonthsApi, MonthsApiClient };
-mod payee_locations_api;
-pub use self::payee_locations_api::{ PayeeLocationsApi, PayeeLocationsApiClient };
-mod payees_api;
-pub use self::payees_api::{ PayeesApi, PayeesApiClient };
-mod scheduled_transactions_api;
-pub use self::scheduled_transactions_api::{ ScheduledTransactionsApi, ScheduledTransactionsApiClient };
-mod transactions_api;
-pub use self::transactions_api::{ TransactionsApi, TransactionsApiClient };
-mod user_api;
-pub use self::user_api::{ UserApi, UserApiClient };
+pub fn parse_deep_object(prefix: &str, value: &serde_json::Value) -> Vec<(String, String)> {
+    if let serde_json::Value::Object(object) = value {
+        let mut params = vec![];
+
+        for (key, value) in object {
+            match value {
+                serde_json::Value::Object(_) => params.append(&mut parse_deep_object(
+                    &format!("{}[{}]", prefix, key),
+                    value,
+                )),
+                serde_json::Value::Array(array) => {
+                    for (i, value) in array.iter().enumerate() {
+                        params.append(&mut parse_deep_object(
+                            &format!("{}[{}][{}]", prefix, key, i),
+                            value,
+                        ));
+                    }
+                },
+                serde_json::Value::String(s) => params.push((format!("{}[{}]", prefix, key), s.clone())),
+                _ => params.push((format!("{}[{}]", prefix, key), value.to_string())),
+            }
+        }
+
+        return params;
+    }
+
+    unimplemented!("Only objects are supported with style=deepObject")
+}
+
+pub mod accounts_api;
+pub mod budgets_api;
+pub mod categories_api;
+pub mod months_api;
+pub mod payee_locations_api;
+pub mod payees_api;
+pub mod scheduled_transactions_api;
+pub mod transactions_api;
+pub mod user_api;
 
 pub mod configuration;
-pub mod client;

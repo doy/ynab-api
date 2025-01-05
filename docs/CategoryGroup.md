@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**id** | **String** |  | 
+**id** | [**uuid::Uuid**](uuid::Uuid.md) |  | 
 **name** | **String** |  | 
 **hidden** | **bool** | Whether or not the category group is hidden | 
 **deleted** | **bool** | Whether or not the category group has been deleted.  Deleted category groups will only be included in delta requests. | 
