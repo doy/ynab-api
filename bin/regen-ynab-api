@@ -28,5 +28,6 @@ openapi-generator-cli \
     -c data/openapi.yaml \
     --package-name ynab-api
 
+perl -i -nE 'print unless /^(description|license)/' Cargo.toml
 echo "$metadata" | perl -i -nlE'/^author/ ? print <STDIN> : print' Cargo.toml
 echo "$extra_readme" >> README.md
