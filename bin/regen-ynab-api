@@ -24,7 +24,7 @@ openapi-generator-cli \
     generate \
     -g rust \
     --library reqwest \
-    -i data/spec-v1-swagger.json \
+    -i data/open_api_spec.yaml \
     -c data/openapi.yaml \
     --package-name ynab-api
 
